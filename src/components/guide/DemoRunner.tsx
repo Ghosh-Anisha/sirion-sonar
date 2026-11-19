@@ -1,9 +1,12 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { demoSteps } from "../../data/demoSteps";
+import { useEffect, useMemo, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { demoSteps, type DemoSnapshot } from "../../data/demoSteps";
 import { moments } from "../../data/journey";
 import { people } from "../../data/people";
+import { syncedStep } from "../../logic/demoSync";
 import { useClock } from "../../state/ClockContext";
+import { useDemoState } from "../../state/DemoStateContext";
+import { useOnboarding } from "../../state/OnboardingContext";
 import { useGuide } from "../../state/GuideContext";
 import { useViewer } from "../../state/ViewerContext";
 import { Button } from "../ui/Button";
@@ -16,22 +19,53 @@ const FIND_WITHIN_MS = 3000;
 const AFTER_CLICK_MS = 450;
 
 /**
- * The clickable demo. Each step points at one thing and moves on when the viewer presses it.
- * Next is always there and only moves the bar, so the bar never acts on the app behind the viewer's back.
- * Switching person and moving the clock have their own button, because there is nothing on screen to click for them.
+ * The clickable demo. Each step points at one thing, and the bar follows the app: it shows the step after the
+ * last one the app says has happened, however the viewer got there. Next moves the bar on by hand and never acts
+ * on the app. Back shows an earlier step until the viewer does something. Switching person and moving the clock
+ * have their own button, because there is nothing on screen to click for them.
  */
 export function DemoRunner() {
   const { demo, setDemo } = useGuide();
   const navigate = useNavigate();
-  const { setToday } = useClock();
-  const { setViewerId } = useViewer();
+  const { today, setToday } = useClock();
+  const { viewer, setViewerId } = useViewer();
+  const { pathname } = useLocation();
+  const { state: onboarding } = useOnboarding();
+  const { state: demoState } = useDemoState();
   const [target, setTarget] = useState<HTMLElement | null>(null);
   const [missing, setMissing] = useState(false);
-  const index = demo?.index ?? 0;
+  const [hold, setHold] = useState<number | null>(null);
+
+  const snapshot = useMemo<DemoSnapshot>(
+    () => ({
+      path: decodeURIComponent(pathname),
+      onboarding,
+      actions: demoState.actions,
+      sent: demoState.sent,
+      factEdits: demoState.factEdits,
+      viewerId: viewer.id,
+      today,
+    }),
+    [pathname, onboarding, demoState, viewer.id, today],
+  );
+  // Whatever the viewer does lets go of a step held by Back.
+  useEffect(() => setHold(null), [snapshot]);
+
+  /** The furthest step reached by hand with Next. */
+  const floor = demo?.index ?? 0;
+  const index = hold ?? Math.max(syncedStep(demoSteps, snapshot), floor);
   const step = demoSteps[index];
   const action = step.action;
   const last = index === demoSteps.length - 1;
   const go = (to: number) => setDemo({ index: Math.min(Math.max(to, 0), demoSteps.length - 1) });
+  const back = () => setHold(Math.max(index - 1, 0));
+  /** Next steps forward through a held step first, then moves the bar past where the app is. */
+  const next = () => {
+    const reached = Math.max(syncedStep(demoSteps, snapshot), floor);
+    if (hold !== null && hold + 1 < reached) return setHold(hold + 1);
+    setHold(null);
+    go(Math.max(index, reached - 1) + 1);
+  };
 
   // Find what this step points at, waiting a little for the screen to render.
   useEffect(() => {
@@ -64,7 +98,10 @@ export function DemoRunner() {
     const onClick = (e: MouseEvent) => {
       if (moved || !clickMatches(e.target, action)) return;
       moved = true;
-      window.setTimeout(() => go(index + 1), AFTER_CLICK_MS);
+      window.setTimeout(() => {
+        setHold(null);
+        go(index + 1);
+      }, AFTER_CLICK_MS);
     };
     document.addEventListener("click", onClick, true);
     return () => document.removeEventListener("click", onClick, true);
@@ -74,7 +111,7 @@ export function DemoRunner() {
   const setScene = () => {
     if (action && "clock" in action) setToday(action.clock);
     else if (action && "viewer" in action) setViewerId(action.viewer);
-    go(index + 1);
+    next();
   };
 
   const moment = moments.find((m) => m.id === step.moment);
@@ -101,7 +138,7 @@ export function DemoRunner() {
           )}
         </div>
         <div className="row demo-bar__controls">
-          <Button onClick={() => go(index - 1)} disabled={index === 0}>
+          <Button onClick={back} disabled={index === 0}>
             Back
           </Button>
           {action && ("clock" in action || "viewer" in action) && (
@@ -110,7 +147,7 @@ export function DemoRunner() {
             </Button>
           )}
           {!last && (
-            <Button variant={waitsForClick || (action && ("clock" in action || "viewer" in action)) ? "secondary" : "primary"} onClick={() => go(index + 1)}>
+            <Button variant={waitsForClick || (action && ("clock" in action || "viewer" in action)) ? "secondary" : "primary"} onClick={next}>
               Next
             </Button>
           )}

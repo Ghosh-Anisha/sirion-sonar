@@ -51,7 +51,7 @@ export function ComicStrip() {
               <ComicPanel panel={p} number={i + 1} />
             </button>
             {p.id === "with-sonar" && (
-              <ButtonLink to="/welcome" variant="primary" className="comic__try">
+              <ButtonLink to="/login" variant="primary" className="comic__try">
                 Try it
               </ButtonLink>
             )}

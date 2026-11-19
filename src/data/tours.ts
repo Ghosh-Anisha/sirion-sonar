@@ -35,7 +35,7 @@ export const tours: Record<TourScreen, TourStep[]> = {
     { target: "story-hook", title: "The problem in one line", body: "A contract does nothing on its own. The rest of this page shows what that costs." },
     { target: "story-comic", title: "Six panels", body: "Scroll to reveal each one. Press a panel to see it larger with one more line." },
     { target: "story-tests", title: "Why start at intake", body: "Turn each card for the line of evidence behind it." },
-    { target: "story-matrix", title: "Where the money is", body: "Hover or focus a dot to read the problem it stands for." },
+    { target: "story-matrix", title: "Where the money is", body: "The costly problems are the ones nobody complains about. Each links to where the prototype shows it." },
     { target: "story-next", title: "Then the solution", body: "Each story page ends with one line on why it matters and a button to the next." },
   ],
   solution: [

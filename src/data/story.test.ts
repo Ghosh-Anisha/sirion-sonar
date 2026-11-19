@@ -16,7 +16,7 @@ describe("story copy", () => {
 
   it("gives every page a so what and a next step, in the site order", () => {
     expect(story.storyClose.next.to).toBe("/solution");
-    expect(story.solution.next.to).toBe("/welcome");
+    expect(story.solution.next.to).toBe("/login");
     expect(Object.values(story.casePages).every((p) => p.soWhat && p.next.to.startsWith("/") && p.lines.length <= 3)).toBe(true);
   });
 

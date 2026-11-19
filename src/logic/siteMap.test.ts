@@ -11,6 +11,6 @@ describe("stepFor", () => {
   });
 
   it("runs the story first and the product third", () => {
-    expect(siteSteps.map((s) => s.to)).toEqual(["/story", "/solution", "/welcome", "/measures"]);
+    expect(siteSteps.map((s) => s.to)).toEqual(["/story", "/solution", "/login", "/measures"]);
   });
 });

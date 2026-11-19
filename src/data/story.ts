@@ -16,7 +16,7 @@ export interface NextLink {
 export const siteSteps = [
   { id: "problem", number: 1, label: "The problem", to: "/story" },
   { id: "solution", number: 2, label: "The solution", to: "/solution" },
-  { id: "try", number: 3, label: "Try it", to: "/welcome" },
+  { id: "try", number: 3, label: "Try it", to: "/login" },
   { id: "measure", number: 4, label: "How we know", to: "/measures" },
 ] as const;
 
@@ -218,7 +218,7 @@ export const solution = {
     { part: "The 5 sample emails", how: "Precomputed matching and classification, each step shown" },
   ],
   soWhat: "Every date on the list can be traced to a sentence, and every call goes to one person.",
-  next: { to: "/welcome", label: "Try it yourself" } as NextLink,
+  next: { to: "/login", label: "Try it yourself" } as NextLink,
 };
 
 /* The case pages and Measures, in the story layer */
