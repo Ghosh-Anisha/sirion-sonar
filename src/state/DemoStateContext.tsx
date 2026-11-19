@@ -27,6 +27,8 @@ export interface DemoState {
   log: LogEntry[];
   /** Whether the first read has run. Until it has, Home links to Setup. */
   firstReadDone: boolean;
+  /** When each item was first opened, so Measures can tell whether alerts are read. */
+  opened: Record<string, string>;
 }
 
 type Event =
@@ -34,9 +36,10 @@ type Event =
   | { type: "send"; itemId: string; message: SentMessage; markDone: boolean; text: string }
   | { type: "edit-fact"; contractId: string; field: FactField; edit: FactEdit; text: string }
   | { type: "first-read-done"; on: string; by: string }
+  | { type: "open-item"; itemId: string; on: string }
   | { type: "answer-amendment"; itemId: string; amendment: Amendment; action: ItemAction; text: string };
 
-const INITIAL: DemoState = { actions: {}, sent: {}, factEdits: {}, log: [], firstReadDone: false };
+const INITIAL: DemoState = { actions: {}, sent: {}, factEdits: {}, log: [], firstReadDone: false, opened: {} };
 
 function logged(state: DemoState, entry: Omit<LogEntry, "id">): LogEntry[] {
   return [...state.log, { ...entry, id: state.log.length + 1 }];
@@ -81,6 +84,8 @@ function reduce(state: DemoState, event: Event): DemoState {
         log: logged(state, { on: action.on, by: action.by, text: event.text, itemId, contractId: amendment.contractId }),
       };
     }
+    case "open-item":
+      return state.opened[event.itemId] ? state : { ...state, opened: { ...state.opened, [event.itemId]: event.on } };
     case "first-read-done":
       return state.firstReadDone
         ? state

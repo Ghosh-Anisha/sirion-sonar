@@ -1,0 +1,113 @@
+.north-star {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-6);
+  background: var(--surface);
+  border: var(--border);
+  border-radius: var(--radius-card);
+}
+
+.north-star__value {
+  font-size: var(--text-28);
+  font-weight: var(--weight-semibold);
+  color: var(--brand);
+}
+
+.north-star__bar {
+  max-width: 480px;
+}
+
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--space-4);
+}
+
+.metric {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  background: var(--surface);
+  border: var(--border);
+  border-radius: var(--radius-card);
+}
+
+.metric h3 {
+  margin: 0;
+}
+
+.metric__question,
+.metric__detail,
+.metric__target-text {
+  font-size: var(--text-12);
+  color: var(--ink-2);
+}
+
+.metric__value {
+  font-size: var(--text-20);
+  font-weight: var(--weight-semibold);
+}
+
+.metric__bar {
+  position: relative;
+  height: 8px;
+  background: var(--bg);
+  border: var(--border);
+  border-radius: var(--radius-badge);
+}
+
+.metric__fill {
+  display: block;
+  height: 100%;
+  background: var(--brand);
+  border-radius: var(--radius-badge);
+  transition: width var(--fade);
+}
+
+.metric__target {
+  position: absolute;
+  top: -4px;
+  bottom: -4px;
+  width: 2px;
+  background: var(--ink-2);
+  opacity: 0.35;
+}
+
+.metric__status {
+  font-weight: var(--weight-medium);
+}
+
+.metric__status--on-track {
+  color: var(--confirmed);
+}
+
+.metric__status--off-track {
+  color: var(--check);
+}
+
+.signal-status {
+  font-weight: var(--weight-semibold);
+  white-space: nowrap;
+}
+
+.signal-status--triggered {
+  color: var(--urgent);
+}
+
+.signal-status--clear {
+  color: var(--confirmed);
+}
+
+.signal-status--too-early,
+.signal-status--no-data {
+  color: var(--ink-2);
+}
+
+.no-baseline {
+  padding: var(--space-3) var(--space-4);
+  background: var(--unknown-soft);
+  border: 1px dashed var(--unknown);
+  border-radius: var(--radius-card);
+}

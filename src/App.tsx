@@ -5,7 +5,9 @@ import { Contracts } from "./screens/Contracts";
 import { Email } from "./screens/Email";
 import { Home } from "./screens/Home";
 import { Item } from "./screens/Item";
+import { Measures } from "./screens/Measures";
 import { Placeholder } from "./screens/Placeholder";
+import { Privacy } from "./screens/Privacy";
 import { Setup } from "./screens/Setup";
 import { Styleguide } from "./screens/Styleguide";
 import { Versions } from "./screens/Versions";
@@ -28,8 +30,8 @@ export function App() {
               <Route path="contract/:id" element={<Contract />} />
               <Route path="versions/:id" element={<Versions />} />
               <Route path="email" element={<Email />} />
-              <Route path="measures" element={<Placeholder title="Measures" />} />
-              <Route path="privacy" element={<Placeholder title="Privacy" />} />
+              <Route path="measures" element={<Measures />} />
+              <Route path="privacy" element={<Privacy />} />
               <Route path="sirion" element={<Placeholder title="Sirion" />} />
               <Route path="styleguide" element={<Styleguide />} />
               <Route path="*" element={<Navigate to="/home" replace />} />

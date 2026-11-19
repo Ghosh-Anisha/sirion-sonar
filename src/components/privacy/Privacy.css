@@ -1,0 +1,77 @@
+.privacy-sample {
+  padding: var(--space-3) var(--space-4);
+  background: var(--unknown-soft);
+  border: 1px dashed var(--unknown);
+  border-radius: var(--radius-card);
+  font-weight: var(--weight-medium);
+}
+
+.panes {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-4);
+  align-items: start;
+}
+
+.pane {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  background: var(--surface);
+  border: var(--border);
+  border-radius: var(--radius-card);
+}
+
+.pane h2 {
+  font-size: var(--text-16);
+}
+
+.pane__step {
+  font-size: var(--text-12);
+  color: var(--ink-2);
+}
+
+.token-text {
+  margin: 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.token {
+  color: var(--find);
+  background: var(--find-soft);
+  border-radius: var(--radius-button);
+  padding: 0 var(--space-1);
+  font-weight: var(--weight-medium);
+}
+
+.token--restored {
+  color: var(--ink);
+  background: var(--brand-soft);
+}
+
+.leak-check {
+  font-size: var(--text-12);
+  font-weight: var(--weight-medium);
+}
+
+.leak-check--pass {
+  color: var(--confirmed);
+}
+
+.leak-check--fail {
+  color: var(--urgent);
+}
+
+.computed {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4) var(--space-8);
+}
+
+@media (max-width: 1000px) {
+  .panes {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

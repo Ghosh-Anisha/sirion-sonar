@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { emails } from "../data/emails";
 import { payments } from "../data/payments";
@@ -34,6 +34,11 @@ export function Item() {
   const closeToast = useCallback(() => setToast(null), []);
 
   const item = items.find((i) => i.id === id);
+  const foundId = item?.id;
+  useEffect(() => {
+    if (foundId) dispatch({ type: "open-item", itemId: foundId, on: today });
+  }, [foundId, today, dispatch]);
+
   if (!item) {
     return (
       <EmptyState

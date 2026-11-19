@@ -7,12 +7,14 @@ import { people } from "../data/people";
 import { vendors } from "../data/vendors";
 import { routeItem } from "./alerts";
 import { amendmentItemId } from "./arrivals";
-import { buildItems, type ItemAction } from "./items";
+import { buildItems, currentContracts, type ItemAction } from "./items";
+import { paidByVendor } from "./match";
+import { measures } from "./measures";
 
 /*
  * The acceptance checks from docs/spec.md that can be tested without a screen.
  * Check 1 (a viewer can follow the demo) and 6 (no button pays, holds, signs or
- * sends without a click) are about screens. Check 7 (Measures) waits for measures.ts.
+ * sends without a click) are about screens.
  */
 
 const leadId = people.find((p) => p.role === "procurement-lead")!.id;
@@ -100,5 +102,35 @@ describe("Check 5: an item with no owner appears under the procurement lead", ()
     for (const item of unowned) {
       expect(routeItem(item, DEMO_START, leadId)).toMatchObject({ unowned: true, recipients: [leadId] });
     }
+  });
+});
+
+describe("Check 7: Measures numbers come from the sample data and change when items are decided", () => {
+  const measuresWith = (actions: Record<string, ItemAction>) =>
+    measures({
+      today: DEMO_START,
+      firstReadOn: DEMO_START,
+      items: itemsOn(DEMO_START, actions),
+      contracts: currentContracts(contracts, emails, actions, {}),
+      vendors,
+      payments,
+      paid: paidByVendor(payments, vendors, DEMO_START),
+      actions,
+      factEdits: {},
+      opened: {},
+      procurementLeadId: leadId,
+      connectionsApproved: true,
+    });
+
+  it("moves the north star when a renewal is decided", () => {
+    expect(measuresWith({}).northStar.share).toBeNull();
+    const decided = measuresWith({ "decide:quillstone-retainer:2026-12-10": { kind: "end", on: DEMO_START, by: leadId } });
+    expect(decided.northStar).toMatchObject({ decidedInTime: 1, share: 100 });
+  });
+
+  it("drops the count of items with no owner when one is acted on", () => {
+    const before = measuresWith({}).metrics.find((m) => m.id === "unowned")!.value!;
+    const after = measuresWith({ "decide:quillstone-retainer:2026-12-10": { kind: "end", on: DEMO_START, by: leadId } });
+    expect(after.metrics.find((m) => m.id === "unowned")!.value).toBe(before - 1);
   });
 });

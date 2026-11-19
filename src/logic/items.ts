@@ -23,7 +23,7 @@ export interface ItemAction {
 /** Alerts start this many days before a notice deadline. */
 export const DECIDE_WINDOW_DAYS = 90;
 /** A supplier paid with no contract should be found within this many days of the first read. */
-export const FIND_WITHIN_DAYS = 30;
+export const FIND_WITHIN_DAYS = 60;
 
 export type ItemDetail =
   | { kind: "renewal"; contractId: string; dates: ContractDates }

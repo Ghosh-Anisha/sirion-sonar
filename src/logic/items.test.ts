@@ -82,7 +82,7 @@ describe("buildItems on the first day", () => {
   it("raises a Find for each of the 13 suppliers paid with no contract", () => {
     const finds = atStart.filter((i) => i.type === "find");
     expect(finds).toHaveLength(13);
-    expect(finds.every((i) => i.reason === "absence" && i.dueDate === "2026-12-19")).toBe(true);
+    expect(finds.every((i) => i.reason === "absence" && i.dueDate === "2027-01-18")).toBe(true);
     expect(byId("find:bluepeak")?.detail).toMatchObject({ kind: "no-contract", total: 112000, lastPaid: "2026-11-10" });
   });
 
