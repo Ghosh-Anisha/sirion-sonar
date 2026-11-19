@@ -17,7 +17,7 @@ export function ItemRow({ row }: { row: NeedsYouRow }) {
   const leadName = PROCUREMENT_LEAD.name;
 
   return (
-    <li className={`item-row item-row--${group}`} data-tour="item-row">
+    <li className={`item-row item-row--${group}`} data-tour="item-row" data-item={item.id}>
       <div className="item-row__badges" data-tour="item-badges">
         <Badge kind={item.type} />
         {routing.urgent && <Badge kind="urgent" />}

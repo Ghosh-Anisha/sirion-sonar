@@ -35,7 +35,10 @@ export function DemoGuide() {
           {current && (
             <p>
               {current.todo}
-              {person && <span className="muted"> You will be viewing as {person.name}.</span>}
+              <span className="muted">
+                {" "}
+                Do this next takes you there{person ? ` as ${person.name}` : ""}, and the thing to press glows.
+              </span>
             </p>
           )}
         </div>

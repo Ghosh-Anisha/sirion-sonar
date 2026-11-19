@@ -20,11 +20,18 @@
 
 .button--primary {
   color: var(--surface);
-  background: var(--brand);
+  background: linear-gradient(135deg, var(--brand), var(--decide));
 }
 
 .button--primary:hover:not(:disabled) {
   background: var(--ink);
+}
+
+/* For the one call to action on a screen. */
+.button--big {
+  min-height: 44px;
+  padding: var(--space-2) var(--space-6);
+  font-size: var(--text-16);
 }
 
 .button--secondary {

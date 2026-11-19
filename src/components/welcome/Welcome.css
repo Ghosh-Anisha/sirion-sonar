@@ -682,3 +682,46 @@
   align-items: center;
   gap: var(--space-2) var(--space-3);
 }
+
+/* Step 1: features and the two ways in */
+.features {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.feature {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  background: var(--surface);
+  border: var(--border);
+  border-radius: var(--radius-card);
+}
+
+.feature__title {
+  font-size: var(--text-16);
+  font-weight: var(--weight-semibold);
+}
+
+.welcome-ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+/* The wizard card gets the bright hero wash behind its heading. */
+.wizard__step.card {
+  background:
+    linear-gradient(180deg, var(--brand-soft) 0, var(--surface) 160px);
+}
+
+@media (max-width: 720px) {
+  .features {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

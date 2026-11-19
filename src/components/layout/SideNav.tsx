@@ -1,27 +1,28 @@
 import { useEffect, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
+import { NavIcon, type NavIconName } from "./NavIcon";
 
-const SECTIONS = [
+const SECTIONS: { title: string; links: { to: string; text: string; icon: NavIconName }[] }[] = [
   {
     title: "Product",
     links: [
-      { to: "/home", text: "Home" },
-      { to: "/contracts", text: "Contracts" },
-      { to: "/email", text: "Weekly email" },
-      { to: "/measures", text: "Measures" },
-      { to: "/privacy", text: "Privacy" },
-      { to: "/sirion", text: "Sirion" },
-      { to: "/access", text: "Access log" },
-      { to: "/architecture", text: "How it works" },
+      { to: "/home", text: "Home", icon: "home" },
+      { to: "/contracts", text: "Contracts", icon: "contracts" },
+      { to: "/email", text: "Weekly email", icon: "mail" },
+      { to: "/measures", text: "Measures", icon: "measures" },
+      { to: "/privacy", text: "Privacy", icon: "privacy" },
+      { to: "/sirion", text: "Sirion", icon: "sirion" },
+      { to: "/access", text: "Access log", icon: "access" },
+      { to: "/architecture", text: "How it works", icon: "how" },
     ],
   },
   {
     title: "Case",
     links: [
-      { to: "/why", text: "Why intake" },
-      { to: "/problem", text: "The problem" },
-      { to: "/stakeholders", text: "Stakeholders" },
-      { to: "/assumptions", text: "Assumptions" },
+      { to: "/why", text: "Why intake", icon: "why" },
+      { to: "/problem", text: "The problem", icon: "problem" },
+      { to: "/stakeholders", text: "Stakeholders", icon: "stakeholders" },
+      { to: "/assumptions", text: "Assumptions", icon: "assumptions" },
     ],
   },
 ];
@@ -47,6 +48,7 @@ export function SideNav() {
               {section.links.map((link) => (
                 <li key={link.to}>
                   <NavLink to={link.to} className="sidenav__link">
+                    <NavIcon name={link.icon} />
                     {link.text}
                   </NavLink>
                 </li>

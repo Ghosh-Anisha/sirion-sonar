@@ -1,7 +1,8 @@
 import { Outlet } from "react-router-dom";
 import { DemoDock } from "../guide/DemoDock";
 import { IdleHint } from "../guide/IdleHint";
-import { NudgeDot } from "../guide/NudgeDot";
+import { Director } from "../guide/Director";
+import { FocusRing } from "../guide/FocusRing";
 import { TourHost } from "../guide/TourHost";
 import { UnderTheHood } from "../thinking/UnderTheHood";
 import { SampleBanner } from "./SampleBanner";
@@ -27,7 +28,8 @@ export function AppShell({ nav = true }: { nav?: boolean }) {
       <DemoDock />
       <UnderTheHood />
       <TourHost />
-      <NudgeDot />
+      <FocusRing />
+      <Director />
       <IdleHint />
     </>
   );

@@ -30,9 +30,9 @@ export type TourScreen =
 export const tours: Record<TourScreen, TourStep[]> = {
   welcome: [
     { target: "wizard-progress", title: "Eight short steps", body: "This bar shows where you are. A refresh keeps your place." },
-    { target: "walkthrough", title: "Want a guide", body: "Start the walkthrough opens the Demo guide, which takes you through the story one moment at a time." },
+    { target: "walkthrough", title: "Two ways in", body: "Watch the demo plays the whole story by itself. Walk through it yourself opens the Demo guide, one moment at a time." },
     { target: "wizard-skip", title: "In a hurry", body: "Skip to demo connects everything with the defaults and takes you to the list with the first read done." },
-    { target: "dock-tour", title: "Replay any time", body: "The demo bar at the bottom holds the demo controls. Tour this screen plays the tour for whatever screen you are on." },
+    { target: "dock-tour", title: "Replay any time", body: "The demo bar at the bottom holds the demo controls. Play the demo runs the whole story, and Tour explains whatever screen you are on." },
   ],
   home: [
     { target: "needs-you-list", title: "The list", body: "Everything that needs a person, one sentence each, with the nearest deadline at the top." },

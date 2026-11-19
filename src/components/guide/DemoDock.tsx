@@ -7,7 +7,9 @@ import { resetDemo } from "../../state/resetDemo";
 import { useJourney } from "../../state/useJourney";
 import { ViewAsSwitcher } from "../layout/ViewAsSwitcher";
 import { ThinkingToggle } from "../thinking/ThinkingToggle";
+import { AutoplayBar } from "./AutoplayBar";
 import { DemoGuide } from "./DemoGuide";
+import { usePlayDemo } from "./usePlayDemo";
 import "./Guide.css";
 
 /**
@@ -16,7 +18,8 @@ import "./Guide.css";
  */
 export function DemoDock() {
   const { pathname } = useLocation();
-  const { open, setOpen, startTour, tour } = useGuide();
+  const { open, setOpen, startTour, tour, autoplay } = useGuide();
+  const play = usePlayDemo();
   const { count } = useJourney();
   const [more, setMore] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -38,9 +41,14 @@ export function DemoDock() {
 
   return (
     <div ref={ref} className="dock" role="region" aria-label="Demo controls">
-      {open && !tour && <DemoGuide />}
+      {autoplay ? <AutoplayBar /> : open && !tour && <DemoGuide />}
       <div className="dock__bar">
-        <span className="dock__label label">Demo</span>
+        <button type="button" className="dock__play" onClick={play} disabled={autoplay !== null}>
+          <svg width="12" height="12" viewBox="0 0 16 16" aria-hidden="true">
+            <path d="M4 2.5v11l9-5.5z" fill="currentColor" />
+          </svg>
+          Play the demo
+        </button>
         <button
           type="button"
           className={`dock__guide${open ? " dock__guide--on" : ""}`}
@@ -55,7 +63,7 @@ export function DemoDock() {
           </span>
         </button>
         <button type="button" className="dock__button" data-tour="dock-tour" disabled={!screen} onClick={() => screen && startTour(screen)}>
-          Tour this screen
+          Tour
         </button>
         <button type="button" className="dock__button dock__more" aria-expanded={more} aria-controls="dock-extra" onClick={() => setMore(!more)}>
           {more ? "Fewer controls" : "More controls"}

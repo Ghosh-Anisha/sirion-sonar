@@ -18,21 +18,75 @@
 }
 
 .topbar {
+  position: sticky;
+  top: 0;
+  z-index: 30;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: var(--space-4);
   padding: var(--space-3) var(--space-6);
-  background: var(--surface);
+  background: rgb(255 255 255 / 0.85);
+  backdrop-filter: blur(8px);
   border-bottom: var(--border);
 }
 
 .topbar__name {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
   color: var(--ink);
   font-size: var(--text-16);
   font-weight: var(--weight-semibold);
   text-decoration: none;
+}
+
+.brand-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  color: var(--surface);
+  background: linear-gradient(135deg, var(--brand), var(--decide));
+  border-radius: var(--radius-card);
+}
+
+.viewer-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding-left: var(--space-3);
+  border-left: var(--border);
+}
+
+.viewer-chip__avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  font-size: var(--text-12);
+  font-weight: var(--weight-semibold);
+  color: var(--surface);
+  background: linear-gradient(135deg, var(--find), var(--decide));
+  border-radius: var(--radius-badge);
+}
+
+.viewer-chip__text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.viewer-chip__name {
+  font-weight: var(--weight-semibold);
+}
+
+.viewer-chip__title {
+  font-size: var(--text-12);
+  color: var(--ink-2);
 }
 
 .topbar__controls {
@@ -125,7 +179,9 @@
 }
 
 .sidenav__link {
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
   padding: var(--space-2) var(--space-3);
   color: var(--ink-2);
   font-weight: var(--weight-medium);
@@ -140,8 +196,13 @@
 
 .sidenav__link.active {
   color: var(--ink);
-  background: var(--brand-soft);
+  background: var(--surface);
   font-weight: var(--weight-semibold);
+  box-shadow: inset 3px 0 0 var(--brand);
+}
+
+.sidenav__link.active svg {
+  color: var(--brand);
 }
 
 @media (max-width: 720px) {

@@ -3,6 +3,7 @@ import type { UrgencyGroup } from "../logic/alerts";
 import { CoverageStrip } from "../components/home/CoverageStrip";
 import { ItemGroup } from "../components/home/ItemGroup";
 import { NextUp } from "../components/home/NextUp";
+import { StatTiles } from "../components/home/StatTiles";
 import { EmptyState } from "../components/ui/EmptyState";
 import { RevokedNotice } from "../components/home/RevokedNotice";
 import { useOnboarding } from "../state/OnboardingContext";
@@ -35,9 +36,11 @@ export function Home() {
         Why this exists: contracts renew, overcharge and slip past their dates because nobody is told.{" "}
         <Link to="/why">Read the case</Link>
       </p>
-      <header className="home__header">
+      <header className="home__header hero">
+        <p className="hero__eyebrow label">Needs you</p>
         <h1>What needs you today</h1>
-        <p className="muted">{summary(firstName, rows.length, urgent)}</p>
+        <p className="hero__lead">{summary(firstName, rows.length, urgent)}</p>
+        {viewer.role !== "it-admin" && <StatTiles rows={rows} />}
         {!firstReadDone && (
           <p className="home__setup">
             <Link to="/welcome">Start here: connect the sources and run the first read</Link>

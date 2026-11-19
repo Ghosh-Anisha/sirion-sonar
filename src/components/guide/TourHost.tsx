@@ -10,16 +10,16 @@ const START_DELAY_MS = 600;
 /** Runs each screen's tour once on the first visit, records the visit, and shows a tour when one is started. */
 export function TourHost() {
   const { pathname } = useLocation();
-  const { tour, toursSeen, startTour, endTour, visit } = useGuide();
+  const { tour, toursSeen, startTour, endTour, visit, autoplay } = useGuide();
   const screen = tourScreenFor(pathname);
 
   useEffect(() => visit(pathname.split("/").slice(0, 2).join("/")), [pathname, visit]);
 
   useEffect(() => {
-    if (!screen || tour || toursSeen.includes(screen)) return;
+    if (!screen || tour || autoplay || toursSeen.includes(screen)) return;
     const timer = window.setTimeout(() => startTour(screen), START_DELAY_MS);
     return () => window.clearTimeout(timer);
-  }, [screen, tour, toursSeen, startTour]);
+  }, [screen, tour, autoplay, toursSeen, startTour]);
 
   return tour ? <Tour key={`${tour}-${pathname}`} steps={tours[tour]} onClose={endTour} /> : null;
 }

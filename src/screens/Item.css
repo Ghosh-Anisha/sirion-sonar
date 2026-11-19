@@ -24,10 +24,13 @@
   color: var(--ink-2);
 }
 
-/* The header carries the item's urgency as a bar down its left edge, matching its row on Home. */
+/* The header is a bright banner, with the item's urgency as a bar down its left edge, matching its row on Home. */
 .item-screen__header {
-  padding-left: var(--space-4);
+  padding: var(--space-6);
+  background: linear-gradient(120deg, var(--surface) 0%, var(--decide-soft) 100%);
+  border: var(--border);
   border-left: 4px solid var(--line);
+  border-radius: var(--radius-card);
 }
 
 .item-screen__header--urgent {

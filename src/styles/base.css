@@ -9,8 +9,19 @@ body {
   margin: 0;
 }
 
+/* Clears the sticky top bar when the page jumps to a section. */
+html {
+  scroll-padding-top: calc(var(--space-12) + var(--space-8));
+}
+
 body {
-  background: var(--bg);
+  /* Soft washes of the brand and type colors across the top of the page. */
+  background:
+    radial-gradient(900px 420px at 0% -10%, var(--brand-soft), transparent 70%),
+    radial-gradient(800px 380px at 100% -5%, var(--find-soft), transparent 70%),
+    radial-gradient(700px 320px at 55% -15%, var(--decide-soft), transparent 70%),
+    var(--bg);
+  background-repeat: no-repeat;
   color: var(--ink);
   font-family: var(--font);
   font-size: var(--text-14);
@@ -106,4 +117,46 @@ textarea:focus {
     animation: none !important;
     transition: none !important;
   }
+}
+
+/* A colored icon tile, used for features, stats and item types. */
+.tile {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-card);
+}
+
+.tile--decide { color: var(--decide); background: var(--decide-soft); }
+.tile--check { color: var(--check); background: var(--check-soft); }
+.tile--fix { color: var(--fix); background: var(--fix-soft); }
+.tile--find { color: var(--find); background: var(--find-soft); }
+.tile--urgent { color: var(--surface); background: var(--urgent); }
+.tile--brand { color: var(--brand); background: var(--brand-soft); }
+
+/* A page hero: a bright card with a soft gradient, for the top of a screen. */
+.hero {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-6);
+  background:
+    linear-gradient(120deg, var(--brand-soft) 0%, var(--decide-soft) 55%, var(--find-soft) 100%);
+  border: 1px solid var(--surface);
+  border-radius: var(--radius-card);
+}
+
+.hero__eyebrow {
+  color: var(--brand);
+}
+
+.hero__lead {
+  font-size: var(--text-16);
+}
+
+.hero .stat-tiles {
+  margin-top: var(--space-3);
 }
