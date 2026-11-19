@@ -1,8 +1,8 @@
 import type { Label } from "../../data/types";
+import type { ItemType } from "../../logic/items";
 import { Icon } from "./Icon";
 import "./Badge.css";
 
-export type ItemType = "decide" | "check" | "fix" | "find";
 export type BadgeKind = ItemType | Label | "urgent";
 
 const TEXT: Record<BadgeKind, string> = {
