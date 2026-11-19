@@ -3,7 +3,8 @@ import type { UrgencyGroup } from "../logic/alerts";
 import { CoverageStrip } from "../components/home/CoverageStrip";
 import { ItemGroup } from "../components/home/ItemGroup";
 import { EmptyState } from "../components/ui/EmptyState";
-import { useDemoState } from "../state/DemoStateContext";
+import { RevokedNotice } from "../components/home/RevokedNotice";
+import { useOnboarding } from "../state/OnboardingContext";
 import { useNeedsYou } from "../state/useNeedsYou";
 import { useViewer } from "../state/ViewerContext";
 import "./Home.css";
@@ -23,7 +24,7 @@ function summary(firstName: string, open: number, urgent: number): string {
 export function Home() {
   const rows = useNeedsYou();
   const { viewer } = useViewer();
-  const { firstReadDone } = useDemoState().state;
+  const { firstReadDone } = useOnboarding().state;
   const firstName = viewer.name.split(" ")[0];
   const urgent = rows.filter((r) => r.group === "urgent").length;
 
@@ -34,18 +35,19 @@ export function Home() {
         <p className="muted">{summary(firstName, rows.length, urgent)}</p>
         {!firstReadDone && (
           <p className="home__setup">
-            <Link to="/setup">Start here: connect the sources and run the first read</Link>
+            <Link to="/welcome">Start here: connect the sources and run the first read</Link>
           </p>
         )}
       </header>
 
+      <RevokedNotice />
       <CoverageStrip />
 
       {viewer.role === "it-admin" ? (
         <EmptyState
           title="Nothing on this list is for IT"
           body="IT admins see the connections and the access log, not contract contents."
-          action={<Link to="/setup">Open the connections</Link>}
+          action={<Link to="/access">Open the access log</Link>}
         />
       ) : rows.length === 0 ? (
         <EmptyState

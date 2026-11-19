@@ -1,7 +1,7 @@
 import type { ClassifiedLine } from "../../logic/firstRead";
 import { formatMoney } from "../../logic/format";
 import { Table, type Column } from "../ui/Table";
-import "./Setup.css";
+import "./Welcome.css";
 
 const COLUMNS: Column<ClassifiedLine>[] = [
   { key: "payee", header: "Payee as written", render: (l) => l.payee },

@@ -3,6 +3,7 @@ import type { Amendment, FactField } from "../data/types";
 import type { Draft } from "../logic/drafts";
 import { dropEditsReplacedBy, type FactEdit, type FactEdits } from "../logic/edits";
 import type { ItemAction } from "../logic/items";
+import { useOnboarding } from "./OnboardingContext";
 
 /** A message that went out, after the owner clicked send and confirmed. */
 export interface SentMessage extends Draft {
@@ -25,8 +26,6 @@ export interface DemoState {
   sent: Record<string, SentMessage>;
   factEdits: Record<string, FactEdits>;
   log: LogEntry[];
-  /** Whether the first read has run. Until it has, Home links to Setup. */
-  firstReadDone: boolean;
   /** When each item was first opened, so Measures can tell whether alerts are read. */
   opened: Record<string, string>;
 }
@@ -35,11 +34,10 @@ type Event =
   | { type: "act"; itemId: string; action: ItemAction; text: string }
   | { type: "send"; itemId: string; message: SentMessage; markDone: boolean; text: string }
   | { type: "edit-fact"; contractId: string; field: FactField; edit: FactEdit; text: string }
-  | { type: "first-read-done"; on: string; by: string }
   | { type: "open-item"; itemId: string; on: string }
   | { type: "answer-amendment"; itemId: string; amendment: Amendment; action: ItemAction; text: string };
 
-const INITIAL: DemoState = { actions: {}, sent: {}, factEdits: {}, log: [], firstReadDone: false, opened: {} };
+const INITIAL: DemoState = { actions: {}, sent: {}, factEdits: {}, log: [], opened: {} };
 
 function logged(state: DemoState, entry: Omit<LogEntry, "id">): LogEntry[] {
   return [...state.log, { ...entry, id: state.log.length + 1 }];
@@ -86,10 +84,6 @@ function reduce(state: DemoState, event: Event): DemoState {
     }
     case "open-item":
       return state.opened[event.itemId] ? state : { ...state, opened: { ...state.opened, [event.itemId]: event.on } };
-    case "first-read-done":
-      return state.firstReadDone
-        ? state
-        : { ...state, firstReadDone: true, log: logged(state, { on: event.on, by: event.by, text: "ran the first read." }) };
   }
 }
 
@@ -100,9 +94,13 @@ interface DemoStateValue {
 
 const DemoStateContext = createContext<DemoStateValue | null>(null);
 
-/** What people have done in the demo. Lives in memory only, and starts fresh on reload. */
+/**
+ * What people have done in the demo. Lives in memory only, and starts fresh on reload,
+ * except for the dates confirmed during onboarding, which are kept with the wizard.
+ */
 export function DemoStateProvider({ children }: { children: ReactNode }) {
-  const [state, dispatch] = useReducer(reduce, INITIAL);
+  const { confirmed } = useOnboarding().state;
+  const [state, dispatch] = useReducer(reduce, confirmed, (factEdits) => ({ ...INITIAL, factEdits }));
   const value = useMemo(() => ({ state, dispatch }), [state]);
   return <DemoStateContext.Provider value={value}>{children}</DemoStateContext.Provider>;
 }

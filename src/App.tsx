@@ -1,5 +1,6 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import { AppShell } from "./components/layout/AppShell";
+import { AccessLog } from "./screens/AccessLog";
 import { Contract } from "./screens/Contract";
 import { Contracts } from "./screens/Contracts";
 import { Email } from "./screens/Email";
@@ -7,38 +8,45 @@ import { Home } from "./screens/Home";
 import { Item } from "./screens/Item";
 import { Measures } from "./screens/Measures";
 import { Privacy } from "./screens/Privacy";
-import { Setup } from "./screens/Setup";
 import { Sirion } from "./screens/Sirion";
 import { Styleguide } from "./screens/Styleguide";
 import { Versions } from "./screens/Versions";
+import { Welcome } from "./screens/Welcome";
 import { ClockProvider } from "./state/ClockContext";
 import { DemoStateProvider } from "./state/DemoStateContext";
+import { OnboardingProvider } from "./state/OnboardingContext";
 import { ViewerProvider } from "./state/ViewerContext";
 
 export function App() {
   return (
     <ClockProvider>
-      <DemoStateProvider>
-        <ViewerProvider>
-          <Routes>
-            <Route element={<AppShell />}>
-              <Route index element={<Navigate to="/home" replace />} />
-              <Route path="home" element={<Home />} />
-              <Route path="setup" element={<Setup />} />
-              <Route path="contracts" element={<Contracts />} />
-              <Route path="item/:id" element={<Item />} />
-              <Route path="contract/:id" element={<Contract />} />
-              <Route path="versions/:id" element={<Versions />} />
-              <Route path="email" element={<Email />} />
-              <Route path="measures" element={<Measures />} />
-              <Route path="privacy" element={<Privacy />} />
-              <Route path="sirion" element={<Sirion />} />
-              <Route path="styleguide" element={<Styleguide />} />
-              <Route path="*" element={<Navigate to="/home" replace />} />
-            </Route>
-          </Routes>
-        </ViewerProvider>
-      </DemoStateProvider>
+      <OnboardingProvider>
+        <DemoStateProvider>
+          <ViewerProvider>
+            <Routes>
+              <Route element={<AppShell nav={false} />}>
+                <Route index element={<Navigate to="/welcome" replace />} />
+                <Route path="welcome" element={<Welcome />} />
+                <Route path="setup" element={<Navigate to="/welcome" replace />} />
+              </Route>
+              <Route element={<AppShell />}>
+                <Route path="home" element={<Home />} />
+                <Route path="access" element={<AccessLog />} />
+                <Route path="contracts" element={<Contracts />} />
+                <Route path="item/:id" element={<Item />} />
+                <Route path="contract/:id" element={<Contract />} />
+                <Route path="versions/:id" element={<Versions />} />
+                <Route path="email" element={<Email />} />
+                <Route path="measures" element={<Measures />} />
+                <Route path="privacy" element={<Privacy />} />
+                <Route path="sirion" element={<Sirion />} />
+                <Route path="styleguide" element={<Styleguide />} />
+                <Route path="*" element={<Navigate to="/home" replace />} />
+              </Route>
+            </Routes>
+          </ViewerProvider>
+        </DemoStateProvider>
+      </OnboardingProvider>
     </ClockProvider>
   );
 }

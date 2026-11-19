@@ -4,7 +4,8 @@ import { SideNav } from "./SideNav";
 import { TopBar } from "./TopBar";
 import "./AppShell.css";
 
-export function AppShell() {
+/** The page frame. The onboarding wizard has no side nav, so it reads as one flow. */
+export function AppShell({ nav = true }: { nav?: boolean }) {
   return (
     <>
       <button type="button" className="skip-link" onClick={() => document.getElementById("main")?.focus()}>
@@ -12,8 +13,8 @@ export function AppShell() {
       </button>
       <TopBar />
       <SampleBanner />
-      <div className="shell">
-        <SideNav />
+      <div className={nav ? "shell" : "shell shell--single"}>
+        {nav && <SideNav />}
         <main id="main" className="shell__main" tabIndex={-1}>
           <Outlet />
         </main>

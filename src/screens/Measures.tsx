@@ -1,18 +1,20 @@
 import { useMemo } from "react";
 import { DEMO_START } from "../data/demo";
 import { payments } from "../data/payments";
-import { vendors } from "../data/vendors";
 import { MetricCard } from "../components/measures/MetricCard";
 import { NorthStarCard } from "../components/measures/NorthStarCard";
 import { SignalTable } from "../components/measures/SignalTable";
 import { measures } from "../logic/measures";
 import { useDemoState } from "../state/DemoStateContext";
 import { useLedger } from "../state/useLedger";
+import { useOnboarding } from "../state/OnboardingContext";
 import { PROCUREMENT_LEAD } from "../state/ViewerContext";
 import "../components/measures/Measures.css";
 
 export function Measures() {
-  const { items, contracts, paid, today } = useLedger();
+  const { items, contracts, paid, today, vendors } = useLedger();
+  const { approval, sources } = useOnboarding().state;
+  const approved = approval.status === "approved" && approval.scope === "full" && Object.values(sources).every((s) => s.status !== "revoked");
   const { state } = useDemoState();
   const m = useMemo(
     () =>
@@ -28,9 +30,9 @@ export function Measures() {
         factEdits: state.factEdits,
         opened: state.opened,
         procurementLeadId: PROCUREMENT_LEAD.id,
-        connectionsApproved: true,
+        connectionsApproved: approved,
       }),
-    [today, items, contracts, paid, state],
+    [today, items, contracts, paid, state, vendors, approved],
   );
 
   return (

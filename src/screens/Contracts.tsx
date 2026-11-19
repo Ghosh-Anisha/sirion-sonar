@@ -6,11 +6,10 @@ import { contractDates } from "../logic/dates";
 import { formatDate } from "../logic/format";
 import { useLedger } from "../state/useLedger";
 import { personName, vendorName } from "../state/useNeedsYou";
-import { vendors } from "../data/vendors";
 
 /** Every contract on file, with its next deadline and how far to trust it. */
 export function Contracts() {
-  const { contracts, paid, today } = useLedger();
+  const { contracts, paid, today, vendors } = useLedger();
   const datesOf = (c: Contract) => contractDates(c.facts, today, (paid.get(c.vendorId) ?? []).map((p) => p.date));
   const ownerOf = (c: Contract) => vendors.find((v) => v.id === c.vendorId)?.ownerId ?? null;
 

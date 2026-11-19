@@ -11,3 +11,13 @@
 .home__setup {
   font-size: var(--text-12);
 }
+
+.revoked-notice {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-3) var(--space-4);
+  background: var(--fix-soft);
+  border: 1px solid var(--urgent);
+  border-radius: var(--radius-card);
+}

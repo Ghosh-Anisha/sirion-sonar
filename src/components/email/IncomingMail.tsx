@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { emails } from "../../data/emails";
 import { people } from "../../data/people";
-import { vendors } from "../../data/vendors";
 import { formatDate } from "../../logic/format";
 import { traceEmail } from "../../logic/inbound";
 import { useLedger } from "../../state/useLedger";
@@ -19,7 +18,7 @@ export function IncomingMail() {
 
   const trace = email
     ? traceEmail(email, {
-        vendors,
+        vendors: ledger.vendors,
         contracts: ledger.contracts,
         originals: ledger.originals,
         paid: ledger.paid,

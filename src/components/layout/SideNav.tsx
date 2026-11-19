@@ -7,6 +7,7 @@ const LINKS = [
   { to: "/measures", text: "Measures" },
   { to: "/privacy", text: "Privacy" },
   { to: "/sirion", text: "Sirion" },
+  { to: "/access", text: "Access log" },
 ];
 
 export function SideNav() {

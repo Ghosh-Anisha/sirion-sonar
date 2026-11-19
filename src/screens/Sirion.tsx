@@ -2,7 +2,6 @@ import { useCallback, useState } from "react";
 import { Link } from "react-router-dom";
 import { people } from "../data/people";
 import { sirionLayers } from "../data/sirionMap";
-import { vendors } from "../data/vendors";
 import { Badge } from "../components/ui/Badge";
 import { Button } from "../components/ui/Button";
 import { Table, type Column } from "../components/ui/Table";
@@ -33,7 +32,7 @@ function download(fileName: string, text: string) {
 }
 
 export function Sirion() {
-  const { contracts, paid, today } = useLedger();
+  const { contracts, paid, today, vendors } = useLedger();
   const [toast, setToast] = useState<string | null>(null);
   const closeToast = useCallback(() => setToast(null), []);
   const rows = ledgerRows(contracts, vendors, people, paid, today);

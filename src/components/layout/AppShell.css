@@ -89,6 +89,11 @@
   padding: var(--space-8) var(--space-6);
 }
 
+.shell--single {
+  grid-template-columns: minmax(0, 1fr);
+  max-width: 880px;
+}
+
 .shell__main:focus {
   outline: none;
 }
