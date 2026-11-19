@@ -1,0 +1,45 @@
+.fact-table__selected {
+  font-weight: var(--weight-semibold);
+  color: var(--brand);
+}
+
+.fact-controls__form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.fact-controls__form input {
+  min-height: 32px;
+  max-width: 160px;
+  padding: var(--space-1) var(--space-2);
+  font: inherit;
+  color: var(--ink);
+  background: var(--surface);
+  border: var(--border);
+  border-radius: var(--radius-button);
+}
+
+.fact-controls__form input[aria-invalid="true"] {
+  border-color: var(--urgent);
+}
+
+.fact-controls__error {
+  flex-basis: 100%;
+  font-size: var(--text-12);
+  color: var(--urgent);
+}
+
+.fact-table__field {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.fact-table__field .button--quiet {
+  min-height: 0;
+  padding: 0;
+  font-size: var(--text-12);
+  white-space: nowrap;
+}

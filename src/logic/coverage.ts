@@ -1,6 +1,5 @@
 import type { Contract, Payment, Vendor } from "../data/types";
-import { supplierPayments } from "./classify";
-import { paymentsByVendor } from "./match";
+import { paidByVendor } from "./match";
 
 export interface Coverage {
   /** Suppliers we have paid. */
@@ -18,7 +17,7 @@ export interface Coverage {
  * at least one of its contracts has no gap, and partial when every contract it has is missing a part.
  */
 export function coverage(vendors: Vendor[], contracts: Contract[], payments: Payment[], today: string): Coverage {
-  const paid = paymentsByVendor(supplierPayments(payments.filter((p) => p.date <= today)), vendors);
+  const paid = paidByVendor(payments, vendors, today);
   let full = 0;
   let partial = 0;
   let none = 0;

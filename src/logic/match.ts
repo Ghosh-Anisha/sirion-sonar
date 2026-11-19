@@ -1,4 +1,5 @@
 import type { Payment, Vendor } from "../data/types";
+import { supplierPayments } from "./classify";
 
 export type NameMatch = "same" | "unsure" | "different";
 
@@ -74,6 +75,11 @@ export function paymentsByVendor(payments: Payment[], vendors: Vendor[]): Map<st
     byVendor.set(found.vendor.id, [...(byVendor.get(found.vendor.id) ?? []), payment]);
   }
   return byVendor;
+}
+
+/** Supplier payments made by today, grouped by the vendor they surely belong to. */
+export function paidByVendor(payments: Payment[], vendors: Vendor[], today: string): Map<string, Payment[]> {
+  return paymentsByVendor(supplierPayments(payments.filter((p) => p.date <= today)), vendors);
 }
 
 export interface NameGroups {

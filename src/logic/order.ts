@@ -1,8 +1,7 @@
 import type { Contract, Label, Payment, Vendor } from "../data/types";
-import { supplierPayments } from "./classify";
 import { contractDates } from "./dates";
 import type { Item, ItemType } from "./items";
-import { paymentsByVendor } from "./match";
+import { paidByVendor } from "./match";
 
 export interface ReviewEntry {
   contractId: string;
@@ -29,7 +28,7 @@ export function compareReview(a: ReviewEntry, b: ReviewEntry): number {
 
 /** Contracts whose deadline nobody has confirmed yet, riskiest first. This is the owners' confirmation queue. */
 export function reviewQueue(contracts: Contract[], payments: Payment[], vendors: Vendor[], today: string): ReviewEntry[] {
-  const paid = paymentsByVendor(supplierPayments(payments.filter((p) => p.date <= today)), vendors);
+  const paid = paidByVendor(payments, vendors, today);
   return contracts
     .map((c) => {
       const dates = contractDates(c.facts, today, (paid.get(c.vendorId) ?? []).map((p) => p.date));

@@ -3,15 +3,14 @@ import { applyAmendment } from "./amend";
 import { amendmentItemId, emailItems } from "./arrivals";
 import { addDays, daysBetween, laterOf } from "./calendar";
 import type { RateTerm } from "./checks";
-import { supplierPayments } from "./classify";
 import { contractDates, type ContractDates } from "./dates";
-import { paymentsByVendor } from "./match";
+import { paidByVendor } from "./match";
 
 export type ItemType = "decide" | "check" | "fix" | "find";
 /** Why the item exists: a date is close, something arrived, something is missing, or a term changed. */
 export type Reason = "time" | "arrival" | "absence" | "change";
 export type ItemStatus = "open" | "done";
-export type ActionKind = "renew" | "renegotiate" | "end" | "sent" | "accepted" | "rejected" | "resolved";
+export type ActionKind = "renew" | "renegotiate" | "end" | "sent" | "accepted" | "rejected" | "flagged" | "resolved";
 
 /** What a person did about an item. Kept in app state, keyed by item id. */
 export interface ItemAction {
@@ -63,10 +62,7 @@ export type Draft = Omit<Item, "status" | "action" | "ownerId">;
 export function buildItems(input: ItemInput): Item[] {
   const { today, vendors, actions } = input;
   const contracts = withAcceptedAmendments(input.contracts, input.emails, actions);
-  const paid = paymentsByVendor(
-    supplierPayments(input.payments.filter((p) => p.date <= today)),
-    vendors,
-  );
+  const paid = paidByVendor(input.payments, vendors, today);
   const datesOf = (c: Contract) => contractDates(c.facts, today, (paid.get(c.vendorId) ?? []).map((p) => p.date));
   const arrived = input.emails.filter((e) => e.receivedOn <= today);
 
@@ -85,7 +81,8 @@ export function buildItems(input: ItemInput): Item[] {
   }));
 }
 
-function withAcceptedAmendments(contracts: Contract[], emails: Email[], actions: Record<string, ItemAction>): Contract[] {
+/** The contracts as they now read, with every accepted amendment applied. */
+export function withAcceptedAmendments(contracts: Contract[], emails: Email[], actions: Record<string, ItemAction>): Contract[] {
   return contracts.map((contract) =>
     emails.reduce((current, email) => {
       const amendment = email.amendment;
@@ -137,4 +134,14 @@ function findItems(vendors: Vendor[], contracts: Contract[], paid: Map<string, P
       },
     ];
   });
+}
+
+/** What an item points at: its contract, the email it came from, and the payments behind it. */
+export function itemRefs(item: Item): { contractId?: string; emailId?: string; paymentIds: string[] } {
+  const d = item.detail;
+  return {
+    contractId: "contractId" in d ? d.contractId : undefined,
+    emailId: "emailId" in d ? d.emailId : undefined,
+    paymentIds: d.kind === "no-contract" ? d.paymentIds : [],
+  };
 }

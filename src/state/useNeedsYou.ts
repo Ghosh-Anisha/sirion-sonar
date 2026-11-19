@@ -1,17 +1,12 @@
 import { useMemo } from "react";
-import { contracts } from "../data/contracts";
-import { DEMO_START } from "../data/demo";
-import { emails } from "../data/emails";
-import { payments } from "../data/payments";
 import { people } from "../data/people";
 import { vendors } from "../data/vendors";
 import { routeItem, urgencyGroup, type Routing, type UrgencyGroup } from "../logic/alerts";
-import type { Item, ItemAction } from "../logic/items";
-import { buildItems } from "../logic/items";
+import type { Item } from "../logic/items";
 import { orderItems } from "../logic/order";
 import { itemSentence } from "../logic/sentences";
 import { canSee } from "../logic/visibility";
-import { useClock } from "./ClockContext";
+import { useLedger } from "./useLedger";
 import { PROCUREMENT_LEAD, useViewer } from "./ViewerContext";
 
 export interface NeedsYouRow {
@@ -22,29 +17,30 @@ export interface NeedsYouRow {
   ownerName: string | null;
 }
 
-/** Nothing has been decided yet. Actions arrive with the Item screen. */
-const NO_ACTIONS: Record<string, ItemAction> = {};
+export const vendorName = new Map(vendors.map((v) => [v.id, v.name]));
+export const personName = new Map(people.map((p) => [p.id, p.name]));
 
-const vendorName = new Map(vendors.map((v) => [v.id, v.name]));
-const personName = new Map(people.map((p) => [p.id, p.name]));
+/** Everything an item row needs, for one item on one day. */
+export function toRow(item: Item, today: string): NeedsYouRow {
+  const routing = routeItem(item, today, PROCUREMENT_LEAD.id);
+  return {
+    item,
+    routing,
+    group: urgencyGroup(routing),
+    sentence: itemSentence(item, vendorName.get(item.vendorId) ?? item.vendorId, today),
+    ownerName: item.ownerId ? (personName.get(item.ownerId) ?? null) : null,
+  };
+}
 
 /** The open items the current viewer should see today, in list order. */
 export function useNeedsYou(): NeedsYouRow[] {
-  const { today } = useClock();
+  const { items, today } = useLedger();
   const { viewer } = useViewer();
-  return useMemo(() => {
-    const items = buildItems({ today, firstReadOn: DEMO_START, vendors, contracts, payments, emails, actions: NO_ACTIONS });
-    return orderItems(items)
-      .filter((item) => item.status === "open" && canSee(item, viewer))
-      .map((item) => {
-        const routing = routeItem(item, today, PROCUREMENT_LEAD.id);
-        return {
-          item,
-          routing,
-          group: urgencyGroup(routing),
-          sentence: itemSentence(item, vendorName.get(item.vendorId) ?? item.vendorId, today),
-          ownerName: item.ownerId ? (personName.get(item.ownerId) ?? null) : null,
-        };
-      });
-  }, [today, viewer]);
+  return useMemo(
+    () =>
+      orderItems(items)
+        .filter((item) => item.status === "open" && canSee(item, viewer))
+        .map((item) => toRow(item, today)),
+    [items, today, viewer],
+  );
 }
