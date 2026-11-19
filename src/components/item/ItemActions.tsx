@@ -28,7 +28,12 @@ export function ItemActions({ item, onAct }: ItemActionsProps) {
     <div className="item-actions">
       <div className="row">
         {options.map((o, i) => (
-          <Button key={o.kind} variant={i === 0 && item.type === "decide" ? "primary" : "secondary"} onClick={() => onAct(o.kind)}>
+          <Button
+            key={o.kind}
+            variant={i === 0 && item.type === "decide" ? "primary" : "secondary"}
+            onClick={() => onAct(o.kind)}
+            data-nudge={i === 0 ? `act:${item.id}` : undefined}
+          >
             {o.label}
           </Button>
         ))}

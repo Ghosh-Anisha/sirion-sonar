@@ -10,7 +10,7 @@ interface ConflictTableProps {
 /** The conflict table. Picking a conflict lights up its two groups on the map and shows what Sonar does. */
 export function ConflictTable({ selected, onSelect }: ConflictTableProps) {
   return (
-    <div className="table-wrap">
+    <div className="table-wrap" data-tour="conflict-table">
       <table className="table conflict-table">
         <caption className="visually-hidden">Where the stakeholders conflict</caption>
         <thead>

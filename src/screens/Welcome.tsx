@@ -67,7 +67,7 @@ const admin = people.find((p) => p.id === IT_ADMIN_ID)!;
 
 /** The onboarding wizard. Its state is kept in local storage, so a refresh lands back on the same step. */
 export function Welcome() {
-  const { state, dispatch, resetDemo } = useOnboarding();
+  const { state, dispatch } = useOnboarding();
   const { viewer, setViewerId } = useViewer();
   const actor = useActor();
   const navigate = useNavigate();
@@ -118,12 +118,9 @@ export function Welcome() {
       <div className="wizard__top">
         <WizardProgress step={state.step} titles={TITLES} />
         <div className="row wizard__links">
-          <Link to="/home" onClick={skip}>
+          <Link to="/home" onClick={skip} data-tour="wizard-skip">
             Skip to demo
           </Link>
-          <Button variant="quiet" onClick={resetDemo}>
-            Start over
-          </Button>
         </div>
       </div>
 
@@ -143,7 +140,7 @@ export function Welcome() {
         </Button>
         <div className="wizard__next">
           {blocker && <p className="muted">{blocker}</p>}
-          <Button variant="primary" onClick={next} disabled={blocker !== null}>
+          <Button variant="primary" onClick={next} disabled={blocker !== null} data-nudge="wizard-next">
             {step.next ?? "Next"}
           </Button>
         </div>

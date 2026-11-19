@@ -41,7 +41,7 @@ export function Privacy() {
       </p>
 
       <div className="panes">
-        <section className="pane" aria-labelledby="pane-original">
+        <section className="pane" aria-labelledby="pane-original" data-tour="privacy-original">
           <p className="pane__step">1. In our cloud</p>
           <h2 id="pane-original">The original text</h2>
           <p className="label" style={{ textTransform: "none", letterSpacing: 0 }}>
@@ -50,7 +50,7 @@ export function Privacy() {
           <p className="token-text">{privacyDocument.text}</p>
         </section>
 
-        <section className="pane" aria-labelledby="pane-masked">
+        <section className="pane" aria-labelledby="pane-masked" data-tour="privacy-masked">
           <p className="pane__step">2. What the model would see</p>
           <h2 id="pane-masked">The masked text</h2>
           <TokenText text={masked.text} tokens={masked.tokens} />
@@ -64,7 +64,7 @@ export function Privacy() {
           <TokenText text={modelReply} tokens={masked.tokens} />
         </section>
 
-        <section className="pane" aria-labelledby="pane-restored">
+        <section className="pane" aria-labelledby="pane-restored" data-tour="privacy-restored">
           <p className="pane__step">3. Back in our cloud</p>
           <h2 id="pane-restored">The restored result</h2>
           <TokenText text={modelReply} tokens={masked.tokens} restoreTokens />
@@ -72,7 +72,7 @@ export function Privacy() {
         </section>
       </div>
 
-      <Card title="Dates and amounts are computed in code">
+      <Card tour="privacy-computed" title="Dates and amounts are computed in code">
         <p className="muted" style={{ marginBottom: "var(--space-4)" }}>
           The model never supplies a date or an amount. It returns the sentence, and code works the numbers out from the
           facts. For this contract, today:

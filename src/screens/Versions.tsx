@@ -70,7 +70,7 @@ export function Versions() {
 
           return (
             <section key={email.id} className="stack" aria-label={amendment.title}>
-              <Card title={`${amendment.title}, signed ${formatDate(amendment.signedOn)}`} actions={<ThinkingBadge at="versions.amendment" />}>
+              <Card tour="versions-amendment" title={`${amendment.title}, signed ${formatDate(amendment.signedOn)}`} actions={<ThinkingBadge at="versions.amendment" />}>
                 <div className="stack">
                   <div className="row">
                     <Badge kind="check" />
@@ -80,7 +80,7 @@ export function Versions() {
                     {item && <Link to={`/item/${encodeURIComponent(item.id)}`}>Open the item</Link>}
                   </div>
                   {dates && <DateChanges before={dates.before} after={dates.after} />}
-                  <div className="versions__answer">
+                  <div className="versions__answer" data-tour="versions-answer">
                     {answer ? (
                       <p className={`versions__answered versions__answered--${answer.kind}`} role="status">
                         {personName.get(answer.by)} {answer.kind} it on <span className="num">{formatDate(answer.on)}</span>.
@@ -88,7 +88,7 @@ export function Versions() {
                       </p>
                     ) : (
                       <div className="row">
-                        <Button variant="primary" onClick={() => respond("accepted")}>
+                        <Button variant="primary" onClick={() => respond("accepted")} data-nudge="accept-amendment">
                           Accept the amendment
                         </Button>
                         <Button variant="secondary" onClick={() => respond("rejected")}>
@@ -116,7 +116,7 @@ export function Versions() {
         })
       )}
 
-      <Card title="Version history">
+      <Card tour="versions-history" title="Version history">
         <ol className="version-list">
           <li>
             <span className="label">Version 1</span>

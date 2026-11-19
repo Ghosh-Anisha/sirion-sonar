@@ -14,7 +14,7 @@ export function CoverageStrip() {
   const withRecord = c.full + c.partial;
 
   return (
-    <section className="coverage" aria-labelledby="coverage-title">
+    <section className="coverage" aria-labelledby="coverage-title" data-tour="coverage">
       <div className="coverage__text">
         <div className="row">
           <h2 id="coverage-title" className="label">

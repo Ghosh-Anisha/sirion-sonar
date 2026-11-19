@@ -63,7 +63,7 @@ export function FactControls({ fact, onConfirm, onCorrect }: FactControlsProps) 
   return (
     <div className="row">
       {fact.label !== "confirmed" && fact.value !== null && (
-        <Button variant="secondary" onClick={onConfirm} aria-label={`Confirm ${name}`}>
+        <Button variant="secondary" onClick={onConfirm} aria-label={`Confirm ${name}`} data-nudge="confirm-fact">
           Confirm
         </Button>
       )}

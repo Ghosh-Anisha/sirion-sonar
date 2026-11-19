@@ -31,7 +31,7 @@ export function Stakeholders() {
         <h2 id="map-title">Power and interest</h2>
         <div className="stakeholders">
           <StakeholderMap selected={group?.id ?? null} highlighted={highlighted} onSelect={pickGroup} />
-          <div className="stakeholders__side" aria-live="polite">
+          <div className="stakeholders__side" aria-live="polite" data-tour="stakeholders-side">
             {group ? (
               <div className="case-card">
                 <p className="label">What they want</p>

@@ -6,7 +6,7 @@ import "./Case.css";
 /** A real 2x2: cost down the side, how visible the problem is along the top. */
 export function LatentMatrix() {
   return (
-    <figure className="matrix" aria-labelledby="matrix-caption">
+    <figure className="matrix" data-tour="matrix" aria-labelledby="matrix-caption">
       <figcaption id="matrix-caption" className="visually-hidden">
         Latent versus blatant: five problems in two quadrants
       </figcaption>

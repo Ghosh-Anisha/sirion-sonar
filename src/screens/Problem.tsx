@@ -21,7 +21,7 @@ export function Problem() {
             ))}
           </ul>
         </section>
-        <section className="case-card" aria-labelledby="costs-title">
+        <section className="case-card" aria-labelledby="costs-title" data-tour="problem-costs">
           <h2 id="costs-title">What it costs</h2>
           <ul className="case-list">
             {problem.costs.map((c) => (
@@ -34,13 +34,13 @@ export function Problem() {
         </section>
       </div>
 
-      <section className="case-card case-card--assumption" aria-labelledby="assumption-title">
+      <section className="case-card case-card--assumption" aria-labelledby="assumption-title" data-tour="problem-assumption">
         <p className="label">What we assume</p>
         <h2 id="assumption-title">{problem.assumption.text}</h2>
         <PlaysOutLink to={problem.assumption.playsOut} />
       </section>
 
-      <section className="stack" aria-labelledby="evidence-title">
+      <section className="stack" aria-labelledby="evidence-title" data-tour="problem-evidence">
         <h2 id="evidence-title">What evidence we have, and what we do not</h2>
         <div className="case-columns">
           <div className="case-card">

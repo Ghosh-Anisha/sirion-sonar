@@ -85,12 +85,12 @@ export function Item() {
       <ItemHeader row={row} vendorName={vendor.name} />
 
       <div className="item-screen__grid">
-        <Card title="Why this is here" actions={<ThinkingBadge at="item.evidence" />}>
+        <Card tour="item-why" title="Why this is here" actions={<ThinkingBadge at="item.evidence" />}>
           <EvidenceList evidence={itemEvidence(item, contract)} />
           {refs.paymentIds.length > 0 && <PaymentsTable lines={payments.filter((p) => refs.paymentIds.includes(p.id))} />}
         </Card>
 
-        <Card title="What to do" actions={<ThinkingBadge at="item.draft" />}>
+        <Card tour="item-actions" title="What to do" actions={<ThinkingBadge at="item.draft" />}>
           <div className="stack">
             <ItemActions item={item} onAct={act} />
             {item.type === "decide" && !decision && (
@@ -110,7 +110,7 @@ export function Item() {
         </Card>
       </div>
 
-      <History entries={state.log.filter((e) => e.itemId === item.id)} empty="Nobody has acted on this yet." />
+      <History tour="item-history" entries={state.log.filter((e) => e.itemId === item.id)} empty="Nobody has acted on this yet." />
       {toast && <Toast message={toast} onClose={closeToast} />}
     </div>
   );

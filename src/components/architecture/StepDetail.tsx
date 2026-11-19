@@ -8,7 +8,7 @@ function tables(names: string[]): string {
 /** One step of the pipeline in full. */
 export function StepDetail({ step }: { step: PipelineStep }) {
   return (
-    <section className="step-detail" aria-live="polite" aria-labelledby="step-detail-title">
+    <section className="step-detail" data-tour="step-detail" aria-live="polite" aria-labelledby="step-detail-title">
       <p className="label">Step {step.number} of 8</p>
       <h3 id="step-detail-title">{step.name}</h3>
       <p>{step.job}</p>

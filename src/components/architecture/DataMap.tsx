@@ -5,7 +5,7 @@ import "./Architecture.css";
 export function DataMap() {
   const d = dataPlaces;
   return (
-    <div className="data-map">
+    <div className="data-map" data-tour="data-map">
       <div className="data-map__zone data-map__zone--customer">
         <p className="data-map__zone-name">{d.customer.name}</p>
         <p>{d.customer.note}</p>

@@ -19,14 +19,14 @@ export function AccessLog() {
 
       <section className="stack" aria-labelledby="sources-title">
         <h2 id="sources-title">Sources</h2>
-        <div className="access__sources">
+        <div className="access__sources" data-tour="access-sources">
           {sources.map((s) => (
             <SourceAccess key={s.id} source={s} />
           ))}
         </div>
       </section>
 
-      <section className="stack" aria-labelledby="log-title">
+      <section className="stack" aria-labelledby="log-title" data-tour="access-log">
         <h2 id="log-title">
           The log, <span className="num">{log.length}</span> {log.length === 1 ? "entry" : "entries"}
         </h2>

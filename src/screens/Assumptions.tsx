@@ -11,9 +11,9 @@ export function Assumptions() {
         <h1>Assumptions</h1>
         <p className="muted">What the case takes as true without proof, and where each one shows up in the prototype.</p>
       </header>
-      <ol className="assumptions">
+      <ol className="assumptions" data-tour="assumptions-list">
         {assumptions.map((a) => (
-          <li key={a.text} className={`assumption${a.leastSettled ? " assumption--open" : ""}`}>
+          <li key={a.text} className={`assumption${a.leastSettled ? " assumption--open" : ""}`} data-tour={a.leastSettled ? "assumption-open" : undefined}>
             {a.leastSettled && <p className="assumption__flag label">Least settled</p>}
             <p>{a.text}</p>
             <PlaysOutLink to={a.playsOut} />

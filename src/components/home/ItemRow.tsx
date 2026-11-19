@@ -5,6 +5,7 @@ import { PROCUREMENT_LEAD } from "../../state/ViewerContext";
 import type { NeedsYouRow } from "../../state/useNeedsYou";
 import { Badge } from "../ui/Badge";
 import { ButtonLink } from "../ui/ButtonLink";
+import { WhyLink } from "../guide/WhyLink";
 import { ThinkingBadge } from "../thinking/ThinkingBadge";
 import "./ItemRow.css";
 
@@ -15,8 +16,8 @@ export function ItemRow({ row }: { row: NeedsYouRow }) {
   const leadName = PROCUREMENT_LEAD.name;
 
   return (
-    <li className="item-row">
-      <div className="item-row__badges">
+    <li className="item-row" data-tour="item-row">
+      <div className="item-row__badges" data-tour="item-badges">
         <Badge kind={item.type} />
         {routing.urgent && <Badge kind="urgent" />}
         <ThinkingBadge at={`home.${item.type}`} />
@@ -30,11 +31,12 @@ export function ItemRow({ row }: { row: NeedsYouRow }) {
           <span>
             Due <span className="num">{formatDate(item.dueDate)}</span>
           </span>
-          <span>{ownerName ?? `No owner, sent to ${leadName}`}</span>
-          {routing.escalated && <span className="item-row__escalated">No action yet, also sent to {leadName}</span>}
+          <span data-tour="item-owner">{ownerName ?? `No owner, sent to ${leadName}`}</span>
+          <WhyLink at={`home.${item.type}`} />
+          {routing.escalated && <span className="item-row__escalated" data-nudge="escalated">No action yet, also sent to {leadName}</span>}
         </p>
       </div>
-      <ButtonLink to={href} variant="primary" className="item-row__action" aria-label={`${actionLabel(item)}: ${sentence}`}>
+      <ButtonLink to={href} variant="primary" className="item-row__action" data-nudge={`item:${item.id}`} aria-label={`${actionLabel(item)}: ${sentence}`}>
         {actionLabel(item)}
       </ButtonLink>
     </li>

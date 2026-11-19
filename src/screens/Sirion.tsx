@@ -54,7 +54,7 @@ export function Sirion() {
         </p>
       </header>
 
-      <section className="stack" aria-labelledby="ledger-title">
+      <section className="stack" aria-labelledby="ledger-title" data-tour="sirion-ledger">
         <div className="sirion__ledger-head">
           <div>
             <h2 id="ledger-title">The ledger</h2>
@@ -63,7 +63,7 @@ export function Sirion() {
               confirmed by an owner. The rest carry their label, so nobody mistakes a guess for a fact.
             </p>
           </div>
-          <Button variant="primary" onClick={exportCsv}>
+          <Button variant="primary" onClick={exportCsv} data-tour="export-csv" data-nudge="export-csv">
             Export CSV
           </Button>
         </div>
@@ -72,7 +72,7 @@ export function Sirion() {
 
       <section className="stack" aria-labelledby="map-title">
         <h2 id="map-title">Where Sirion picks up after intake</h2>
-        <ul className="sirion__map">
+        <ul className="sirion__map" data-tour="sirion-map">
           {sirionLayers.map((layer) => (
             <li key={layer.name} className="sirion__layer">
               <h3>{layer.name}</h3>

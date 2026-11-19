@@ -5,7 +5,7 @@ import "./Thinking.css";
 export function ThinkingToggle() {
   const { on, setOn } = useThinking();
   return (
-    <button type="button" role="switch" aria-checked={on} className="thinking-toggle" onClick={() => setOn(!on)}>
+    <button type="button" data-tour="thinking-toggle" role="switch" aria-checked={on} className="thinking-toggle" onClick={() => setOn(!on)}>
       <span className="thinking-toggle__track" aria-hidden="true">
         <span className="thinking-toggle__thumb" />
       </span>

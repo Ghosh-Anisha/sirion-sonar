@@ -18,7 +18,7 @@ const TAG: Record<ClauseChange["status"], string> = {
 /** The original and the amendment side by side, clause by clause, with the amended side as a redline. */
 export function ClauseCompare({ changes, originalTitle, amendmentTitle }: ClauseCompareProps) {
   return (
-    <div className="compare" role="table" aria-label={`${originalTitle} compared with ${amendmentTitle}`}>
+    <div data-tour="versions-redline" className="compare" role="table" aria-label={`${originalTitle} compared with ${amendmentTitle}`}>
       <div className="compare__row compare__head" role="row">
         <span role="columnheader">{originalTitle}</span>
         <span role="columnheader">{amendmentTitle}</span>

@@ -5,9 +5,9 @@ import { Card } from "../ui/Card";
 import "./History.css";
 
 /** What people have done here, oldest first. */
-export function History({ entries, empty }: { entries: LogEntry[]; empty: string }) {
+export function History({ entries, empty, tour }: { entries: LogEntry[]; empty: string; tour?: string }) {
   return (
-    <Card title="History">
+    <Card title="History" tour={tour}>
       {entries.length === 0 ? (
         <p className="muted">{empty}</p>
       ) : (

@@ -94,7 +94,7 @@ export function StepFirstRead() {
               Skip to the end
             </Button>
           ) : (
-            <Button variant="primary" onClick={start}>
+            <Button variant="primary" onClick={start} data-nudge="run-first-read">
               {stage === 0 ? "Run the first read" : "Carry on"}
             </Button>
           ))}

@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { TopBarActions } from "../guide/TopBarActions";
 import { ThinkingToggle } from "../thinking/ThinkingToggle";
 import { ClockControl } from "./ClockControl";
 import { ViewAsSwitcher } from "./ViewAsSwitcher";
@@ -10,6 +11,7 @@ export function TopBar() {
         Sirion Sonar
       </Link>
       <div className="topbar__controls">
+        <TopBarActions />
         <ThinkingToggle />
         <ViewAsSwitcher />
         <ClockControl />

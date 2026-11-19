@@ -1,8 +1,11 @@
 import { COMPANY_NAME } from "../../data/drafts";
+import { useGuide } from "../../state/GuideContext";
+import { Button } from "../ui/Button";
 import "./Welcome.css";
 
 /** Step 1: what Sonar does, in three lines, and what this demo is. */
 export function StepWelcome() {
+  const { setOpen, startTour } = useGuide();
   return (
     <div className="stack">
       <ol className="welcome-lines">
@@ -18,6 +21,18 @@ export function StepWelcome() {
           above the agreed rate, a supplier paid with no contract.
         </li>
       </ol>
+      <div>
+        <Button
+          variant="primary"
+          data-tour="walkthrough"
+          onClick={() => {
+            setOpen(true);
+            startTour("welcome");
+          }}
+        >
+          Start the walkthrough
+        </Button>
+      </div>
       <p className="wizard-note" role="note">
         This is a sample company, {COMPANY_NAME}, with sample data. Nothing is really connected, and nothing you do here
         leaves your browser.

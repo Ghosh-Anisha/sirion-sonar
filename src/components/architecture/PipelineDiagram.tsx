@@ -10,7 +10,7 @@ interface PipelineDiagramProps {
 export function PipelineDiagram({ selected, onSelect }: PipelineDiagramProps) {
   const rows = [pipelineSteps.slice(0, 4), pipelineSteps.slice(4)];
   return (
-    <div className="pipeline-map" role="group" aria-label="The eight step pipeline">
+    <div className="pipeline-map" data-tour="pipeline-map" role="group" aria-label="The eight step pipeline">
       {rows.map((row, r) => (
         <ol key={r} className="pipeline-map__row" start={r * 4 + 1}>
           {row.map((step) => (

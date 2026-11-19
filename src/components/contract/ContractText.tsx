@@ -19,7 +19,7 @@ export function ContractText({ contract, activeSentence }: ContractTextProps) {
   }, [activeSentence]);
 
   return (
-    <article className="contract-text" aria-label="Contract text">
+    <article className="contract-text" aria-label="Contract text" data-tour="contract-text">
       <p className="label">{contract.fileName}</p>
       {contract.clauses.map((clause) => (
         <section key={clause.id} className="contract-text__clause">

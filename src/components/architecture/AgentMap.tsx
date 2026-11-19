@@ -5,7 +5,7 @@ import "./Architecture.css";
 export function AgentMap() {
   return (
     <div className="stack">
-      <div className="agent-map">
+      <div className="agent-map" data-tour="agent-map">
         <div className="agent-map__core">
           <p className="label">At the centre</p>
           <p className="agent-map__core-name">The ledger</p>

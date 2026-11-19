@@ -10,7 +10,7 @@ interface StakeholderMapProps {
 /** Power up the side, interest along the bottom. Each group is a button placed where it sits. */
 export function StakeholderMap({ selected, highlighted, onSelect }: StakeholderMapProps) {
   return (
-    <figure className="power-map" aria-labelledby="power-map-caption">
+    <figure className="power-map" data-tour="power-map" aria-labelledby="power-map-caption">
       <figcaption id="power-map-caption" className="visually-hidden">
         Stakeholder map: power against interest. Pick a group to see what it wants.
       </figcaption>

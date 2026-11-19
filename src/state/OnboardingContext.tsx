@@ -22,8 +22,6 @@ function save(state: Onboarding) {
 interface OnboardingValue {
   state: Onboarding;
   dispatch: (event: OnboardingEvent) => void;
-  /** Clears the wizard and the access log, then reloads so every other part of the demo starts fresh too. */
-  resetDemo: () => void;
 }
 
 const OnboardingContext = createContext<OnboardingValue | null>(null);
@@ -32,18 +30,7 @@ const OnboardingContext = createContext<OnboardingValue | null>(null);
 export function OnboardingProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(reduceOnboarding, undefined, load);
   useEffect(() => save(state), [state]);
-  const value = useMemo<OnboardingValue>(
-    () => ({
-      state,
-      dispatch,
-      resetDemo: () => {
-        save(INITIAL_ONBOARDING);
-        window.location.hash = "#/welcome";
-        window.location.reload();
-      },
-    }),
-    [state],
-  );
+  const value = useMemo<OnboardingValue>(() => ({ state, dispatch }), [state]);
   return <OnboardingContext.Provider value={value}>{children}</OnboardingContext.Provider>;
 }
 

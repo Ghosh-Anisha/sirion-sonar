@@ -34,7 +34,7 @@ export function Contracts() {
       <p className="muted">
         The {contracts.length} contracts Sonar found and read. Open one to check its facts against the text.
       </p>
-      <Table caption="Contracts on file" columns={columns} rows={contracts} rowKey={(c) => c.id} />
+      <Table tour="contracts-table" caption="Contracts on file" columns={columns} rows={contracts} rowKey={(c) => c.id} />
     </div>
   );
 }

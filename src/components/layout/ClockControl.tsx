@@ -8,7 +8,7 @@ import { Button } from "../ui/Button";
 export function ClockControl() {
   const { today, setToday, reset } = useClock();
   return (
-    <div className="clock" role="group" aria-label="Demo clock">
+    <div className="clock" role="group" aria-label="Demo clock" data-tour="clock">
       <div className="clock__now">
         <span className="label">Today</span>
         <time className="clock__date num" dateTime={today} aria-live="polite">
@@ -18,7 +18,7 @@ export function ClockControl() {
       <Button variant="secondary" onClick={() => setToday(addDays(today, 7))}>
         +1 week
       </Button>
-      <Button variant="secondary" onClick={() => setToday(addMonths(today, 1))}>
+      <Button data-nudge="clock-month" variant="secondary" onClick={() => setToday(addMonths(today, 1))}>
         +1 month
       </Button>
       <label className="clock__picker">

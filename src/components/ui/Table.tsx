@@ -13,11 +13,13 @@ interface TableProps<Row> {
   columns: Column<Row>[];
   rows: Row[];
   rowKey: (row: Row) => string;
+  /** A data-tour name, for the guided tour. */
+  tour?: string;
 }
 
-export function Table<Row>({ caption, columns, rows, rowKey }: TableProps<Row>) {
+export function Table<Row>({ caption, columns, rows, rowKey, tour }: TableProps<Row>) {
   return (
-    <div className="table-wrap">
+    <div className="table-wrap" data-tour={tour}>
       <table className="table">
         <caption className="visually-hidden">{caption}</caption>
         <thead>

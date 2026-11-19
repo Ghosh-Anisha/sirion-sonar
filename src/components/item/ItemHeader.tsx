@@ -4,13 +4,14 @@ import { reasonLabel } from "../../logic/sentences";
 import type { NeedsYouRow } from "../../state/useNeedsYou";
 import { PROCUREMENT_LEAD } from "../../state/ViewerContext";
 import { Badge } from "../ui/Badge";
+import { WhyLink } from "../guide/WhyLink";
 import { ThinkingBadge } from "../thinking/ThinkingBadge";
 
 /** The item's type, title, sentence and who it is with. */
 export function ItemHeader({ row, vendorName }: { row: NeedsYouRow; vendorName: string }) {
   const { item, routing, sentence, ownerName } = row;
   return (
-    <header className="item-screen__header">
+    <header className="item-screen__header" data-tour="item-header">
       <div className="row">
         <Badge kind={item.type} />
         {routing.urgent && <Badge kind="urgent" />}
@@ -19,7 +20,9 @@ export function ItemHeader({ row, vendorName }: { row: NeedsYouRow; vendorName: 
       <h1>
         {vendorName}: {itemTitle(item).toLowerCase()}
       </h1>
-      <p className="item-screen__sentence">{sentence}</p>
+      <p className="item-screen__sentence">
+        {sentence} <WhyLink at={`home.${item.type}`} />
+      </p>
       <p className="item-screen__meta">
         <span>{reasonLabel(item.reason)}</span>
         <span>

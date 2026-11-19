@@ -75,7 +75,7 @@ export function Contract() {
         </p>
       )}
 
-      <Card title="Dates, worked out from the facts" actions={<ThinkingBadge at="contract.dates" />}>
+      <Card tour="contract-dates" title="Dates, worked out from the facts" actions={<ThinkingBadge at="contract.dates" />}>
         <div className="contract-screen__dates">
           <Field label="Current term ends" value={dates.endDate ? formatDate(dates.endDate) : "Not known exactly"} confidence={dates.label} />
           <Field label="Last day to give notice" value={deadlineValue} confidence={dates.label} />

@@ -44,5 +44,5 @@ export function FactTable({ facts, selected, onSelect, onConfirm, onCorrect }: F
       ),
     },
   ];
-  return <Table caption="Facts read from this contract" columns={columns} rows={facts} rowKey={(f) => f.field} />;
+  return <Table tour="fact-table" caption="Facts read from this contract" columns={columns} rows={facts} rowKey={(f) => f.field} />;
 }

@@ -24,7 +24,9 @@ export function Email() {
             : "The five sample emails in the shared inboxes, and what Sonar does with each one."}
         </p>
       </header>
-      <Tabs label="Email" tabs={TABS} selected={tab} onSelect={(id) => setParams({ tab: id }, { replace: true })} />
+      <div data-tour="email-tabs">
+        <Tabs label="Email" tabs={TABS} selected={tab} onSelect={(id) => setParams({ tab: id }, { replace: true })} />
+      </div>
       <div role="tabpanel" id={`panel-${tab}`} aria-labelledby={`tab-${tab}`}>
         {tab === "weekly" ? <WeeklyEmail /> : <IncomingMail />}
       </div>

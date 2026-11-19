@@ -4,7 +4,7 @@ import "./Welcome.css";
 export function WizardProgress({ step, titles }: { step: number; titles: string[] }) {
   const total = titles.length;
   return (
-    <div className="wizard-progress">
+    <div className="wizard-progress" data-tour="wizard-progress">
       <p className="wizard-progress__text">
         <span className="label">
           Step <span className="num">{step + 1}</span> of <span className="num">{total}</span>

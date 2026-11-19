@@ -23,7 +23,7 @@ export function WeeklyEmail() {
   }
 
   return (
-    <article className="mail" aria-label="Weekly email">
+    <article className="mail" aria-label="Weekly email" data-tour="weekly-email">
       <ThinkingBadge at="email.weekly" />
       <dl className="mail__head">
         <dt className="label">From</dt>

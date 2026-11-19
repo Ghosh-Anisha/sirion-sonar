@@ -48,12 +48,12 @@ export function Measures() {
         figures and no saving is claimed. Money is counted only where an invoice or a cap breach proves it.
       </p>
 
-      <div className="stack" style={{ gap: "var(--space-2)" }}>
+      <div className="stack" style={{ gap: "var(--space-2)" }} data-tour="north-star">
         <ThinkingBadge at="measures.northStar" />
         <NorthStarCard star={m.northStar} />
       </div>
 
-      <section className="stack" aria-labelledby="metrics-title">
+      <section className="stack" aria-labelledby="metrics-title" data-tour="metrics">
         <h2 id="metrics-title">
           How we know it works <ThinkingBadge at="measures.metrics" />
         </h2>
@@ -65,7 +65,7 @@ export function Measures() {
         </div>
       </section>
 
-      <section className="stack" aria-labelledby="signals-title">
+      <section className="stack" aria-labelledby="signals-title" data-tour="signals">
         <h2 id="signals-title">
           What would make us rethink <ThinkingBadge at="measures.signals" />
         </h2>

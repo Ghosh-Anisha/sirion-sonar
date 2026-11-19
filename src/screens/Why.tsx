@@ -17,7 +17,7 @@ export function Why() {
 
       <section className="stack" aria-labelledby="tests-title">
         <h2 id="tests-title">The four tests</h2>
-        <ul className="case-cards">
+        <ul className="case-cards" data-tour="intake-tests">
           {intakeTests.map((t) => (
             <li key={t.name} className="case-card">
               <h3>{t.name}</h3>
@@ -26,7 +26,7 @@ export function Why() {
             </li>
           ))}
         </ul>
-        <p className="case-line">{otherStagesLose}</p>
+        <p className="case-line" data-tour="other-stages">{otherStagesLose}</p>
       </section>
 
       <section className="stack" aria-labelledby="matrix-title">

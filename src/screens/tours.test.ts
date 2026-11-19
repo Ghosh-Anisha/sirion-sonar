@@ -1,0 +1,67 @@
+import { createElement } from "react";
+import { renderToString } from "react-dom/server";
+import { MemoryRouter } from "react-router-dom";
+import { describe, expect, it } from "vitest";
+import { App } from "../App";
+import { DEMO_START } from "../data/demo";
+import { tours, tourScreenFor, type TourScreen } from "../data/tours";
+import { INITIAL_ONBOARDING, reduceOnboarding } from "../logic/onboarding";
+import { skipEvent } from "../logic/skip";
+import { firstReadPlan } from "../state/firstReadPlan";
+
+/*
+ * Every tour step must point at something that is really on its screen. This renders each
+ * screen the way a first-time viewer sees it after Skip to demo, and the welcome screen fresh.
+ */
+
+const skipped = reduceOnboarding(INITIAL_ONBOARDING, skipEvent(INITIAL_ONBOARDING, firstReadPlan, { on: DEMO_START, by: "Kavya Raman", seq: 0 }, "Vikram Nair"));
+
+const PATHS: Record<TourScreen, string> = {
+  welcome: "/welcome",
+  home: "/home",
+  contracts: "/contracts",
+  item: "/item/decide%3Aledgerline-payroll%3A2026-12-01",
+  contract: "/contract/cloudmetric-subscription",
+  versions: "/versions/orbis-facilities",
+  email: "/email",
+  measures: "/measures",
+  privacy: "/privacy",
+  sirion: "/sirion",
+  access: "/access",
+  architecture: "/architecture",
+  why: "/why",
+  problem: "/problem",
+  stakeholders: "/stakeholders",
+  assumptions: "/assumptions",
+};
+
+function render(path: string, onboarding: object) {
+  const store: Record<string, string> = { "sirion-sonar.onboarding.v1": JSON.stringify(onboarding) };
+  (globalThis as { window?: unknown }).window = {
+    localStorage: { getItem: (k: string) => store[k] ?? null, setItem() {} },
+    matchMedia: () => ({ matches: false }),
+  };
+  return renderToString(createElement(MemoryRouter, { initialEntries: [path] }, createElement(App)));
+}
+
+function targetsOn(html: string): Set<string> {
+  return new Set([...html.matchAll(/data-tour="([^"]+)"/g)].map((m) => m[1]));
+}
+
+describe("tours", () => {
+  for (const screen of Object.keys(tours) as TourScreen[]) {
+    it(`${screen}: every step points at something on the screen`, () => {
+      const path = PATHS[screen];
+      expect(tourScreenFor(path.split("?")[0])).toBe(screen);
+      const found = targetsOn(render(path, screen === "welcome" ? INITIAL_ONBOARDING : skipped));
+      const steps = tours[screen];
+      expect(steps.length).toBeGreaterThanOrEqual(3);
+      expect(steps.length).toBeLessThanOrEqual(5);
+      for (const step of steps) expect(found.has(step.target), `${screen}: ${step.target}`).toBe(true);
+    });
+  }
+
+  it("follows the copy rules", () => {
+    expect(JSON.stringify(tours)).not.toMatch(/[—–!]|\b(leverage|seamless|robust|powerful|unlock|empower)\b/i);
+  });
+});
