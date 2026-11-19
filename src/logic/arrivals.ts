@@ -23,6 +23,8 @@ export function emailItems(
   email: Email,
   input: ItemInput,
   contracts: Contract[],
+  /** The contracts before any amendment, so an amendment can be compared with what it replaces. */
+  originals: Contract[],
   datesOf: (c: Contract) => ContractDates,
 ): Draft[] {
   const vendor = vendorForEmail(email.from.address, input.vendors);
@@ -87,7 +89,7 @@ export function emailItems(
   }
 
   if (email.amendment) {
-    const original = input.contracts.find((c) => c.id === email.amendment!.contractId);
+    const original = originals.find((c) => c.id === email.amendment!.contractId);
     if (original) {
       const before = datesOf(original);
       const after = datesOf(applyAmendment(original, email.amendment));

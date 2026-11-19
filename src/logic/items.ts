@@ -1,5 +1,6 @@
 import type { Contract, Email, Payment, Vendor } from "../data/types";
 import { applyAmendment } from "./amend";
+import { applyFactEdits, type FactEdits } from "./edits";
 import { amendmentItemId, emailItems } from "./arrivals";
 import { addDays, daysBetween, laterOf } from "./calendar";
 import type { RateTerm } from "./checks";
@@ -54,6 +55,8 @@ export interface ItemInput {
   payments: Payment[];
   emails: Email[];
   actions: Record<string, ItemAction>;
+  /** People's checks on facts, by contract id. Applied after any accepted amendment. */
+  factEdits?: Record<string, FactEdits>;
 }
 
 export type Draft = Omit<Item, "status" | "action" | "ownerId">;
@@ -61,14 +64,16 @@ export type Draft = Omit<Item, "status" | "action" | "ownerId">;
 /** The Needs you list for a given day. Done items stay in the list with their action, so measures can count them. */
 export function buildItems(input: ItemInput): Item[] {
   const { today, vendors, actions } = input;
-  const contracts = withAcceptedAmendments(input.contracts, input.emails, actions);
+  const edits = input.factEdits ?? {};
+  const contracts = currentContracts(input.contracts, input.emails, actions, edits);
+  const originals = input.contracts.map((c) => applyFactEdits(c, edits[c.id] ?? {}));
   const paid = paidByVendor(input.payments, vendors, today);
   const datesOf = (c: Contract) => contractDates(c.facts, today, (paid.get(c.vendorId) ?? []).map((p) => p.date));
   const arrived = input.emails.filter((e) => e.receivedOn <= today);
 
   const drafts: Draft[] = [
     ...contracts.flatMap((c) => decideItem(c, datesOf(c), input)),
-    ...arrived.flatMap((e) => emailItems(e, input, contracts, datesOf)),
+    ...arrived.flatMap((e) => emailItems(e, input, contracts, originals, datesOf)),
     ...findItems(vendors, contracts, paid, input.firstReadOn),
   ];
 
@@ -81,7 +86,20 @@ export function buildItems(input: ItemInput): Item[] {
   }));
 }
 
-/** The contracts as they now read, with every accepted amendment applied. */
+/**
+ * The contracts as they now read: every accepted amendment applied, then people's
+ * checks on top, so a correction made after an amendment is kept.
+ */
+export function currentContracts(
+  contracts: Contract[],
+  emails: Email[],
+  actions: Record<string, ItemAction>,
+  factEdits: Record<string, FactEdits>,
+): Contract[] {
+  return withAcceptedAmendments(contracts, emails, actions).map((c) => applyFactEdits(c, factEdits[c.id] ?? {}));
+}
+
+/** The contracts with every accepted amendment applied. */
 export function withAcceptedAmendments(contracts: Contract[], emails: Email[], actions: Record<string, ItemAction>): Contract[] {
   return contracts.map((contract) =>
     emails.reduce((current, email) => {

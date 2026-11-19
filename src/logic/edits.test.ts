@@ -5,7 +5,7 @@ import { emails } from "../data/emails";
 import { payments } from "../data/payments";
 import { vendors } from "../data/vendors";
 import { contractDates } from "./dates";
-import { applyFactEdits, parseFactInput, type FactEdits } from "./edits";
+import { applyFactEdits, dropEditsReplacedBy, parseFactInput, type FactEdits } from "./edits";
 import { findFact } from "./facts";
 import { buildItems } from "./items";
 
@@ -77,5 +77,30 @@ describe("parseFactInput", () => {
     expect(parseFactInput("unitRate", "4.20")).toEqual({ ok: true, value: 4.2 });
     expect(parseFactInput("monthlyFee", "0").ok).toBe(false);
     expect(parseFactInput("monthlyFee", "").ok).toBe(false);
+  });
+});
+
+describe("edits and amendments together", () => {
+  const orbis = contracts.find((c) => c.id === "orbis-facilities")!;
+  const amendment = emails.find((e) => e.id === "orbis-amendment")!.amendment!;
+  const accepted = { "change:orbis-amendment": { kind: "accepted" as const, on: DEMO_START, by: "farah" } };
+  const orbisDecide = (factEdits: Record<string, FactEdits>, today: string) =>
+    buildItems({ today, firstReadOn: DEMO_START, vendors, contracts, payments, emails, actions: accepted, factEdits }).find(
+      (i) => i.type === "decide" && i.vendorId === "orbis",
+    );
+
+  it("keeps a correction made after the amendment was accepted", () => {
+    const edits = { "orbis-facilities": { noticeDays: { kind: "corrected" as const, value: 90, by: "farah", on: DEMO_START } } };
+    expect(orbisDecide({}, "2027-02-01")?.dueDate).toBe("2027-05-01");
+    expect(orbisDecide(edits, "2027-01-01")?.dueDate).toBe("2027-04-01");
+  });
+
+  it("drops earlier corrections to fields the amendment replaces", () => {
+    const edits: FactEdits = {
+      noticeDays: { kind: "corrected", value: 45, by: "farah", on: DEMO_START },
+      startDate: { kind: "confirmed", value: "2026-02-01", by: "farah", on: DEMO_START },
+    };
+    expect(Object.keys(dropEditsReplacedBy(edits, amendment))).toEqual(["startDate"]);
+    expect(orbis.id).toBe(amendment.contractId);
   });
 });

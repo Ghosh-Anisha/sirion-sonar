@@ -1,4 +1,4 @@
-import type { Contract, FactField, FactValue } from "../data/types";
+import type { Amendment, Contract, FactField, FactValue } from "../data/types";
 
 /** A person checking a fact against the contract, or typing the right value in. */
 export interface FactEdit {
@@ -44,4 +44,10 @@ export function parseFactInput(field: FactField, raw: string): ParsedInput {
   if (text === "" || !Number.isFinite(value) || value <= 0) return { ok: false, error: "Enter a number above zero." };
   if (WHOLE_FIELDS.includes(field) && !Number.isInteger(value)) return { ok: false, error: "Enter a whole number." };
   return { ok: true, value };
+}
+
+/** Once an amendment is accepted, its signed text wins over earlier corrections to the same fields. */
+export function dropEditsReplacedBy(edits: FactEdits, amendment: Amendment): FactEdits {
+  const replaced = new Set(amendment.facts.map((f) => f.field));
+  return Object.fromEntries(Object.entries(edits).filter(([field]) => !replaced.has(field as FactField))) as FactEdits;
 }

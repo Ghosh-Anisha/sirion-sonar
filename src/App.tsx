@@ -7,6 +7,7 @@ import { Item } from "./screens/Item";
 import { Placeholder } from "./screens/Placeholder";
 import { Setup } from "./screens/Setup";
 import { Styleguide } from "./screens/Styleguide";
+import { Versions } from "./screens/Versions";
 import { ClockProvider } from "./state/ClockContext";
 import { DemoStateProvider } from "./state/DemoStateContext";
 import { ViewerProvider } from "./state/ViewerContext";
@@ -24,7 +25,7 @@ export function App() {
               <Route path="contracts" element={<Contracts />} />
               <Route path="item/:id" element={<Item />} />
               <Route path="contract/:id" element={<Contract />} />
-              <Route path="versions/:id" element={<Placeholder title="Versions" />} />
+              <Route path="versions/:id" element={<Versions />} />
               <Route path="email" element={<Placeholder title="Weekly email" />} />
               <Route path="measures" element={<Placeholder title="Measures" />} />
               <Route path="privacy" element={<Placeholder title="Privacy" />} />

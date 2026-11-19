@@ -1,7 +1,7 @@
 import { createContext, useContext, useMemo, useReducer, type ReactNode } from "react";
-import type { FactField } from "../data/types";
+import type { Amendment, FactField } from "../data/types";
 import type { Draft } from "../logic/drafts";
-import type { FactEdit, FactEdits } from "../logic/edits";
+import { dropEditsReplacedBy, type FactEdit, type FactEdits } from "../logic/edits";
 import type { ItemAction } from "../logic/items";
 
 /** A message that went out, after the owner clicked send and confirmed. */
@@ -33,7 +33,8 @@ type Event =
   | { type: "act"; itemId: string; action: ItemAction; text: string }
   | { type: "send"; itemId: string; message: SentMessage; markDone: boolean; text: string }
   | { type: "edit-fact"; contractId: string; field: FactField; edit: FactEdit; text: string }
-  | { type: "first-read-done"; on: string; by: string };
+  | { type: "first-read-done"; on: string; by: string }
+  | { type: "answer-amendment"; itemId: string; amendment: Amendment; action: ItemAction; text: string };
 
 const INITIAL: DemoState = { actions: {}, sent: {}, factEdits: {}, log: [], firstReadDone: false };
 
@@ -65,6 +66,19 @@ function reduce(state: DemoState, event: Event): DemoState {
         ...state,
         factEdits: { ...state.factEdits, [event.contractId]: { ...current, [event.field]: event.edit } },
         log: logged(state, { on: event.edit.on, by: event.edit.by, text: event.text, contractId: event.contractId }),
+      };
+    }
+    case "answer-amendment": {
+      const { amendment, action, itemId } = event;
+      const edits = state.factEdits[amendment.contractId] ?? {};
+      return {
+        ...state,
+        actions: { ...state.actions, [itemId]: action },
+        factEdits:
+          action.kind === "accepted"
+            ? { ...state.factEdits, [amendment.contractId]: dropEditsReplacedBy(edits, amendment) }
+            : state.factEdits,
+        log: logged(state, { on: action.on, by: action.by, text: event.text, itemId, contractId: amendment.contractId }),
       };
     }
     case "first-read-done":

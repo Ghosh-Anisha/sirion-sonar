@@ -4,8 +4,7 @@ import { DEMO_START } from "../data/demo";
 import { emails } from "../data/emails";
 import { payments } from "../data/payments";
 import { vendors } from "../data/vendors";
-import { applyFactEdits } from "../logic/edits";
-import { buildItems, withAcceptedAmendments, type Item } from "../logic/items";
+import { buildItems, currentContracts, type Item } from "../logic/items";
 import { paidByVendor } from "../logic/match";
 import type { Contract, Payment } from "../data/types";
 import { useClock } from "./ClockContext";
@@ -26,18 +25,13 @@ export function useLedger(): Ledger {
   const { today } = useClock();
   const { state } = useDemoState();
 
-  const edited = useMemo(
-    () => sampleContracts.map((c) => applyFactEdits(c, state.factEdits[c.id] ?? {})),
-    [state.factEdits],
-  );
-
   return useMemo(() => {
-    const items = buildItems({ today, firstReadOn: DEMO_START, vendors, contracts: edited, payments, emails, actions: state.actions });
+    const { actions, factEdits } = state;
     return {
       today,
-      contracts: withAcceptedAmendments(edited, emails, state.actions),
-      items,
+      contracts: currentContracts(sampleContracts, emails, actions, factEdits),
+      items: buildItems({ today, firstReadOn: DEMO_START, vendors, contracts: sampleContracts, payments, emails, actions, factEdits }),
       paid: paidByVendor(payments, vendors, today),
     };
-  }, [today, edited, state.actions]);
+  }, [today, state]);
 }
