@@ -30,6 +30,10 @@ export function Home() {
 
   return (
     <div className="home stack">
+      <p className="home__why">
+        Why this exists: contracts renew, overcharge and slip past their dates because nobody is told.{" "}
+        <Link to="/why">Read the case</Link>
+      </p>
       <header className="home__header">
         <h1>What needs you today</h1>
         <p className="muted">{summary(firstName, rows.length, urgent)}</p>

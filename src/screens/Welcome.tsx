@@ -1,5 +1,5 @@
 import { useEffect, useRef, type ReactNode } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { people } from "../data/people";
 import { IT_ADMIN_ID, roles } from "../data/sources";
 import { allConnected, type Onboarding } from "../logic/onboarding";
@@ -72,12 +72,21 @@ export function Welcome() {
   const actor = useActor();
   const navigate = useNavigate();
   const owners = useOwnerChoices();
+  const [params, setParams] = useSearchParams();
   const headingRef = useRef<HTMLHeadingElement>(null);
   const firstRender = useRef(true);
   const step = STEPS[state.step];
   const blocker = step.blocker(state);
   const last = state.step === STEPS.length - 1;
   const rolePerson = roles.find((r) => r.id === state.role)?.personId;
+
+  // A link such as /welcome?step=4 opens that step, then the address goes back to plain /welcome.
+  const askedStep = Number(params.get("step"));
+  useEffect(() => {
+    if (!askedStep) return;
+    dispatch({ type: "go", step: askedStep - 1 });
+    setParams({}, { replace: true });
+  }, [askedStep, dispatch, setParams]);
 
   useEffect(() => {
     if (firstRender.current) {
