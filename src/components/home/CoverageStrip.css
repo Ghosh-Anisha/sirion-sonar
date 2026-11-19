@@ -26,7 +26,12 @@
 
 .coverage__full { background: var(--brand); }
 .coverage__partial { background: var(--bounded); }
-.coverage__none { background: var(--line); }
+.coverage__none { background: var(--ink-2); }
+.coverage__pending { background: var(--line); }
+
+.coverage__bar span {
+  transition: flex-grow var(--fade);
+}
 
 .coverage__legend {
   grid-column: 1 / -1;
@@ -50,5 +55,4 @@
   width: 8px;
   height: 8px;
   border-radius: var(--radius-badge);
-  border: 1px solid var(--ink-2);
 }

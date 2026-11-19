@@ -25,14 +25,17 @@ export interface DemoState {
   sent: Record<string, SentMessage>;
   factEdits: Record<string, FactEdits>;
   log: LogEntry[];
+  /** Whether the first read has run. Until it has, Home links to Setup. */
+  firstReadDone: boolean;
 }
 
 type Event =
   | { type: "act"; itemId: string; action: ItemAction; text: string }
   | { type: "send"; itemId: string; message: SentMessage; markDone: boolean; text: string }
-  | { type: "edit-fact"; contractId: string; field: FactField; edit: FactEdit; text: string };
+  | { type: "edit-fact"; contractId: string; field: FactField; edit: FactEdit; text: string }
+  | { type: "first-read-done"; on: string; by: string };
 
-const INITIAL: DemoState = { actions: {}, sent: {}, factEdits: {}, log: [] };
+const INITIAL: DemoState = { actions: {}, sent: {}, factEdits: {}, log: [], firstReadDone: false };
 
 function logged(state: DemoState, entry: Omit<LogEntry, "id">): LogEntry[] {
   return [...state.log, { ...entry, id: state.log.length + 1 }];
@@ -64,6 +67,10 @@ function reduce(state: DemoState, event: Event): DemoState {
         log: logged(state, { on: event.edit.on, by: event.edit.by, text: event.text, contractId: event.contractId }),
       };
     }
+    case "first-read-done":
+      return state.firstReadDone
+        ? state
+        : { ...state, firstReadDone: true, log: logged(state, { on: event.on, by: event.by, text: "ran the first read." }) };
   }
 }
 

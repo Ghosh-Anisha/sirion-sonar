@@ -3,6 +3,7 @@ import type { UrgencyGroup } from "../logic/alerts";
 import { CoverageStrip } from "../components/home/CoverageStrip";
 import { ItemGroup } from "../components/home/ItemGroup";
 import { EmptyState } from "../components/ui/EmptyState";
+import { useDemoState } from "../state/DemoStateContext";
 import { useNeedsYou } from "../state/useNeedsYou";
 import { useViewer } from "../state/ViewerContext";
 import "./Home.css";
@@ -22,6 +23,7 @@ function summary(firstName: string, open: number, urgent: number): string {
 export function Home() {
   const rows = useNeedsYou();
   const { viewer } = useViewer();
+  const { firstReadDone } = useDemoState().state;
   const firstName = viewer.name.split(" ")[0];
   const urgent = rows.filter((r) => r.group === "urgent").length;
 
@@ -30,9 +32,11 @@ export function Home() {
       <header className="home__header">
         <h1>What needs you today</h1>
         <p className="muted">{summary(firstName, rows.length, urgent)}</p>
-        <p className="home__setup">
-          <Link to="/setup">See how Sonar found these contracts</Link>
-        </p>
+        {!firstReadDone && (
+          <p className="home__setup">
+            <Link to="/setup">Start here: connect the sources and run the first read</Link>
+          </p>
+        )}
       </header>
 
       <CoverageStrip />

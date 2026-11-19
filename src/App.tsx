@@ -5,6 +5,7 @@ import { Contracts } from "./screens/Contracts";
 import { Home } from "./screens/Home";
 import { Item } from "./screens/Item";
 import { Placeholder } from "./screens/Placeholder";
+import { Setup } from "./screens/Setup";
 import { Styleguide } from "./screens/Styleguide";
 import { ClockProvider } from "./state/ClockContext";
 import { DemoStateProvider } from "./state/DemoStateContext";
@@ -19,7 +20,7 @@ export function App() {
             <Route element={<AppShell />}>
               <Route index element={<Navigate to="/home" replace />} />
               <Route path="home" element={<Home />} />
-              <Route path="setup" element={<Placeholder title="Setup" />} />
+              <Route path="setup" element={<Setup />} />
               <Route path="contracts" element={<Contracts />} />
               <Route path="item/:id" element={<Item />} />
               <Route path="contract/:id" element={<Contract />} />
