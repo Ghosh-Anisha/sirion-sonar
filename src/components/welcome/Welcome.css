@@ -191,14 +191,17 @@
   margin-bottom: var(--space-1);
 }
 
-.source__product {
-  display: flex;
-  align-items: center;
+/* A radio or checkbox with its text. Long text wraps under itself, never under the control. */
+.option {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
   gap: var(--space-2);
+  cursor: pointer;
 }
 
-.source__product input,
-.consent input {
+.option input {
+  margin: 3px 0 0;
   accent-color: var(--brand);
 }
 
@@ -301,7 +304,7 @@
 
 .consent__fixed {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: var(--space-2);
   color: var(--confirmed);
   font-weight: var(--weight-medium);

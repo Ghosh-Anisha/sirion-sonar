@@ -37,7 +37,10 @@ export function StepFirstRead() {
 
   const pilot = state.start === "pilot" && !state.readAll;
   const steps = useMemo(() => scopeSteps(plan, pilot, PILOT_SIZE), [pilot]);
-  const products = useMemo(() => sources.map((s) => state.sources[s.id].product ?? s.products[0]), [state.sources]);
+  const products = useMemo(
+    () => sources.flatMap((s) => state.sources[s.id].scope?.products ?? [s.products[0]]),
+    [state.sources],
+  );
   const stages = useMemo(
     () => pipelineStages({ plan, steps, products, contracts, items, procurementLeadId: PROCUREMENT_LEAD.id }),
     [steps, products, items],

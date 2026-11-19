@@ -12,22 +12,22 @@ const actor = { on: "2026-11-19", by: "Kavya Raman", seq: 0 };
 
 describe("skipEvent", () => {
   it("connects everything, approves it and finishes the read", () => {
-    const state = reduceOnboarding(INITIAL_ONBOARDING, skipEvent(INITIAL_ONBOARDING, plan, actor, "Vikram Nair"));
+    const state = reduceOnboarding(INITIAL_ONBOARDING, skipEvent(INITIAL_ONBOARDING, plan, actor, "Vikram Nair", "kavya.raman@tamarindhome.example"));
     expect(allConnected(state)).toBe(true);
     expect(state).toMatchObject({ firstReadDone: true, readAll: true, start: "all", approval: { status: "approved", scope: "full", by: "Vikram Nair" } });
-    expect(state.sources.drive.scope).toMatchObject({ product: "Google Drive", folders: "all" });
+    expect(state.sources.drive.scope).toMatchObject({ products: ["Google Drive"], folders: "all" });
   });
 
   it("logs every connect and every file the read opened", () => {
-    const state = reduceOnboarding(INITIAL_ONBOARDING, skipEvent(INITIAL_ONBOARDING, plan, actor, "Vikram Nair"));
+    const state = reduceOnboarding(INITIAL_ONBOARDING, skipEvent(INITIAL_ONBOARDING, plan, actor, "Vikram Nair", "kavya.raman@tamarindhome.example"));
     expect(state.log.filter((e) => e.kind === "connect")).toHaveLength(3);
     expect(state.log.filter((e) => e.kind === "open")).toHaveLength(contracts.length);
     expect(state.log).toHaveLength(3 + 1 + plan.access.length);
   });
 
   it("keeps what the wizard already did", () => {
-    const once = reduceOnboarding(INITIAL_ONBOARDING, skipEvent(INITIAL_ONBOARDING, plan, actor, "Vikram Nair"));
-    const twice = reduceOnboarding(once, skipEvent(once, plan, { ...actor, seq: once.log.length }, "Vikram Nair"));
+    const once = reduceOnboarding(INITIAL_ONBOARDING, skipEvent(INITIAL_ONBOARDING, plan, actor, "Vikram Nair", "kavya.raman@tamarindhome.example"));
+    const twice = reduceOnboarding(once, skipEvent(once, plan, { ...actor, seq: once.log.length }, "Vikram Nair", "kavya.raman@tamarindhome.example"));
     expect(twice.log).toEqual(once.log);
   });
 });

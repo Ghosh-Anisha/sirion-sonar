@@ -1,6 +1,6 @@
 const PREFIX = "sirion-sonar.";
 
-/** Clears everything the demo keeps in this browser, then reloads on the welcome screen so in-memory state starts fresh too. */
+/** Clears everything the demo keeps in this browser, then reloads at sign-in so in-memory state starts fresh too. */
 export function resetDemo() {
   try {
     const keys = Array.from({ length: window.localStorage.length }, (_, i) => window.localStorage.key(i)).filter(
@@ -10,6 +10,6 @@ export function resetDemo() {
   } catch {
     // Storage can be blocked. The reload still resets what is in memory.
   }
-  window.location.hash = "#/welcome";
+  window.location.hash = "#/";
   window.location.reload();
 }

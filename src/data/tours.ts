@@ -10,6 +10,7 @@ export interface TourStep {
 }
 
 export type TourScreen =
+  | "login"
   | "welcome"
   | "home"
   | "contracts"
@@ -28,6 +29,11 @@ export type TourScreen =
   | "assumptions";
 
 export const tours: Record<TourScreen, TourStep[]> = {
+  login: [
+    { target: "login-sso", title: "Sign in the usual way", body: "The procurement or finance lead signs in with the company's Google or Microsoft account." },
+    { target: "login-email", title: "Or a work email", body: "The sample procurement lead's email is filled in. Continue signs in as her." },
+    { target: "login-note", title: "Nothing is checked", body: "This sign-in is a mock. It never asks for a password, and nothing leaves your browser." },
+  ],
   welcome: [
     { target: "wizard-progress", title: "Eight short steps", body: "This bar shows where you are. A refresh keeps your place." },
     { target: "walkthrough", title: "Two ways in", body: "Watch the demo plays the whole story by itself. Walk through it yourself opens the Demo guide, one moment at a time." },

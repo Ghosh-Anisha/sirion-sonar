@@ -1,0 +1,128 @@
+.login {
+  display: grid;
+  place-items: center;
+  min-height: 60vh;
+  padding: var(--space-6) 0;
+}
+
+.login__card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  width: min(440px, 100%);
+  padding: var(--space-8);
+  text-align: center;
+  background: linear-gradient(180deg, var(--brand-soft) 0, var(--surface) 140px);
+  border: var(--border);
+  border-radius: var(--radius-card);
+}
+
+.login__mark {
+  display: flex;
+  justify-content: center;
+}
+
+.login__mark .brand-mark {
+  width: 48px;
+  height: 48px;
+}
+
+.login__sso {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.login__provider {
+  justify-content: center;
+}
+
+.login__provider-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  font-size: var(--text-12);
+  font-weight: var(--weight-semibold);
+  border-radius: var(--radius-badge);
+}
+
+.login__provider-mark--google {
+  color: var(--decide);
+  border: 1px solid var(--line);
+}
+
+.login__provider-mark--microsoft {
+  border-radius: 2px;
+  background:
+    linear-gradient(var(--fix), var(--fix)) 0 0 / 9px 9px no-repeat,
+    linear-gradient(var(--confirmed), var(--confirmed)) 11px 0 / 9px 9px no-repeat,
+    linear-gradient(var(--decide), var(--decide)) 0 11px / 9px 9px no-repeat,
+    linear-gradient(var(--check), var(--check)) 11px 11px / 9px 9px no-repeat;
+}
+
+.login__or {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: var(--text-12);
+  color: var(--ink-2);
+}
+
+.login__or::before,
+.login__or::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+}
+
+.login__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  text-align: left;
+}
+
+.login__form input {
+  min-height: 44px;
+  padding: var(--space-2) var(--space-3);
+  color: var(--ink);
+  font: inherit;
+  font-size: var(--text-16);
+  background: var(--surface);
+  border: var(--border);
+  border-radius: var(--radius-button);
+}
+
+.login__form .button {
+  justify-content: center;
+  margin-top: var(--space-2);
+}
+
+.login__error {
+  font-size: var(--text-12);
+  color: var(--urgent);
+}
+
+.login__busy {
+  padding: var(--space-4);
+  font-weight: var(--weight-medium);
+  background: var(--brand-soft);
+  border-radius: var(--radius-card);
+}
+
+.login__note {
+  padding: var(--space-3);
+  font-size: var(--text-12);
+  color: var(--ink-2);
+  text-align: left;
+  background: var(--unknown-soft);
+  border: 1px dashed var(--unknown);
+  border-radius: var(--radius-card);
+}
+
+.login__skip {
+  font-size: var(--text-12);
+}

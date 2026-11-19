@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import type { Source } from "../../data/sources";
 import { people } from "../../data/people";
 import { IT_ADMIN_ID } from "../../data/sources";
-import { revokeEntry, scopeText } from "../../logic/accessText";
+import { andList, revokeEntry, scopeText } from "../../logic/accessText";
 import { formatDate } from "../../logic/format";
 import { itemsFromSource } from "../../logic/owners";
 import { useActor } from "../../state/useActor";
@@ -27,7 +27,7 @@ export function SourceAccess({ source }: { source: Source }) {
   const affected = itemsFromSource(source.id, items).length;
 
   const revoke = () => {
-    dispatch({ type: "revoke", source: source.id, entry: revokeEntry(source.id, current.product ?? source.name, actor) });
+    dispatch({ type: "revoke", source: source.id, entry: revokeEntry(source.id, current.scope?.products ?? [source.name], actor) });
     setAsking(false);
   };
 
@@ -55,7 +55,7 @@ export function SourceAccess({ source }: { source: Source }) {
             asking ? (
               <div className="access-source__confirm" role="group" aria-label={`Revoke ${source.name}`}>
                 <p>
-                  <strong>If you revoke {current.scope.product}, this stops working:</strong>
+                  <strong>If you revoke {andList(current.scope.products)}, this stops working:</strong>
                 </p>
                 {stops}
                 <div className="row">

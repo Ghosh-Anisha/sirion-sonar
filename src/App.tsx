@@ -8,10 +8,12 @@ import { Contracts } from "./screens/Contracts";
 import { Email } from "./screens/Email";
 import { Home } from "./screens/Home";
 import { Item } from "./screens/Item";
+import { Login } from "./screens/Login";
 import { Measures } from "./screens/Measures";
 import { Privacy } from "./screens/Privacy";
 import { Problem } from "./screens/Problem";
 import { Sirion } from "./screens/Sirion";
+import { Start } from "./screens/Start";
 import { Stakeholders } from "./screens/Stakeholders";
 import { Summary } from "./screens/Summary";
 import { Styleguide } from "./screens/Styleguide";
@@ -34,8 +36,11 @@ export function App() {
             <ThinkingProvider>
               <GuideProvider>
                 <Routes>
+                  <Route element={<AppShell nav={false} topBar={false} />}>
+                    <Route path="login" element={<Login />} />
+                  </Route>
                   <Route element={<AppShell nav={false} />}>
-                    <Route index element={<Navigate to="/welcome" replace />} />
+                    <Route index element={<Start />} />
                     <Route path="welcome" element={<Welcome />} />
                     <Route path="setup" element={<Navigate to="/welcome" replace />} />
                   </Route>

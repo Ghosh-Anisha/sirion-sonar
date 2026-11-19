@@ -10,7 +10,8 @@ import type { FactEdits } from "./edits";
 export const STEP_COUNT = 8;
 
 export interface SourceScope {
-  product: string;
+  /** Every product connected for this source. A company can use more than one, such as Google Drive and SharePoint. */
+  products: string[];
   /** Drive only: every folder, or the ones picked. */
   folders: "all" | "chosen";
   chosen: string[];
@@ -19,7 +20,8 @@ export interface SourceScope {
 }
 
 export interface SourceState {
-  product: string | null;
+  /** The products picked on the card, before or after connecting. */
+  products: string[];
   status: "idle" | "connected" | "revoked";
   scope: SourceScope | null;
   /** When access was last revoked, and by whom. */
@@ -42,6 +44,8 @@ export interface AccessLogEntry {
 }
 
 export interface Onboarding {
+  /** The work account signed in on the mock sign-in screen, or null before that. */
+  signedIn: { email: string; on: string } | null;
   step: number;
   role: RoleId | null;
   sources: Record<SourceId, SourceState>;
@@ -59,9 +63,10 @@ export interface Onboarding {
   log: AccessLogEntry[];
 }
 
-const IDLE: SourceState = { product: null, status: "idle", scope: null, revoked: null };
+const IDLE: SourceState = { products: [], status: "idle", scope: null, revoked: null };
 
 export const INITIAL_ONBOARDING: Onboarding = {
+  signedIn: null,
   step: 0,
   role: null,
   sources: { payables: IDLE, drive: IDLE, mail: IDLE },
@@ -78,7 +83,8 @@ export const INITIAL_ONBOARDING: Onboarding = {
 export type OnboardingEvent =
   | { type: "go"; step: number }
   | { type: "role"; role: RoleId }
-  | { type: "product"; source: SourceId; product: string }
+  | { type: "sign-in"; email: string; on: string }
+  | { type: "toggle-product"; source: SourceId; product: string }
   | { type: "connect"; source: SourceId; scope: SourceScope; entry: AccessLogEntry }
   | { type: "revoke"; source: SourceId; entry: AccessLogEntry }
   | { type: "request"; entry: AccessLogEntry }
@@ -89,7 +95,7 @@ export type OnboardingEvent =
   | { type: "read-done" }
   | { type: "owners"; owners: Record<string, string | null> }
   | { type: "confirm"; contractId: string; edits: FactEdits }
-  | { type: "skip"; scopes: Record<SourceId, SourceScope>; entries: AccessLogEntry[]; on: string; by: string }
+  | { type: "skip"; scopes: Record<SourceId, SourceScope>; entries: AccessLogEntry[]; on: string; by: string; email: string }
   | { type: "reset" };
 
 /** Adds entries to the end of the log, skipping any whose key is already there. */
@@ -109,12 +115,17 @@ export function reduceOnboarding(state: Onboarding, event: OnboardingEvent): Onb
       return { ...state, step: Math.min(Math.max(event.step, 0), STEP_COUNT - 1) };
     case "role":
       return { ...state, role: event.role };
-    case "product":
-      return { ...state, sources: setSource(state, event.source, { product: event.product }) };
+    case "sign-in":
+      return { ...state, signedIn: { email: event.email, on: event.on } };
+    case "toggle-product": {
+      const picked = state.sources[event.source].products;
+      const products = picked.includes(event.product) ? picked.filter((p) => p !== event.product) : [...picked, event.product];
+      return { ...state, sources: setSource(state, event.source, { products }) };
+    }
     case "connect":
       return {
         ...state,
-        sources: setSource(state, event.source, { product: event.scope.product, status: "connected", scope: event.scope }),
+        sources: setSource(state, event.source, { products: event.scope.products, status: "connected", scope: event.scope }),
         log: appendLog(state.log, [event.entry]),
       };
     case "revoke":
@@ -148,10 +159,11 @@ export function reduceOnboarding(state: Onboarding, event: OnboardingEvent): Onb
       return { ...state, confirmed: { ...state.confirmed, [event.contractId]: event.edits } };
     case "skip": {
       const sources = Object.fromEntries(
-        Object.entries(event.scopes).map(([id, scope]) => [id, { product: scope.product, status: "connected", scope, revoked: null }]),
+        Object.entries(event.scopes).map(([id, scope]) => [id, { products: scope.products, status: "connected", scope, revoked: null }]),
       ) as Onboarding["sources"];
       return {
         ...state,
+        signedIn: state.signedIn ?? { email: event.email, on: event.on },
         sources,
         approval: { status: "approved", scope: "full", on: event.on, by: event.by },
         start: "all",

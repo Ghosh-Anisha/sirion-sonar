@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { NEVER, SHARED_INBOXES, type Source } from "../../data/sources";
+import { SHARED_INBOXES, type Source } from "../../data/sources";
 import { andList } from "../../logic/accessText";
 import type { SourceScope } from "../../logic/onboarding";
 import { Button } from "../ui/Button";
@@ -9,18 +9,20 @@ import "./Welcome.css";
 
 interface ConsentDialogProps {
   source: Source;
-  product: string;
+  products: string[];
   initial: SourceScope | null;
   onAllow: (scope: SourceScope) => void;
   onCancel: () => void;
 }
 
-/** A mock permission screen, laid out like the ones products show when an app asks for access. */
-export function ConsentDialog({ source, product, initial, onAllow, onCancel }: ConsentDialogProps) {
+/** A mock permission screen, laid out like the ones products show when an app asks for access. One screen covers every product picked. */
+export function ConsentDialog({ source, products, initial, onAllow, onCancel }: ConsentDialogProps) {
   const ref = useRef<HTMLDialogElement>(null);
   const [folders, setFolders] = useState<SourceScope["folders"]>(initial?.folders ?? "all");
   const [chosen, setChosen] = useState<string[]>(initial?.chosen.length ? initial.chosen : ["Contracts", "Finance"]);
   const [mail, setMail] = useState<SourceScope["mail"]>(initial?.mail ?? "shared");
+  const names = andList(products);
+  const either = products.length === 1 ? products[0] : products.slice(0, -1).join(", ") + " or " + products[products.length - 1];
 
   useEffect(() => {
     const dialog = ref.current;
@@ -30,7 +32,7 @@ export function ConsentDialog({ source, product, initial, onAllow, onCancel }: C
 
   const toggle = (folder: string) => setChosen((c) => (c.includes(folder) ? c.filter((f) => f !== folder) : [...c, folder]));
   const missingFolders = source.id === "drive" && folders === "chosen" && chosen.length === 0;
-  const allow = () => onAllow({ product, folders, chosen: folders === "chosen" ? source.folders!.filter((f) => chosen.includes(f)) : [], mail });
+  const allow = () => onAllow({ products, folders, chosen: folders === "chosen" ? source.folders!.filter((f) => chosen.includes(f)) : [], mail });
 
   return (
     <dialog
@@ -43,14 +45,14 @@ export function ConsentDialog({ source, product, initial, onAllow, onCancel }: C
       }}
     >
       <header className="consent__head">
-        <p className="label">{product}</p>
-        <h2 id={`consent-${source.id}`}>Sirion Sonar wants read-only access to {product}</h2>
+        <p className="label">{source.name}</p>
+        <h2 id={`consent-${source.id}`}>Sirion Sonar wants read-only access to {names}</h2>
         <p className="muted">This is a mock consent screen. Nothing is connected and nothing is read.</p>
       </header>
 
       <div className="consent__lists">
         <section>
-          <h3>Sonar will read</h3>
+          <h3>What Sonar reads</h3>
           <ul>
             {source.reads.map((r) => (
               <li key={r}>{r}</li>
@@ -58,9 +60,9 @@ export function ConsentDialog({ source, product, initial, onAllow, onCancel }: C
           </ul>
         </section>
         <section>
-          <h3>Sonar will never</h3>
+          <h3>What Sonar never does</h3>
           <ul>
-            {NEVER.map((n) => (
+            {source.never.map((n) => (
               <li key={n}>{n}</li>
             ))}
           </ul>
@@ -70,24 +72,27 @@ export function ConsentDialog({ source, product, initial, onAllow, onCancel }: C
       <section className="consent__scope stack" aria-label="Scope">
         <h3>Scope</h3>
         <p className="consent__fixed">
-          <Icon name="confirmed" size={14} /> Read-only. Sonar cannot write, move or delete anything in {product}.
+          <Icon name="confirmed" size={14} />
+          <span>Read-only. Sonar cannot write, move or delete anything in {either}.</span>
         </p>
 
         {source.folders && (
           <fieldset className="consent__group">
             <legend className="label">Folders</legend>
-            <label>
-              <input type="radio" name="folders" checked={folders === "all"} onChange={() => setFolders("all")} /> All folders
+            <label className="option">
+              <input type="radio" name="folders" checked={folders === "all"} onChange={() => setFolders("all")} />
+              <span>All folders</span>
             </label>
-            <label>
-              <input type="radio" name="folders" checked={folders === "chosen"} onChange={() => setFolders("chosen")} /> Only the
-              folders I choose
+            <label className="option">
+              <input type="radio" name="folders" checked={folders === "chosen"} onChange={() => setFolders("chosen")} />
+              <span>Only the folders I choose</span>
             </label>
             {folders === "chosen" && (
               <div className="consent__folders">
                 {source.folders.map((f) => (
-                  <label key={f}>
-                    <input type="checkbox" checked={chosen.includes(f)} onChange={() => toggle(f)} /> {f}
+                  <label key={f} className="option">
+                    <input type="checkbox" checked={chosen.includes(f)} onChange={() => toggle(f)} />
+                    <span>{f}</span>
                   </label>
                 ))}
               </div>
@@ -98,14 +103,14 @@ export function ConsentDialog({ source, product, initial, onAllow, onCancel }: C
 
         {source.id === "mail" && (
           <fieldset className="consent__group">
-            <legend className="label">Mail</legend>
-            <label>
-              <input type="radio" name="mail" checked={mail === "shared"} onChange={() => setMail("shared")} /> Shared inboxes
-              only, {andList(SHARED_INBOXES)}
+            <legend className="label">Which mail</legend>
+            <label className="option">
+              <input type="radio" name="mail" checked={mail === "shared"} onChange={() => setMail("shared")} />
+              <span>Shared inboxes only: {andList(SHARED_INBOXES)}</span>
             </label>
-            <label>
-              <input type="radio" name="mail" checked={mail === "domains"} onChange={() => setMail("domains")} /> A search across
-              the company, limited to the supplier domains on the vendor list
+            <label className="option">
+              <input type="radio" name="mail" checked={mail === "domains"} onChange={() => setMail("domains")} />
+              <span>A search across the company, limited to the supplier domains on the vendor list</span>
             </label>
           </fieldset>
         )}

@@ -30,9 +30,16 @@ const cloudmetricItem = "decide:cloudmetric-subscription:2027-03-01";
 
 export const beats: Beat[] = [
   {
+    moment: "setup",
+    caption: "The procurement lead signs in with the company's work account to set Sonar up.",
+    acts: [{ go: "/login" }, { viewer: "kavya" }, { clock: "2026-11-19" }, { wait: 2500 }, { click: "[data-nudge=login-continue]" }],
+    focus: "[data-tour=login-email]",
+    hold: 2500,
+  },
+  {
     moment: null,
     caption: "Sonar finds a company's supplier contracts, reads them, and tells the right person when one needs them.",
-    acts: [{ go: "/welcome?step=1" }, { viewer: "kavya" }, { clock: "2026-11-19" }],
+    acts: [{ go: "/welcome?step=1" }],
     focus: "[data-tour=wizard-progress]",
     hold: 4500,
   },

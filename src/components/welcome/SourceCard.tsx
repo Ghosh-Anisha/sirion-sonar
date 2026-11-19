@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import type { Source } from "../../data/sources";
-import { connectEntry, scopeText } from "../../logic/accessText";
+import { andList, connectEntry, scopeText } from "../../logic/accessText";
 import { formatDate } from "../../logic/format";
 import type { SourceScope } from "../../logic/onboarding";
 import { useActor } from "../../state/useActor";
@@ -17,14 +17,17 @@ interface Connecting {
   actor: ReturnType<typeof useActor>;
 }
 
-/** One source: pick the product, allow it on a consent screen, then watch it connect. */
+const sameSet = (a: string[], b: string[]) => a.length === b.length && a.every((x) => b.includes(x));
+
+/** One source: pick one or more products, allow them on one consent screen, then watch them connect. */
 export function SourceCard({ source }: { source: Source }) {
   const { state, dispatch } = useOnboarding();
   const actor = useActor();
   const current = state.sources[source.id];
   const [asking, setAsking] = useState(false);
   const [connecting, setConnecting] = useState<Connecting | null>(null);
-  const product = current.product;
+  const picked = source.products.filter((p) => current.products.includes(p));
+  const changed = current.status === "connected" && current.scope !== null && !sameSet(picked, current.scope.products);
 
   useEffect(() => {
     if (!connecting) return;
@@ -49,18 +52,12 @@ export function SourceCard({ source }: { source: Source }) {
       </header>
       <p className="muted">{source.purpose}</p>
 
-      <fieldset className="source__products" disabled={connecting !== null || current.status === "connected"}>
-        <legend className="label">Product</legend>
+      <fieldset className="source__products" disabled={connecting !== null}>
+        <legend className="label">Products, pick all the company uses</legend>
         {source.products.map((p) => (
-          <label key={p} className="source__product">
-            <input
-              type="radio"
-              name={`product-${source.id}`}
-              value={p}
-              checked={product === p}
-              onChange={() => dispatch({ type: "product", source: source.id, product: p })}
-            />
-            {p}
+          <label key={p} className="option">
+            <input type="checkbox" value={p} checked={picked.includes(p)} onChange={() => dispatch({ type: "toggle-product", source: source.id, product: p })} />
+            <span>{p}</span>
           </label>
         ))}
       </fieldset>
@@ -68,7 +65,7 @@ export function SourceCard({ source }: { source: Source }) {
       <div className="source__status">
         {connecting ? (
           <div role="status" className="stack" style={{ gap: "var(--space-2)" }}>
-            <p>Connecting to {connecting.scope.product}, read-only.</p>
+            <p>Connecting to {andList(connecting.scope.products)}, read-only.</p>
             <div className="connecting-bar" aria-hidden="true">
               <span />
             </div>
@@ -79,8 +76,8 @@ export function SourceCard({ source }: { source: Source }) {
               <Icon name="confirmed" size={14} /> Connected
             </p>
             <p className="source__scope">{scopeText(source.id, current.scope)}.</p>
-            <Button variant="quiet" onClick={() => setAsking(true)}>
-              Change access
+            <Button variant={changed ? "primary" : "quiet"} disabled={picked.length === 0} onClick={() => setAsking(true)}>
+              {changed ? "Update access" : "Change access"}
             </Button>
           </>
         ) : (
@@ -90,15 +87,15 @@ export function SourceCard({ source }: { source: Source }) {
                 Access revoked by {current.revoked.by} on {formatDate(current.revoked.on)}.
               </p>
             )}
-            <Button variant="primary" disabled={!product} onClick={() => setAsking(true)}>
-              {product ? `Connect ${product}` : "Pick a product first"}
+            <Button variant="primary" disabled={picked.length === 0} onClick={() => setAsking(true)}>
+              {picked.length === 0 ? "Pick at least one product" : `Connect ${andList(picked)}`}
             </Button>
           </>
         )}
       </div>
 
-      {asking && product && (
-        <ConsentDialog source={source} product={product} initial={current.scope} onAllow={allow} onCancel={() => setAsking(false)} />
+      {asking && picked.length > 0 && (
+        <ConsentDialog source={source} products={picked} initial={current.scope} onAllow={allow} onCancel={() => setAsking(false)} />
       )}
     </section>
   );

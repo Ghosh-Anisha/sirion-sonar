@@ -10,7 +10,7 @@ describe("the autoplay story", () => {
   });
 
   it("runs for a little over a minute", () => {
-    expect(storySeconds(beats)).toBe(75);
+    expect(storySeconds(beats)).toBe(80);
   });
 
   it("follows the copy rules", () => {

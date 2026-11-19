@@ -12,14 +12,13 @@ export interface Source {
   products: string[];
   /** What Sonar will read once allowed. */
   reads: string[];
+  /** What Sonar never does with this source, each a full sentence. */
+  never: string[];
   /** Folders the company can pick from, for sources that have them. */
   folders?: string[];
   /** What stops working if access is revoked. */
   stops: string[];
 }
-
-/** What Sonar never does, on any source. */
-export const NEVER = ["Hold bank credentials.", "Move money.", "Change or delete files.", "Send anything on its own."];
 
 export const sources: Source[] = [
   {
@@ -28,6 +27,11 @@ export const sources: Source[] = [
     purpose: "Who the company pays, when and how much.",
     products: ["Zoho Books", "Tally", "QuickBooks", "SAP"],
     reads: ["The vendor list.", "Payment dates and amounts.", "The payee name as written on each line."],
+    never: [
+      "It never asks for or holds bank credentials.",
+      "It never moves money or approves a payment.",
+      "It never changes a record in the books.",
+    ],
     stops: [
       "New payments stop coming in, so a supplier paid with no contract is no longer found.",
       "Amounts paid to each supplier stop updating.",
@@ -39,6 +43,11 @@ export const sources: Source[] = [
     purpose: "Where the contracts, amendments and invoices are saved.",
     products: ["Google Drive", "OneDrive", "SharePoint", "Zoho WorkDrive"],
     reads: ["The first page of each file, to tell what it is.", "The full text of contracts, amendments and invoices, and nothing else."],
+    never: [
+      "It never changes, moves or deletes a file.",
+      "It never keeps anything from files that are not contracts, amendments or invoices.",
+      "It never shares a file with anyone.",
+    ],
     folders: ["Contracts", "Ops", "Admin", "Finance", "Legal", "Marketing", "HR"],
     stops: [
       "New contracts and amendments saved to the drive are not found.",
@@ -51,6 +60,11 @@ export const sources: Source[] = [
     purpose: "Where suppliers send invoices, notices and amendments.",
     products: ["Gmail", "Outlook", "Zoho Mail"],
     reads: ["Messages to and from the supplier domains on the vendor list.", "Invoices and notices attached to those messages."],
+    never: [
+      "It never reads mail outside the supplier domains.",
+      "It never reads a person's own mailbox, except mail from supplier domains when you allow the company-wide search.",
+      "It never sends, replies or deletes. Replies go from Sonar's own address, after an owner clicks send.",
+    ],
     stops: [
       "Supplier emails stop arriving, so invoices are no longer checked against the agreed rate.",
       "Price rises and amendments sent by mail are not picked up.",

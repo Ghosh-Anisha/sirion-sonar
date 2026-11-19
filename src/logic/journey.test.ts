@@ -12,7 +12,7 @@ import { skipEvent } from "./skip";
 import { planFirstRead } from "./firstRead";
 
 const plan = planFirstRead(vendors, contracts, payments, emails);
-const skipped = reduceOnboarding(INITIAL_ONBOARDING, skipEvent(INITIAL_ONBOARDING, plan, { on: DEMO_START, by: "Kavya Raman", seq: 0 }, "Vikram Nair"));
+const skipped = reduceOnboarding(INITIAL_ONBOARDING, skipEvent(INITIAL_ONBOARDING, plan, { on: DEMO_START, by: "Kavya Raman", seq: 0 }, "Vikram Nair", "kavya.raman@tamarindhome.example"));
 const itemsOn = (today: string, actions = {}) => buildItems({ today, firstReadOn: DEMO_START, vendors, contracts, payments, emails, actions });
 
 function input(change: Partial<JourneyInput> = {}): JourneyInput {

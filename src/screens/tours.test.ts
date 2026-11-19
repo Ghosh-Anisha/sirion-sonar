@@ -14,9 +14,10 @@ import { firstReadPlan } from "../state/firstReadPlan";
  * screen the way a first-time viewer sees it after Skip to demo, and the welcome screen fresh.
  */
 
-const skipped = reduceOnboarding(INITIAL_ONBOARDING, skipEvent(INITIAL_ONBOARDING, firstReadPlan, { on: DEMO_START, by: "Kavya Raman", seq: 0 }, "Vikram Nair"));
+const skipped = reduceOnboarding(INITIAL_ONBOARDING, skipEvent(INITIAL_ONBOARDING, firstReadPlan, { on: DEMO_START, by: "Kavya Raman", seq: 0 }, "Vikram Nair", "kavya.raman@tamarindhome.example"));
 
 const PATHS: Record<TourScreen, string> = {
+  login: "/login",
   welcome: "/welcome",
   home: "/home",
   contracts: "/contracts",
@@ -36,7 +37,7 @@ const PATHS: Record<TourScreen, string> = {
 };
 
 function render(path: string, onboarding: object) {
-  const store: Record<string, string> = { "sirion-sonar.onboarding.v1": JSON.stringify(onboarding) };
+  const store: Record<string, string> = { "sirion-sonar.onboarding.v2": JSON.stringify(onboarding) };
   (globalThis as { window?: unknown }).window = {
     localStorage: { getItem: (k: string) => store[k] ?? null, setItem() {} },
     matchMedia: () => ({ matches: false }),
@@ -53,7 +54,8 @@ describe("tours", () => {
     it(`${screen}: every step points at something on the screen`, () => {
       const path = PATHS[screen];
       expect(tourScreenFor(path.split("?")[0])).toBe(screen);
-      const found = targetsOn(render(path, screen === "welcome" ? INITIAL_ONBOARDING : skipped));
+      const fresh = screen === "login" ? INITIAL_ONBOARDING : { ...INITIAL_ONBOARDING, signedIn: { email: "kavya.raman@tamarindhome.example", on: DEMO_START } };
+      const found = targetsOn(render(path, screen === "welcome" || screen === "login" ? fresh : skipped));
       const steps = tours[screen];
       expect(steps.length).toBeGreaterThanOrEqual(3);
       expect(steps.length).toBeLessThanOrEqual(5);

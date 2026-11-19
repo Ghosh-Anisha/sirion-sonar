@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useMemo, useReducer, type ReactNode } from "react";
 import { INITIAL_ONBOARDING, parseOnboarding, reduceOnboarding, type Onboarding, type OnboardingEvent } from "../logic/onboarding";
 
-const STORAGE_KEY = "sirion-sonar.onboarding.v1";
+const STORAGE_KEY = "sirion-sonar.onboarding.v2";
 
 function load(): Onboarding {
   try {

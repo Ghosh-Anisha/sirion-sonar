@@ -23,7 +23,7 @@ The app uses hash routes, so any static host works. On Vercel, import the repo a
 
 ## Walking through the demo
 
-Opening the site lands on the onboarding wizard at `/welcome`. Start the walkthrough opens the Demo guide, which takes you through the nine moments of the user journey: setup, first read, confirm, a deadline gets close, decide, an invoice differs, an amendment arrives, nobody acts, and handoff. Do this next moves the clock and switches the viewer where a moment needs it. Skip to demo jumps straight to the list with the first read done.
+Opening the site lands on a mock sign-in at `/login`. It asks for no password and checks nothing. Then comes the onboarding wizard at `/welcome`, where each source can connect more than one product, such as Google Drive and SharePoint. Watch the demo plays the whole story by itself in about 80 seconds. Walk through it yourself opens the Demo guide, which takes you through the nine moments of the user journey: setup, first read, confirm, a deadline gets close, decide, an invoice differs, an amendment arrives, nobody acts, and handoff. Do this next moves the clock and switches the viewer where a moment needs it. Skip to demo jumps straight to the list with the first read done.
 
 In the top bar, Tour replays the tour for the current screen, Show the thinking adds Under the hood badges to each part of a screen, View as shows the demo as another person, the clock moves the date forward, and Reset demo starts again.
 

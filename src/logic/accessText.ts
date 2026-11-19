@@ -20,13 +20,13 @@ export function andList(items: string[]): string {
 export function scopeText(source: SourceId, scope: SourceScope): string {
   switch (source) {
     case "payables":
-      return `${scope.product}, a read-only export of the vendor list, payment dates and amounts`;
+      return `${andList(scope.products)}, a read-only export of the vendor list, payment dates and amounts`;
     case "drive":
-      return `${scope.product}, read-only, on ${scope.folders === "all" ? "all folders" : `the ${andList(scope.chosen)} ${scope.chosen.length === 1 ? "folder" : "folders"}`}`;
+      return `${andList(scope.products)}, read-only, on ${scope.folders === "all" ? "all folders" : `the ${andList(scope.chosen)} ${scope.chosen.length === 1 ? "folder" : "folders"}`}`;
     case "mail":
       return scope.mail === "shared"
-        ? `${scope.product}, read-only, on the shared inboxes ${andList(SHARED_INBOXES)}`
-        : `${scope.product}, read-only, a search across the company limited to the supplier domains on the vendor list`;
+        ? `${andList(scope.products)}, read-only, on the shared inboxes ${andList(SHARED_INBOXES)}`
+        : `${andList(scope.products)}, read-only, a search across the company limited to the supplier domains on the vendor list`;
   }
 }
 
@@ -61,8 +61,9 @@ export function connectEntry(source: SourceId, scope: SourceScope, { on, by, seq
   return { key: `connect:${source}:${seq}`, on, by, source, kind: "connect", text: `Connected ${scopeText(source, scope)}.` };
 }
 
-export function revokeEntry(source: SourceId, product: string, { on, by, seq }: Actor): AccessLogEntry {
-  return { key: `revoke:${source}:${seq}`, on, by, source, kind: "revoke", text: `Revoked access to ${product}. Sonar no longer reads it.` };
+export function revokeEntry(source: SourceId, products: string[], { on, by, seq }: Actor): AccessLogEntry {
+  const them = products.length === 1 ? "it" : "them";
+  return { key: `revoke:${source}:${seq}`, on, by, source, kind: "revoke", text: `Revoked access to ${andList(products)}. Sonar no longer reads ${them}.` };
 }
 
 export function requestEntry(to: Requester, { on, by, seq }: Actor): AccessLogEntry {

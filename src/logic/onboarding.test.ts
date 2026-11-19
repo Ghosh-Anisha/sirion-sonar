@@ -3,9 +3,9 @@ import { accessRequest, approveEntry, connectEntry, readEntries, revokeEntry, sc
 import { allConnected, appendLog, INITIAL_ONBOARDING, needsApproval, parseOnboarding, reduceOnboarding, type SourceScope } from "./onboarding";
 
 const actor = (seq: number) => ({ on: "2026-11-19", by: "Kavya Raman", seq });
-const drive: SourceScope = { product: "Google Drive", folders: "chosen", chosen: ["Contracts", "Finance"], mail: "shared" };
-const mail: SourceScope = { product: "Gmail", folders: "all", chosen: [], mail: "domains" };
-const payables: SourceScope = { product: "Zoho Books", folders: "all", chosen: [], mail: "shared" };
+const drive: SourceScope = { products: ["Google Drive"], folders: "chosen", chosen: ["Contracts", "Finance"], mail: "shared" };
+const mail: SourceScope = { products: ["Gmail"], folders: "all", chosen: [], mail: "domains" };
+const payables: SourceScope = { products: ["Zoho Books"], folders: "all", chosen: [], mail: "shared" };
 
 function connected() {
   let state = reduceOnboarding(INITIAL_ONBOARDING, { type: "role", role: "procurement-lead" });
@@ -48,7 +48,7 @@ describe("reduceOnboarding", () => {
   it("only ever adds to the access log", () => {
     let state = connected();
     const before = state.log;
-    state = reduceOnboarding(state, { type: "revoke", source: "mail", entry: revokeEntry("mail", "Gmail", actor(state.log.length)) });
+    state = reduceOnboarding(state, { type: "revoke", source: "mail", entry: revokeEntry("mail", ["Gmail"], actor(state.log.length)) });
     expect(state.sources.mail).toMatchObject({ status: "revoked", revoked: { by: "Kavya Raman" } });
     expect(state.log.slice(0, before.length)).toEqual(before);
     expect(state.log.at(-1)!.text).toBe("Revoked access to Gmail. Sonar no longer reads it.");
@@ -93,5 +93,30 @@ describe("parseOnboarding", () => {
   it("reads back what was saved", () => {
     const state = connected();
     expect(parseOnboarding(JSON.stringify(state))).toEqual(state);
+  });
+});
+
+describe("connecting more than one product", () => {
+  it("picks and unpicks products on a card", () => {
+    let state = reduceOnboarding(INITIAL_ONBOARDING, { type: "toggle-product", source: "drive", product: "Google Drive" });
+    state = reduceOnboarding(state, { type: "toggle-product", source: "drive", product: "SharePoint" });
+    expect(state.sources.drive.products).toEqual(["Google Drive", "SharePoint"]);
+    state = reduceOnboarding(state, { type: "toggle-product", source: "drive", product: "Google Drive" });
+    expect(state.sources.drive.products).toEqual(["SharePoint"]);
+  });
+
+  it("connects them together and logs them in one line", () => {
+    const scope: SourceScope = { products: ["Google Drive", "SharePoint"], folders: "all", chosen: [], mail: "shared" };
+    const state = reduceOnboarding(INITIAL_ONBOARDING, { type: "connect", source: "drive", scope, entry: connectEntry("drive", scope, actor(0)) });
+    expect(state.sources.drive).toMatchObject({ status: "connected", products: ["Google Drive", "SharePoint"] });
+    expect(state.log[0].text).toBe("Connected Google Drive and SharePoint, read-only, on all folders.");
+    expect(revokeEntry("drive", scope.products, actor(1)).text).toBe("Revoked access to Google Drive and SharePoint. Sonar no longer reads them.");
+  });
+});
+
+describe("signing in", () => {
+  it("keeps the work account and the day", () => {
+    const state = reduceOnboarding(INITIAL_ONBOARDING, { type: "sign-in", email: "kavya.raman@tamarindhome.example", on: "2026-11-19" });
+    expect(state.signedIn).toEqual({ email: "kavya.raman@tamarindhome.example", on: "2026-11-19" });
   });
 });
