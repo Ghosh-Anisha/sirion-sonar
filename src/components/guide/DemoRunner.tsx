@@ -8,7 +8,7 @@ import { useGuide } from "../../state/GuideContext";
 import { useViewer } from "../../state/ViewerContext";
 import { Button } from "../ui/Button";
 import { DemoHotspot } from "./DemoHotspot";
-import { findTarget, pressedByViewer } from "./demoTargets";
+import { clickMatches, findTarget, pressedByViewer } from "./demoTargets";
 import "./Guide.css";
 
 const FIND_WITHIN_MS = 3000;
@@ -16,9 +16,9 @@ const FIND_WITHIN_MS = 3000;
 const AFTER_CLICK_MS = 450;
 
 /**
- * The clickable demo. Each step points at one thing and waits for the viewer to press it,
- * then moves on. Steps that only show something wait for Next. The bar says what the step is for,
- * and Do it for me presses the thing for anyone who is stuck.
+ * The clickable demo. Each step points at one thing and moves on when the viewer presses it.
+ * Next is always there and only moves the bar, so the bar never acts on the app behind the viewer's back.
+ * Switching person and moving the clock have their own button, because there is nothing on screen to click for them.
  */
 export function DemoRunner() {
   const { demo, setDemo } = useGuide();
@@ -57,25 +57,23 @@ export function DemoRunner() {
     // A step's target is found once each time the step is reached.
   }, [index]);
 
-  // Move on once the viewer presses the thing pointed at.
+  // Move on once the viewer presses the control the step asks for.
   useEffect(() => {
-    if (!target || !pressedByViewer(action)) return;
+    if (!action || !pressedByViewer(action)) return;
     let moved = false;
     const onClick = (e: MouseEvent) => {
-      if (moved || !(e.target instanceof Node) || !target.contains(e.target)) return;
+      if (moved || !clickMatches(e.target, action)) return;
       moved = true;
       window.setTimeout(() => go(index + 1), AFTER_CLICK_MS);
     };
     document.addEventListener("click", onClick, true);
     return () => document.removeEventListener("click", onClick, true);
-  }, [target, index]);
+  }, [index]);
 
-  /** Does the step for the viewer: presses the target, or sets the clock or the viewer. */
-  const doIt = () => {
+  /** Switches person or moves the clock, the two steps with nothing on screen to click. */
+  const setScene = () => {
     if (action && "clock" in action) setToday(action.clock);
     else if (action && "viewer" in action) setViewerId(action.viewer);
-    else if (target) return target.click();
-    else if (action && "click" in action && action.fallback) navigate(action.fallback);
     go(index + 1);
   };
 
@@ -98,7 +96,7 @@ export function DemoRunner() {
           </p>
           {waitsForClick && action && "label" in action && (
             <p className="demo-bar__hint">
-              <span className="demo-bar__pulse" aria-hidden="true" /> {action.label} on the screen to go on.
+              <span className="demo-bar__pulse" aria-hidden="true" /> {action.label} on the screen and this bar follows. Already done it? Press Next in this bar.
             </p>
           )}
         </div>
@@ -106,18 +104,15 @@ export function DemoRunner() {
           <Button onClick={() => go(index - 1)} disabled={index === 0}>
             Back
           </Button>
-          {action && ("clock" in action || "viewer" in action) ? (
-            <Button variant="primary" onClick={doIt}>
+          {action && ("clock" in action || "viewer" in action) && (
+            <Button variant="primary" onClick={setScene}>
               {person ? `Become ${person.name.split(" ")[0]}` : action.label}
             </Button>
-          ) : waitsForClick ? (
-            <Button onClick={doIt}>Do it for me</Button>
-          ) : (
-            !last && (
-              <Button variant="primary" onClick={() => go(index + 1)}>
-                Next
-              </Button>
-            )
+          )}
+          {!last && (
+            <Button variant={waitsForClick || (action && ("clock" in action || "viewer" in action)) ? "secondary" : "primary"} onClick={() => go(index + 1)}>
+              Next
+            </Button>
           )}
           <Button variant="quiet" onClick={() => setDemo(null)}>
             {last ? "Close" : "End demo"}

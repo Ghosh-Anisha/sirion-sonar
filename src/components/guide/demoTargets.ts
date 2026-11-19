@@ -19,6 +19,20 @@ export function findTarget(action: Action): HTMLElement | undefined {
   );
 }
 
+/**
+ * Whether a click landed on the control a step asks for. It checks the clicked element and its parents
+ * against the step itself, so a click still counts after the screen has redrawn the control.
+ */
+export function clickMatches(clicked: EventTarget | null, action: Action): boolean {
+  if (!(clicked instanceof Element)) return false;
+  if ("click" in action) return clicked.closest(action.click) !== null;
+  if ("press" in action) {
+    const control = clicked.closest("button, a, label");
+    return control !== null && control.textContent?.trim() === action.press;
+  }
+  return false;
+}
+
 /** Whether the viewer presses the target themselves. The clock and viewer are set by the bar's button instead. */
 export function pressedByViewer(action: Action | undefined): boolean {
   return action !== undefined && ("click" in action || "press" in action);
