@@ -4,6 +4,7 @@ import { people } from "../data/people";
 import { sirionLayers } from "../data/sirionMap";
 import { Badge } from "../components/ui/Badge";
 import { Button } from "../components/ui/Button";
+import { EmptyState } from "../components/ui/EmptyState";
 import { Table, type Column } from "../components/ui/Table";
 import { Toast } from "../components/ui/Toast";
 import { formatDate } from "../logic/format";
@@ -67,7 +68,11 @@ export function Sirion() {
             Export CSV
           </Button>
         </div>
-        <Table caption="The contract ledger" columns={COLUMNS} rows={rows} rowKey={(r) => r.contractId} />
+        {rows.length === 0 ? (
+          <EmptyState title="The ledger is empty" body="Contracts appear here once the first read has found them." />
+        ) : (
+          <Table caption="The contract ledger" columns={COLUMNS} rows={rows} rowKey={(r) => r.contractId} />
+        )}
       </section>
 
       <section className="stack" aria-labelledby="map-title">

@@ -8,9 +8,13 @@ const PAD = 8;
 const GAP = 12;
 const CARD_WIDTH = 320;
 const CARD_ROOM = 220;
+/** A target taller than this share of the window is lit from its top, so the coach mark still fits beside it. */
+const TALL = 0.45;
 
+/** The first element with this data-tour name that is showing. A screen can have one per layout, such as a map and its narrow-screen list. */
 function find(target: string): HTMLElement | null {
-  return document.querySelector<HTMLElement>(`[data-tour="${target}"]`);
+  const all = document.querySelectorAll<HTMLElement>(`[data-tour="${target}"]`);
+  return Array.from(all).find((el) => el.getClientRects().length > 0) ?? null;
 }
 
 function reducedMotion(): boolean {
@@ -55,7 +59,7 @@ export function Tour({ steps, onClose }: TourProps) {
     const el = step ? find(step.target) : null;
     if (!el) return setBox(null);
     const r = el.getBoundingClientRect();
-    setBox({ top: r.top, left: r.left, width: r.width, height: r.height });
+    setBox({ top: r.top, left: r.left, width: r.width, height: Math.min(r.height, window.innerHeight * TALL) });
   }, [step]);
 
   useEffect(() => {
@@ -71,7 +75,8 @@ export function Tour({ steps, onClose }: TourProps) {
       else onClose();
       return;
     }
-    el.scrollIntoView({ block: "center", inline: "nearest", behavior: reducedMotion() ? "auto" : "smooth" });
+    const tall = el.getBoundingClientRect().height > window.innerHeight * TALL;
+    el.scrollIntoView({ block: tall ? "start" : "center", inline: "nearest", behavior: reducedMotion() ? "auto" : "smooth" });
     measure();
     cardRef.current?.focus();
   }, [step, index, shown.length, measure, onClose]);

@@ -1,4 +1,5 @@
-import { NavLink } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { NavLink, useLocation } from "react-router-dom";
 
 const SECTIONS = [
   {
@@ -25,25 +26,35 @@ const SECTIONS = [
   },
 ];
 
+/** The main nav. On narrow screens it folds behind a Menu button, so the page starts near the top. */
 export function SideNav() {
+  const [open, setOpen] = useState(false);
+  const { pathname } = useLocation();
+  useEffect(() => setOpen(false), [pathname]);
+
   return (
-    <nav className="sidenav" aria-label="Main">
-      {SECTIONS.map((section) => (
-        <div key={section.title} className="sidenav__section">
-          <h2 className="sidenav__title label" id={`nav-${section.title}`}>
-            {section.title}
-          </h2>
-          <ul aria-labelledby={`nav-${section.title}`}>
-            {section.links.map((link) => (
-              <li key={link.to}>
-                <NavLink to={link.to} className="sidenav__link">
-                  {link.text}
-                </NavLink>
-              </li>
-            ))}
-          </ul>
-        </div>
-      ))}
+    <nav className={open ? "sidenav sidenav--open" : "sidenav"} aria-label="Main">
+      <button type="button" className="sidenav__menu" aria-expanded={open} aria-controls="sidenav-sections" onClick={() => setOpen(!open)}>
+        {open ? "Close menu" : "Menu"}
+      </button>
+      <div id="sidenav-sections" className="sidenav__sections">
+        {SECTIONS.map((section) => (
+          <div key={section.title} className="sidenav__section">
+            <h2 className="sidenav__title label" id={`nav-${section.title}`}>
+              {section.title}
+            </h2>
+            <ul aria-labelledby={`nav-${section.title}`}>
+              {section.links.map((link) => (
+                <li key={link.to}>
+                  <NavLink to={link.to} className="sidenav__link">
+                    {link.text}
+                  </NavLink>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
     </nav>
   );
 }

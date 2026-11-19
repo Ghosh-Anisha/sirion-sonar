@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import type { Contract } from "../data/types";
 import { Badge } from "../components/ui/Badge";
+import { EmptyState } from "../components/ui/EmptyState";
 import { Table, type Column } from "../components/ui/Table";
 import { contractDates } from "../logic/dates";
 import { formatDate } from "../logic/format";
@@ -34,7 +35,11 @@ export function Contracts() {
       <p className="muted">
         The {contracts.length} contracts Sonar found and read. Open one to check its facts against the text.
       </p>
-      <Table tour="contracts-table" caption="Contracts on file" columns={columns} rows={contracts} rowKey={(c) => c.id} />
+      {contracts.length === 0 ? (
+        <EmptyState title="No contracts read yet" body="Run the first read in onboarding and the contracts Sonar finds show up here." action={<Link to="/welcome">Go to onboarding</Link>} />
+      ) : (
+        <Table tour="contracts-table" caption="Contracts on file" columns={columns} rows={contracts} rowKey={(c) => c.id} />
+      )}
     </div>
   );
 }

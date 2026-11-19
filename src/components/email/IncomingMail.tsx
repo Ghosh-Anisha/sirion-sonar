@@ -5,6 +5,7 @@ import { formatDate } from "../../logic/format";
 import { traceEmail } from "../../logic/inbound";
 import { useLedger } from "../../state/useLedger";
 import { PROCUREMENT_LEAD } from "../../state/ViewerContext";
+import { EmptyState } from "../ui/EmptyState";
 import { StageList } from "./StageList";
 import "./Email.css";
 
@@ -28,6 +29,10 @@ export function IncomingMail() {
         today: ledger.today,
       })
     : null;
+
+  if (arrived.length === 0) {
+    return <EmptyState title="No supplier mail yet" body="Mail from supplier domains shows up here as it arrives. Move the clock forward to see what comes in." />;
+  }
 
   return (
     <div className="inbox">

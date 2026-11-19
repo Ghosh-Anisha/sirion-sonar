@@ -8,6 +8,10 @@
   gap: var(--space-1);
 }
 
+.home__list {
+  gap: var(--space-6);
+}
+
 .home__why {
   font-size: var(--text-12);
   color: var(--ink-2);

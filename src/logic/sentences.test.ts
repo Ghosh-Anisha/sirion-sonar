@@ -17,37 +17,37 @@ const sentenceFor = (today: string, id: string) => {
 
 describe("daysAway", () => {
   it("counts forward and back in plain words", () => {
-    expect(daysAway("2026-11-19", "2027-03-01")).toBe("That is 102 days away.");
-    expect(daysAway("2026-11-19", "2026-11-20")).toBe("That is tomorrow.");
-    expect(daysAway("2026-11-19", "2026-11-19")).toBe("That is today.");
-    expect(daysAway("2026-11-19", "2026-11-18")).toBe("That was yesterday.");
-    expect(daysAway("2026-11-19", "2026-11-16")).toBe("That was 3 days ago.");
+    expect(daysAway("2026-11-19", "2027-03-01")).toBe("in 102 days");
+    expect(daysAway("2026-11-19", "2026-11-20")).toBe("tomorrow");
+    expect(daysAway("2026-11-19", "2026-11-19")).toBe("today");
+    expect(daysAway("2026-11-19", "2026-11-18")).toBe("yesterday");
+    expect(daysAway("2026-11-19", "2026-11-16")).toBe("3 days ago");
   });
 });
 
 describe("itemSentence on the sample data", () => {
   it("writes the renewal in the spec's words", () => {
     expect(sentenceFor("2026-12-01", "decide:cloudmetric-subscription:2027-03-01")).toBe(
-      "Cloudmetric renews on 30 Apr 2027 unless you tell them by 1 Mar. That is 90 days away.",
+      "Cloudmetric renews on 30 Apr 2027 unless you tell them by 1 Mar, which is in 90 days.",
     );
   });
 
   it("says a contract that does not renew ends, and asks about extending", () => {
     expect(sentenceFor("2027-01-01", "decide:brightline-logistics:2027-04-01")).toBe(
-      "Brightline Logistics ends on 30 Jun 2027, so tell them by 1 Apr if you want to extend. That is 90 days away.",
+      "Brightline Logistics ends on 30 Jun 2027, so tell them by 1 Apr if you want to extend, which is in 90 days.",
     );
   });
 
   it("says so plainly once the last day to tell them has passed", () => {
     expect(sentenceFor("2026-12-03", "decide:ledgerline-payroll:2026-12-01")).toBe(
-      "Ledgerline Payroll Services renews on 31 Dec 2026, and the last day to tell them was 1 Dec. That was 2 days ago.",
+      "Ledgerline Payroll Services renews on 31 Dec 2026, and the last day to tell them was 1 Dec, 2 days ago.",
     );
     expect(sentenceFor("2026-12-03", "check:ledgerline-price-rise")).toMatch(/so reply today\.$/);
   });
 
   it("gives the safe date for a Bounded contract", () => {
     expect(sentenceFor(DEMO_START, "decide:kestrel-freight:2027-01-29")).toBe(
-      "Kestrel Freight Carriers renews on a date the scan does not show, so tell them by 29 Jan to be safe. That is 71 days away.",
+      "Kestrel Freight Carriers renews on a date the scan does not show, so tell them by 29 Jan to be safe, which is in 71 days.",
     );
   });
 
@@ -88,6 +88,18 @@ describe("itemSentence on the sample data", () => {
         const sentence = itemSentence(item, nameOf(item.vendorId), today);
         expect(sentence, item.id).not.toMatch(banned);
         expect(actionLabel(item)).not.toBe("");
+      }
+    }
+  });
+});
+
+describe("one sentence per item", () => {
+  it("never puts two sentences in an item line", () => {
+    for (const today of [DEMO_START, "2026-12-01", "2026-12-31", "2027-03-05"]) {
+      for (const item of buildItems({ today, firstReadOn: DEMO_START, vendors, contracts, payments, emails, actions: {} })) {
+        const s = itemSentence(item, item.vendorId, today);
+        expect(s.match(/[.?] [A-Z]/), s).toBeNull();
+        expect(s.endsWith("."), s).toBe(true);
       }
     }
   });

@@ -35,11 +35,10 @@ export const tours: Record<TourScreen, TourStep[]> = {
     { target: "topbar-tour", title: "Replay any time", body: "The Tour button plays the tour for whatever screen you are on." },
   ],
   home: [
-    { target: "coverage", title: "What was found", body: "How many of the suppliers the company pays have a contract on file. The rest show up as Find items." },
+    { target: "needs-you-list", title: "The list", body: "Everything that needs a person, one sentence each, with the nearest deadline at the top." },
     { target: "item-badges", title: "What the badge means", body: "Decide is a renewal, Check an invoice or price, Fix a missed service level, Find a supplier paid with no contract." },
-    { target: "item-row", title: "Why this one is on top", body: "The list is sorted by what is due first, so the nearest deadline leads." },
-    { target: "item-owner", title: "Whose it is", body: "Each item goes to its owner. With no owner, it goes to the procurement lead." },
-    { target: "clock", title: "What happens if you do nothing", body: "Move the clock on. An untouched item goes up to the procurement lead at 30 days and turns urgent at 7." },
+    { target: "clock", title: "The clock", body: "Move the date on to see what happens if nobody acts. An untouched item goes up to the procurement lead at 30 days." },
+    { target: "sample-banner", title: "Sample company, sample data", body: "Nothing here is connected. Every supplier, contract and payment is made up for the demo." },
   ],
   contracts: [
     { target: "contracts-table", title: "Every contract on file", body: "One row per contract, with its next notice deadline and its owner." },

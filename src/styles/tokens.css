@@ -20,7 +20,8 @@
   --find-soft: #efe9fb;
 
   /* Confidence labels */
-  --confirmed: #15803d;
+  /* The design system gives #15803D, which is 4.40:1 on --confirmed-soft. This darker green meets the 4.5:1 rule. */
+  --confirmed: #166534;
   --confirmed-soft: #e4f4e9;
   --derived: #1d4ed8;
   --derived-soft: #e8effd;

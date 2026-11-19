@@ -3,10 +3,20 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Sirion Sonar: a prototype that finds supplier contracts and tells the right person when one needs them. Sample company, sample data." />
     <title>Sirion Sonar</title>
+    <style>
+      .boot { display: grid; place-items: center; min-height: 100vh; margin: 0; font: 14px/1.5 Inter, system-ui, sans-serif; color: #4a5668; background: #f6f7f9; }
+      .boot strong { display: block; color: #0f1b2d; font-size: 16px; font-weight: 600; text-align: center; }
+    </style>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <div class="boot" role="status">
+        <p><strong>Sirion Sonar</strong>Loading the sample company</p>
+      </div>
+    </div>
+    <noscript>Sirion Sonar needs JavaScript to run. It is a static prototype with sample data, and nothing is sent anywhere.</noscript>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

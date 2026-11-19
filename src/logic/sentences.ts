@@ -8,37 +8,38 @@ import type { Item, ItemDetail, Reason } from "./items";
  * the item, which was computed in code.
  */
 
-/** "That is 102 days away." Counts from today to a date. */
+/** "in 102 days", "tomorrow", "today", "yesterday" or "3 days ago": from today to a date, to finish a sentence. */
 export function daysAway(today: string, date: string): string {
   const days = daysBetween(today, date);
-  if (days > 1) return `That is ${days} days away.`;
-  if (days === 1) return "That is tomorrow.";
-  if (days === 0) return "That is today.";
-  return days === -1 ? "That was yesterday." : `That was ${-days} days ago.`;
+  if (days > 1) return `in ${days} days`;
+  if (days === 1) return "tomorrow";
+  if (days === 0) return "today";
+  return days === -1 ? "yesterday" : `${-days} days ago`;
 }
 
 export function itemSentence(item: Item, vendorName: string, today: string): string {
   const d = item.detail;
   const by = formatShortDate(item.dueDate);
   const passed = daysBetween(today, item.dueDate) < 0;
-  const when = daysAway(today, item.dueDate);
+  // The countdown ends the sentence, so each item stays one sentence.
+  const when = passed ? `, ${daysAway(today, item.dueDate)}.` : `, which is ${daysAway(today, item.dueDate)}.`;
   switch (d.kind) {
     case "renewal": {
       const { endDate, autoRenews } = d.dates;
       if (!endDate) {
         return passed
-          ? `${vendorName} renews on a date the scan does not show, and the safe date to tell them was ${by}. ${when}`
-          : `${vendorName} renews on a date the scan does not show, so tell them by ${by} to be safe. ${when}`;
+          ? `${vendorName} renews on a date the scan does not show, and the safe date to tell them was ${by}${when}`
+          : `${vendorName} renews on a date the scan does not show, so tell them by ${by} to be safe${when}`;
       }
       const end = formatDate(endDate);
       if (autoRenews) {
         return passed
-          ? `${vendorName} renews on ${end}, and the last day to tell them was ${by}. ${when}`
-          : `${vendorName} renews on ${end} unless you tell them by ${by}. ${when}`;
+          ? `${vendorName} renews on ${end}, and the last day to tell them was ${by}${when}`
+          : `${vendorName} renews on ${end} unless you tell them by ${by}${when}`;
       }
       return passed
-        ? `${vendorName} ends on ${end}, and the last day to ask about extending was ${by}. ${when}`
-        : `${vendorName} ends on ${end}, so tell them by ${by} if you want to extend. ${when}`;
+        ? `${vendorName} ends on ${end}, and the last day to ask about extending was ${by}${when}`
+        : `${vendorName} ends on ${end}, so tell them by ${by} if you want to extend${when}`;
     }
     case "invoice":
       return `${vendorName} billed ${formatMoney(d.invoiced)} on invoice ${d.invoiceNumber}, which is ${formatMoney(d.difference)} more than the agreed rate, so check it before it is paid.`;

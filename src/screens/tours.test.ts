@@ -61,6 +61,10 @@ describe("tours", () => {
     });
   }
 
+  it("gives Home the four first-time steps: the list, the badges, the clock and the sample banner", () => {
+    expect(tours.home.map((s) => s.target)).toEqual(["needs-you-list", "item-badges", "clock", "sample-banner"]);
+  });
+
   it("follows the copy rules", () => {
     expect(JSON.stringify(tours)).not.toMatch(/[—–!]|\b(leverage|seamless|robust|powerful|unlock|empower)\b/i);
   });

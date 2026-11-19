@@ -59,9 +59,11 @@ export function Home() {
           body="New items show up here when a date gets close or a supplier sends something. Move the clock forward to see what comes next."
         />
       ) : (
-        GROUPS.map((g) => (
-          <ItemGroup key={g.id} id={g.id} title={g.title} hint={g.hint} rows={rows.filter((r) => r.group === g.id)} />
-        ))
+        <div className="stack home__list" data-tour="needs-you-list">
+          {GROUPS.map((g) => (
+            <ItemGroup key={g.id} id={g.id} title={g.title} hint={g.hint} rows={rows.filter((r) => r.group === g.id)} />
+          ))}
+        </div>
       )}
     </div>
   );
