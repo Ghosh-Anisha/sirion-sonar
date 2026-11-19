@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { ClockControl } from "./ClockControl";
+import { ViewAsSwitcher } from "./ViewAsSwitcher";
 
 export function TopBar() {
   return (
@@ -7,7 +8,10 @@ export function TopBar() {
       <Link to="/home" className="topbar__name">
         Sirion Sonar
       </Link>
-      <ClockControl />
+      <div className="topbar__controls">
+        <ViewAsSwitcher />
+        <ClockControl />
+      </div>
     </header>
   );
 }

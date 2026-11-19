@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { routeItem } from "./alerts";
+import { routeItem, urgencyGroup } from "./alerts";
 import type { Item } from "./items";
 
 const item = (overrides: Partial<Item> = {}): Item => ({
@@ -56,5 +56,14 @@ describe("routeItem", () => {
   it("stops escalating once someone acts", () => {
     const done = item({ status: "done", action: { kind: "renew", on: "2026-12-10", by: "neha" } });
     expect(routeItem(done, "2027-02-25", "kavya")).toMatchObject({ escalated: false, urgent: false, recipients: ["neha"] });
+  });
+});
+
+describe("urgencyGroup", () => {
+  it("groups by how close the due date is", () => {
+    expect(urgencyGroup(routeItem(item(), "2027-02-22", "kavya"))).toBe("urgent");
+    expect(urgencyGroup(routeItem(item(), "2027-02-21", "kavya"))).toBe("month");
+    expect(urgencyGroup(routeItem(item(), "2027-01-30", "kavya"))).toBe("month");
+    expect(urgencyGroup(routeItem(item(), "2027-01-29", "kavya"))).toBe("later");
   });
 });

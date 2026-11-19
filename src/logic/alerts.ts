@@ -7,6 +7,16 @@ export const ALERT_DAYS = [90, 30, 7] as const;
 export const ESCALATE_DAYS = 30;
 /** An open item is urgent this close to its deadline. */
 export const URGENT_DAYS = 7;
+/** Items due within this many days are grouped under This month. */
+export const THIS_MONTH_DAYS = 30;
+
+export type UrgencyGroup = "urgent" | "month" | "later";
+
+/** The Home grouping: Urgent, This month, Later. */
+export function urgencyGroup(routing: Routing): UrgencyGroup {
+  if (routing.urgent) return "urgent";
+  return routing.daysLeft <= THIS_MONTH_DAYS ? "month" : "later";
+}
 
 export interface Routing {
   /** Days until the due date. Negative once it has passed. */

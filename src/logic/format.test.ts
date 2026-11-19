@@ -1,5 +1,14 @@
 import { describe, expect, it } from "vitest";
-import { formatDate, formatMoney } from "./format";
+import { formatDate, formatMoney, formatMonthName, formatPercent, formatShortDate } from "./format";
+
+describe("formatShortDate, formatMonthName and formatPercent", () => {
+  it("formats for use inside sentences", () => {
+    expect(formatShortDate("2027-03-01")).toBe("1 Mar");
+    expect(formatMonthName("2026-10")).toBe("October");
+    expect(formatPercent(15)).toBe("15%");
+    expect(formatPercent(90.48)).toBe("90.5%");
+  });
+});
 
 describe("formatDate", () => {
   it("shows day, short month and year", () => {

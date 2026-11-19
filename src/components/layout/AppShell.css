@@ -19,6 +19,7 @@
 
 .topbar {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: var(--space-4);
@@ -34,14 +35,40 @@
   text-decoration: none;
 }
 
-.clock {
+.topbar__controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-3) var(--space-6);
+}
+
+.view-as,
+.clock,
+.clock__now {
   display: flex;
   align-items: center;
   gap: var(--space-2);
 }
 
+.clock {
+  flex-wrap: wrap;
+}
+
 .clock__date {
-  font-weight: var(--weight-medium);
+  min-width: 96px;
+  font-weight: var(--weight-semibold);
+}
+
+.view-as select,
+.clock__picker input {
+  min-height: 32px;
+  padding: var(--space-1) var(--space-2);
+  color: var(--ink);
+  font: inherit;
+  background: var(--surface);
+  border: var(--border);
+  border-radius: var(--radius-button);
 }
 
 .sample-banner {

@@ -1,13 +1,37 @@
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const MONTH_NAMES = [
+  "January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December",
+];
+
+function dateParts(iso: string): { year: string; monthIndex: number; day: number } {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso);
+  if (!match) throw new Error(`Not an ISO date: ${iso}`);
+  const monthIndex = Number(match[2]) - 1;
+  if (monthIndex < 0 || monthIndex > 11) throw new Error(`Bad month in ${iso}`);
+  return { year: match[1], monthIndex, day: Number(match[3]) };
+}
 
 /** Formats an ISO date (YYYY-MM-DD) as "14 Mar 2027". */
 export function formatDate(iso: string): string {
-  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso);
-  if (!match) throw new Error(`Not an ISO date: ${iso}`);
-  const [, year, month, day] = match;
-  const monthIndex = Number(month) - 1;
-  if (monthIndex < 0 || monthIndex > 11) throw new Error(`Bad month in ${iso}`);
-  return `${Number(day)} ${MONTHS[monthIndex]} ${year}`;
+  const { year, monthIndex, day } = dateParts(iso);
+  return `${day} ${MONTHS[monthIndex]} ${year}`;
+}
+
+/** Formats an ISO date as "1 Mar", for sentences where the year is clear. */
+export function formatShortDate(iso: string): string {
+  const { monthIndex, day } = dateParts(iso);
+  return `${day} ${MONTHS[monthIndex]}`;
+}
+
+/** Formats a month (YYYY-MM) as its name, such as "October". */
+export function formatMonthName(month: string): string {
+  return MONTH_NAMES[dateParts(`${month}-01`).monthIndex];
+}
+
+/** Formats a percentage with at most one decimal place: 15%, 90.5%. */
+export function formatPercent(value: number): string {
+  return `${Math.round(value * 10) / 10}%`;
 }
 
 /** Groups whole digits the Indian way: 1,20,000 and 12,34,56,789. */
