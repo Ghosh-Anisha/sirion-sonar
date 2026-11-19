@@ -4,6 +4,7 @@ import { reasonLabel } from "../../logic/sentences";
 import type { NeedsYouRow } from "../../state/useNeedsYou";
 import { PROCUREMENT_LEAD } from "../../state/ViewerContext";
 import { Badge } from "../ui/Badge";
+import { ThinkingBadge } from "../thinking/ThinkingBadge";
 
 /** The item's type, title, sentence and who it is with. */
 export function ItemHeader({ row, vendorName }: { row: NeedsYouRow; vendorName: string }) {
@@ -13,6 +14,7 @@ export function ItemHeader({ row, vendorName }: { row: NeedsYouRow; vendorName: 
       <div className="row">
         <Badge kind={item.type} />
         {routing.urgent && <Badge kind="urgent" />}
+        <ThinkingBadge at="item.routing" />
       </div>
       <h1>
         {vendorName}: {itemTitle(item).toLowerCase()}

@@ -7,6 +7,7 @@ import { useLedger } from "../../state/useLedger";
 import { toRow } from "../../state/useNeedsYou";
 import { PROCUREMENT_LEAD, useViewer } from "../../state/ViewerContext";
 import { Badge } from "../ui/Badge";
+import { ThinkingBadge } from "../thinking/ThinkingBadge";
 import "./Email.css";
 
 /** The weekly email, as the person being viewed as would get it. Each item has its reason and one link back in. */
@@ -23,6 +24,7 @@ export function WeeklyEmail() {
 
   return (
     <article className="mail" aria-label="Weekly email">
+      <ThinkingBadge at="email.weekly" />
       <dl className="mail__head">
         <dt className="label">From</dt>
         <dd>Sirion Sonar &lt;{SENDING_ADDRESS}&gt;</dd>

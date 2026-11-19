@@ -1,4 +1,5 @@
 import { Outlet } from "react-router-dom";
+import { UnderTheHood } from "../thinking/UnderTheHood";
 import { SampleBanner } from "./SampleBanner";
 import { SideNav } from "./SideNav";
 import { TopBar } from "./TopBar";
@@ -19,6 +20,7 @@ export function AppShell({ nav = true }: { nav?: boolean }) {
           <Outlet />
         </main>
       </div>
+      <UnderTheHood />
     </>
   );
 }

@@ -5,6 +5,7 @@ import { PROCUREMENT_LEAD } from "../../state/ViewerContext";
 import type { NeedsYouRow } from "../../state/useNeedsYou";
 import { Badge } from "../ui/Badge";
 import { ButtonLink } from "../ui/ButtonLink";
+import { ThinkingBadge } from "../thinking/ThinkingBadge";
 import "./ItemRow.css";
 
 /** One line on the Needs you list: a sentence, its type, why it is here, when it is due and whose it is. */
@@ -18,6 +19,7 @@ export function ItemRow({ row }: { row: NeedsYouRow }) {
       <div className="item-row__badges">
         <Badge kind={item.type} />
         {routing.urgent && <Badge kind="urgent" />}
+        <ThinkingBadge at={`home.${item.type}`} />
       </div>
       <div className="item-row__body">
         <Link to={href} className="item-row__sentence">

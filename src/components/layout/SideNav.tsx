@@ -8,6 +8,7 @@ const LINKS = [
   { to: "/privacy", text: "Privacy" },
   { to: "/sirion", text: "Sirion" },
   { to: "/access", text: "Access log" },
+  { to: "/architecture", text: "How it works" },
 ];
 
 export function SideNav() {

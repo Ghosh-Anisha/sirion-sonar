@@ -19,6 +19,7 @@ import { useDemoState } from "../state/DemoStateContext";
 import { useLedger } from "../state/useLedger";
 import { personName } from "../state/useNeedsYou";
 import { useViewer } from "../state/ViewerContext";
+import { ThinkingBadge } from "../components/thinking/ThinkingBadge";
 import "../components/versions/Versions.css";
 
 export function Versions() {
@@ -69,7 +70,7 @@ export function Versions() {
 
           return (
             <section key={email.id} className="stack" aria-label={amendment.title}>
-              <Card title={`${amendment.title}, signed ${formatDate(amendment.signedOn)}`}>
+              <Card title={`${amendment.title}, signed ${formatDate(amendment.signedOn)}`} actions={<ThinkingBadge at="versions.amendment" />}>
                 <div className="stack">
                   <div className="row">
                     <Badge kind="check" />
@@ -101,6 +102,7 @@ export function Versions() {
               </Card>
 
               <p className="versions__legend">
+                <ThinkingBadge at="versions.redline" />
                 <span>
                   <ins className="redline__added">Added text</ins> is underlined on green.
                 </span>

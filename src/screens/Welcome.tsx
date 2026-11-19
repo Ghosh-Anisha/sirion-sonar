@@ -4,6 +4,8 @@ import { people } from "../data/people";
 import { IT_ADMIN_ID, roles } from "../data/sources";
 import { allConnected, type Onboarding } from "../logic/onboarding";
 import { skipEvent } from "../logic/skip";
+import type { ThinkingKey } from "../data/thinking";
+import { ThinkingBadge } from "../components/thinking/ThinkingBadge";
 import { Button } from "../components/ui/Button";
 import { StepApproval } from "../components/welcome/StepApproval";
 import { StepFirstRead } from "../components/welcome/StepFirstRead";
@@ -22,6 +24,7 @@ import { WizardProgress } from "../components/welcome/WizardProgress";
 import "../components/welcome/Welcome.css";
 
 interface Step {
+  note: ThinkingKey;
   title: string;
   heading: string;
   body: ReactNode;
@@ -31,29 +34,32 @@ interface Step {
 }
 
 const STEPS: Step[] = [
-  { title: "Welcome", heading: "Sonar keeps watch over your supplier contracts", body: <StepWelcome />, blocker: () => null, next: "Get started" },
-  { title: "Who you are", heading: "Who are you in this demo?", body: <StepRole />, blocker: (s) => (s.role ? null : "Pick a role to go on.") },
+  { note: "welcome.welcome", title: "Welcome", heading: "Sonar keeps watch over your supplier contracts", body: <StepWelcome />, blocker: () => null, next: "Get started" },
+  { note: "welcome.role", title: "Who you are", heading: "Who are you in this demo?", body: <StepRole />, blocker: (s) => (s.role ? null : "Pick a role to go on.") },
   {
+    note: "welcome.sources",
     title: "Connect your sources",
     heading: "Connect your sources",
     body: <StepSources />,
     blocker: (s) => (allConnected(s) ? null : "Connect all three sources to go on."),
   },
   {
+    note: "welcome.approval",
     title: "IT approval",
     heading: "Get IT to approve the access",
     body: <StepApproval />,
     blocker: (s) => (s.approval.status === "approved" ? null : "The access needs the IT admin's approval first."),
   },
-  { title: "Choose where to start", heading: "Choose where to start", body: <StepStart />, blocker: (s) => (s.start ? null : "Pick where to start.") },
+  { note: "welcome.start", title: "Choose where to start", heading: "Choose where to start", body: <StepStart />, blocker: (s) => (s.start ? null : "Pick where to start.") },
   {
+    note: "welcome.first-read",
     title: "First read",
     heading: "The first read",
     body: <StepFirstRead />,
     blocker: (s) => (s.firstReadDone ? null : s.start === "pilot" && !s.readAll && s.readStage >= 8 ? "Widen to every supplier to see the full result." : "Run the first read to go on."),
   },
-  { title: "What we found", heading: "What we found", body: <StepFound />, blocker: () => null, next: "Assign owners" },
-  { title: "Assign owners and confirm", heading: "Assign owners and confirm the riskiest dates", body: <StepOwners />, blocker: () => null, next: "Go to Needs you" },
+  { note: "welcome.found", title: "What we found", heading: "What we found", body: <StepFound />, blocker: () => null, next: "Assign owners" },
+  { note: "welcome.owners", title: "Assign owners and confirm", heading: "Assign owners and confirm the riskiest dates", body: <StepOwners />, blocker: () => null, next: "Go to Needs you" },
 ];
 
 const TITLES = STEPS.map((s) => s.title);
@@ -113,9 +119,12 @@ export function Welcome() {
       </div>
 
       <section className="wizard__step card" aria-labelledby="wizard-heading">
-        <h1 id="wizard-heading" ref={headingRef} tabIndex={-1} className="wizard__heading">
-          {step.heading}
-        </h1>
+        <div className="wizard__heading-row">
+          <h1 id="wizard-heading" ref={headingRef} tabIndex={-1} className="wizard__heading">
+            {step.heading}
+          </h1>
+          <ThinkingBadge at={step.note} />
+        </div>
         {step.body}
       </section>
 

@@ -16,6 +16,7 @@ import { formatDate } from "../logic/format";
 import { useDemoState } from "../state/DemoStateContext";
 import { useLedger } from "../state/useLedger";
 import { useViewer } from "../state/ViewerContext";
+import { ThinkingBadge } from "../components/thinking/ThinkingBadge";
 import "./Contract.css";
 
 export function Contract() {
@@ -74,7 +75,7 @@ export function Contract() {
         </p>
       )}
 
-      <Card title="Dates, worked out from the facts">
+      <Card title="Dates, worked out from the facts" actions={<ThinkingBadge at="contract.dates" />}>
         <div className="contract-screen__dates">
           <Field label="Current term ends" value={dates.endDate ? formatDate(dates.endDate) : "Not known exactly"} confidence={dates.label} />
           <Field label="Last day to give notice" value={deadlineValue} confidence={dates.label} />
@@ -87,6 +88,10 @@ export function Contract() {
         )}
       </Card>
 
+      <div className="row">
+        <ThinkingBadge at="contract.facts" />
+        <ThinkingBadge at="contract.text" />
+      </div>
       <div className="contract-screen__grid">
         <FactTable
           facts={contract.facts}

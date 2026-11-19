@@ -21,6 +21,7 @@ import { useDemoState } from "../state/DemoStateContext";
 import { useLedger } from "../state/useLedger";
 import { toRow } from "../state/useNeedsYou";
 import { useViewer } from "../state/ViewerContext";
+import { ThinkingBadge } from "../components/thinking/ThinkingBadge";
 import "./Item.css";
 
 const DECISIONS: ActionKind[] = ["renew", "renegotiate", "end"];
@@ -84,12 +85,12 @@ export function Item() {
       <ItemHeader row={row} vendorName={vendor.name} />
 
       <div className="item-screen__grid">
-        <Card title="Why this is here">
+        <Card title="Why this is here" actions={<ThinkingBadge at="item.evidence" />}>
           <EvidenceList evidence={itemEvidence(item, contract)} />
           {refs.paymentIds.length > 0 && <PaymentsTable lines={payments.filter((p) => refs.paymentIds.includes(p.id))} />}
         </Card>
 
-        <Card title="What to do">
+        <Card title="What to do" actions={<ThinkingBadge at="item.draft" />}>
           <div className="stack">
             <ItemActions item={item} onAct={act} />
             {item.type === "decide" && !decision && (

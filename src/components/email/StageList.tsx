@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import type { Trace } from "../../logic/inbound";
 import { Button } from "../ui/Button";
+import { ThinkingBadge } from "../thinking/ThinkingBadge";
 import "./Email.css";
 
 interface StageListProps {
@@ -32,7 +33,9 @@ export function StageList({ trace, shown, onShow }: StageListProps) {
               {i + 1}
             </span>
             <div>
-              <h4>{s.title}</h4>
+              <h4>
+                {s.title} <ThinkingBadge at={`email.${s.id}`} />
+              </h4>
               <p>{s.result}</p>
             </div>
           </li>
