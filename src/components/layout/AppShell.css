@@ -1,0 +1,115 @@
+.skip-link {
+  position: absolute;
+  font: inherit;
+  color: var(--brand);
+  cursor: pointer;
+  top: var(--space-2);
+  left: var(--space-2);
+  z-index: 20;
+  padding: var(--space-2) var(--space-3);
+  background: var(--surface);
+  border: var(--border);
+  border-radius: var(--radius-button);
+  transform: translateY(-200%);
+}
+
+.skip-link:focus {
+  transform: none;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-6);
+  background: var(--surface);
+  border-bottom: var(--border);
+}
+
+.topbar__name {
+  color: var(--ink);
+  font-size: var(--text-16);
+  font-weight: var(--weight-semibold);
+  text-decoration: none;
+}
+
+.clock {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.clock__date {
+  font-weight: var(--weight-medium);
+}
+
+.sample-banner {
+  padding: var(--space-1) var(--space-6);
+  font-size: var(--text-12);
+  color: var(--ink);
+  background: var(--brand-soft);
+  border-bottom: var(--border);
+  text-align: center;
+}
+
+.shell {
+  display: grid;
+  grid-template-columns: 200px minmax(0, 1fr);
+  gap: var(--space-8);
+  max-width: var(--content-max);
+  margin: 0 auto;
+  padding: var(--space-8) var(--space-6);
+}
+
+.shell__main:focus {
+  outline: none;
+}
+
+.sidenav ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.sidenav__link {
+  display: block;
+  padding: var(--space-2) var(--space-3);
+  color: var(--ink-2);
+  font-weight: var(--weight-medium);
+  text-decoration: none;
+  border-radius: var(--radius-button);
+}
+
+.sidenav__link:hover {
+  color: var(--ink);
+  background: var(--surface);
+}
+
+.sidenav__link.active {
+  color: var(--ink);
+  background: var(--brand-soft);
+  font-weight: var(--weight-semibold);
+}
+
+@media (max-width: 720px) {
+  .topbar,
+  .sample-banner {
+    padding-left: var(--space-4);
+    padding-right: var(--space-4);
+  }
+
+  .shell {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-4);
+    padding: var(--space-4);
+  }
+
+  .sidenav ul {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+}

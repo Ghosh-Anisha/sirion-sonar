@@ -1,0 +1,15 @@
+.card {
+  background: var(--surface);
+  border: var(--border);
+  border-radius: var(--radius-card);
+  padding: var(--space-4);
+}
+
+.card__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}

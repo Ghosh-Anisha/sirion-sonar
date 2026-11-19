@@ -1,0 +1,28 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 0 var(--space-2);
+  border: 1px solid transparent;
+  border-radius: var(--radius-badge);
+  font-size: var(--text-12);
+  font-weight: var(--weight-medium);
+  line-height: 20px;
+  white-space: nowrap;
+}
+
+.badge--decide { color: var(--decide); background: var(--decide-soft); }
+.badge--check { color: var(--check); background: var(--check-soft); }
+.badge--fix { color: var(--fix); background: var(--fix-soft); }
+.badge--find { color: var(--find); background: var(--find-soft); }
+
+.badge--confirmed { color: var(--confirmed); background: var(--confirmed-soft); }
+.badge--derived { color: var(--derived); background: var(--derived-soft); }
+.badge--bounded { color: var(--bounded); background: var(--bounded-soft); }
+.badge--unknown {
+  color: var(--unknown);
+  background: var(--unknown-soft);
+  border: 1px dashed var(--unknown);
+}
+
+.badge--urgent { color: var(--surface); background: var(--urgent); }
