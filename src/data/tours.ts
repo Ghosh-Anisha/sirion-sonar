@@ -39,10 +39,11 @@ export const tours: Record<TourScreen, TourStep[]> = {
     { target: "story-next", title: "Then the solution", body: "Each story page ends with one line on why it matters and a button to the next." },
   ],
   solution: [
+    { target: "solution-nav", title: "The whole architecture", body: "Jump between the intake picture, what Sirion adds, the agents, the backend, the controls and the evals." },
     { target: "solution-play", title: "Follow one invoice", body: "Play runs one invoice through the whole product in about 12 seconds. Step through it by hand if you like." },
     { target: "solution-diagram", title: "The whole product", body: "Left to right, from what happens in the company to the person who acts. Press any part to see under the hood." },
     { target: "solution-audit", title: "Every fact has a trail", body: "Hover a pill for a real example from the sample data." },
-    { target: "solution-real", title: "What is real", body: "This prototype computes the dates and the list for real. The reading and the connections are simulated." },
+    { target: "solution-ladder", title: "The lightest tool that works", body: "Code first, then a small model, then an LLM, and an agent only when the path is unknown." },
   ],
   login: [
     { target: "login-sso", title: "Sign in the usual way", body: "The procurement or finance lead signs in with the company's Google or Microsoft account." },

@@ -6,7 +6,7 @@ import { payments } from "../data/payments";
 import { people } from "../data/people";
 import { vendors } from "../data/vendors";
 import { buildItems } from "./items";
-import { canSee } from "./visibility";
+import { canSee, canSeeContract } from "./visibility";
 
 const items = buildItems({ today: DEMO_START, firstReadOn: DEMO_START, vendors, contracts, payments, emails, actions: {} });
 const person = (id: string) => people.find((p) => p.id === id)!;
@@ -38,5 +38,16 @@ describe("canSee", () => {
 
   it("shows the IT admin no items", () => {
     expect(visibleTo("vikram")).toHaveLength(0);
+  });
+});
+
+describe("canSeeContract", () => {
+  it("shows owners only their own contracts, the leads all of them, and IT none", () => {
+    const count = (id: string) => contracts.filter((c) => canSeeContract(c, people.find((p) => p.id === id)!, vendors)).length;
+    expect(count("kavya")).toBe(contracts.length);
+    expect(count("arjun")).toBe(contracts.length);
+    expect(count("vikram")).toBe(0);
+    expect(count("neha")).toBeGreaterThan(0);
+    expect(count("neha")).toBeLessThan(contracts.length);
   });
 });

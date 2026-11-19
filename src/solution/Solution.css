@@ -159,8 +159,38 @@
 }
 
 .step-chip {
-  justify-content: flex-start;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
   font-weight: var(--weight-medium);
+}
+
+.step-chip__tag {
+  padding: 0 var(--space-1);
+  font-size: var(--text-12);
+  font-weight: var(--weight-medium);
+  color: var(--ink);
+  background: rgb(255 255 255 / 0.7);
+  border-radius: var(--radius-button);
+}
+
+/* A step that uses two kinds shows both colors, split down the middle. */
+.step-chip--then-code { background-image: linear-gradient(90deg, transparent 50%, var(--unknown-soft) 50%); }
+.step-chip--then-rules { background-image: linear-gradient(90deg, transparent 50%, var(--check-soft) 50%); }
+.step-chip--then-model { background-image: linear-gradient(90deg, transparent 50%, var(--decide-soft) 50%); }
+.step-chip--then-agent { background-image: linear-gradient(90deg, transparent 50%, var(--find-soft) 50%); }
+
+/* Dimmed by a legend toggle: plain and dashed, but the text keeps its contrast. */
+.step-chip--dim .step-chip {
+  color: var(--ink-2);
+  background: var(--bg);
+  border-style: dashed;
+  border-color: var(--line);
+}
+
+.step-chip--dim .step-chip__tag {
+  background: none;
+  color: var(--ink-2);
 }
 
 .step-chip--code { background: var(--unknown-soft); border-color: var(--unknown); }
@@ -177,25 +207,36 @@
 .sonar__legend {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-1) var(--space-3);
-  margin: 0;
-  padding: 0;
-  font-size: var(--text-12);
-  color: var(--ink-2);
-  list-style: none;
-}
-
-.sonar__legend li {
-  display: flex;
-  align-items: center;
   gap: var(--space-1);
 }
 
+.legend-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-height: 28px;
+  padding: 0 var(--space-2);
+  color: var(--ink);
+  font: inherit;
+  font-size: var(--text-12);
+  font-weight: var(--weight-medium);
+  background: var(--surface);
+  border: var(--border);
+  border-radius: var(--radius-badge);
+  cursor: pointer;
+}
+
+.legend-toggle--on {
+  color: var(--surface);
+  background: var(--ink);
+  border-color: var(--ink);
+}
+
 .legend-swatch {
-  width: 10px;
-  height: 10px;
+  width: 12px;
+  height: 12px;
   border: 1px solid;
-  border-radius: 2px;
+  border-radius: 3px;
 }
 
 .sonar__agents {

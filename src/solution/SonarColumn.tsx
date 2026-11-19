@@ -1,26 +1,42 @@
+import { useState } from "react";
+import { stepDoers, type DoerKind } from "../data/architecture";
 import { doerNames, solution, solutionAgents, solutionSteps } from "../data/story";
 import { Part } from "./Part";
 
-/** Column 3: the eight steps colored by who does them, the five agents, and the privacy band. */
+const KINDS: DoerKind[] = ["code", "rules", "model", "agent"];
+
+/**
+ * Column 3: the eight steps, each colored and tagged by who does it, the five agents, and the privacy band.
+ * The legend is a set of toggles: picking a kind dims every step that does not use it.
+ */
 export function SonarColumn() {
+  const [only, setOnly] = useState<DoerKind | null>(null);
   return (
     <div className="sonar">
       <ol className="sonar__steps" aria-label="The eight steps">
-        {solutionSteps.map((s) => (
-          <li key={s.number}>
-            <Part id={`step-${s.number}`} thinking={s.thinking} label={`Step ${s.number}, ${s.name}, done by ${doerNames[s.kind]}`} className={`step-chip step-chip--${s.kind}`}>
-              <span className="num">{s.number}</span> {s.name}
-            </Part>
-          </li>
-        ))}
+        {solutionSteps.map((s) => {
+          const kinds = stepDoers[s.number];
+          const tag = kinds.map((k) => doerNames[k]).join(" + ");
+          const dim = only !== null && !kinds.includes(only);
+          return (
+            <li key={s.number} className={dim ? "step-chip--dim" : undefined}>
+              <Part id={`step-${s.number}`} thinking={s.thinking} label={`Step ${s.number}, ${s.name}, done by ${tag}`} className={`step-chip step-chip--${kinds[0]}${kinds[1] ? ` step-chip--then-${kinds[1]}` : ""}`}>
+                <span className="step-chip__name">
+                  <span className="num">{s.number}</span> {s.name}
+                </span>
+                <span className="step-chip__tag">{tag}</span>
+              </Part>
+            </li>
+          );
+        })}
       </ol>
-      <ul className="sonar__legend" aria-label="Who does each step">
-        {(["code", "rules", "model", "agent"] as const).map((k) => (
-          <li key={k}>
+      <div className="sonar__legend" role="group" aria-label="Show only steps done by">
+        {KINDS.map((k) => (
+          <button key={k} type="button" className={`legend-toggle${only === k ? " legend-toggle--on" : ""}`} aria-pressed={only === k} onClick={() => setOnly(only === k ? null : k)}>
             <span className={`legend-swatch step-chip--${k}`} aria-hidden="true" /> {doerNames[k]}
-          </li>
+          </button>
         ))}
-      </ul>
+      </div>
       <ul className="sonar__agents" aria-label="The five agents">
         {solutionAgents.map((a) => (
           <li key={a.id}>

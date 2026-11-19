@@ -1,4 +1,4 @@
-import type { Person } from "../data/types";
+import type { Contract, Person, Vendor } from "../data/types";
 import type { Item } from "./items";
 
 /**
@@ -16,6 +16,22 @@ export function canSee(item: Item, person: Person): boolean {
       return item.ownerId === person.id;
     case "finance-lead":
       return item.ownerId === person.id || (item.type !== "decide" && item.type !== "fix");
+    case "it-admin":
+      return false;
+  }
+}
+
+/**
+ * Who can open a contract. Owners see their own suppliers' contracts, the procurement and finance leads
+ * see every contract, and the IT admin sees no contract contents.
+ */
+export function canSeeContract(contract: Contract, person: Person, vendors: Vendor[]): boolean {
+  switch (person.role) {
+    case "procurement-lead":
+    case "finance-lead":
+      return true;
+    case "contract-owner":
+      return vendors.find((v) => v.id === contract.vendorId)?.ownerId === person.id;
     case "it-admin":
       return false;
   }

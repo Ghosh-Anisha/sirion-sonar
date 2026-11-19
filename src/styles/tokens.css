@@ -73,4 +73,9 @@
   --story-space-lg: 96px;
   --story-tint: linear-gradient(180deg, var(--brand-soft) 0%, var(--bg) 520px);
   --story-reveal: 260ms ease-out;
+
+  /* A one hue ramp for ordered series in charts, such as releases. Light to dark, ending on the Decide blue. */
+  --chart-1: #a9c1f2;
+  --chart-2: #5b84e3;
+  --chart-3: #1d4ed8;
 }

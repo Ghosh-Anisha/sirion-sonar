@@ -1,4 +1,5 @@
 import type { PlaysOut } from "./caseStudy";
+import type { DoerKind } from "./architecture";
 import type { ThinkingKey } from "./thinking";
 
 /*
@@ -150,20 +151,18 @@ export const storyClose = {
 
 /* Page 2: the solution */
 
-export type DoerKind = "code" | "rules" | "model" | "agent";
-
 export const doerNames: Record<DoerKind, string> = { code: "Code", rules: "Rules", model: "Small model", agent: "Agent" };
 
-/** The eight pipeline steps as chips, colored by who does the work, each opening its Under the hood note. */
-export const solutionSteps: { number: number; name: string; kind: DoerKind; thinking: ThinkingKey }[] = [
-  { number: 1, name: "Connect", kind: "code", thinking: "welcome.sources" },
-  { number: 2, name: "Vendor list", kind: "rules", thinking: "home.find" },
-  { number: 3, name: "Find", kind: "agent", thinking: "welcome.found" },
-  { number: 4, name: "Sort files", kind: "model", thinking: "contract.text" },
-  { number: 5, name: "Read", kind: "agent", thinking: "contract.facts" },
-  { number: 6, name: "Record", kind: "code", thinking: "contract.dates" },
-  { number: 7, name: "Watch", kind: "rules", thinking: "home.decide" },
-  { number: 8, name: "Tell and draft", kind: "agent", thinking: "item.draft" },
+/** The eight pipeline steps as chips, each opening its Under the hood note. Who does each one is in architecture.ts. */
+export const solutionSteps: { number: number; name: string; thinking: ThinkingKey }[] = [
+  { number: 1, name: "Connect", thinking: "welcome.sources" },
+  { number: 2, name: "Vendor list", thinking: "home.find" },
+  { number: 3, name: "Find", thinking: "welcome.found" },
+  { number: 4, name: "Sort files", thinking: "contract.text" },
+  { number: 5, name: "Read", thinking: "contract.facts" },
+  { number: 6, name: "Record", thinking: "contract.dates" },
+  { number: 7, name: "Watch", thinking: "home.decide" },
+  { number: 8, name: "Tell and draft", thinking: "item.draft" },
 ];
 
 export const solutionAgents: { id: string; name: string; job: string; thinking: ThinkingKey }[] = [

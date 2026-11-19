@@ -17,12 +17,24 @@ export function SiteHeader() {
   const { pathname } = useLocation();
   const current = stepFor(pathname);
   const menu = useRef<HTMLDetailsElement>(null);
+  const header = useRef<HTMLElement>(null);
   useEffect(() => {
     if (menu.current) menu.current.open = false;
   }, [pathname]);
 
+  // Share the header's real height, so sticky bars under it sit right on narrow screens where it wraps.
+  useEffect(() => {
+    const el = header.current;
+    if (!el) return;
+    const set = () => document.documentElement.style.setProperty("--site-header-height", `${el.offsetHeight}px`);
+    set();
+    const observer = new ResizeObserver(set);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <header className="site-header">
+    <header ref={header} className="site-header">
       <Link to="/story" className="site-header__brand">
         <BrandMark />
         Sirion Sonar
