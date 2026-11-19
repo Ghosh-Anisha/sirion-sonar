@@ -1,13 +1,10 @@
-import { beats } from "../../data/autoplay";
 import { COMPANY_NAME } from "../../data/drafts";
-import { storySeconds } from "../../logic/story";
 import { useGuide } from "../../state/GuideContext";
 import { usePlayDemo } from "../guide/usePlayDemo";
 import { Button } from "../ui/Button";
 import { Icon, type IconName } from "../ui/Icon";
 import "./Welcome.css";
 
-const SECONDS = storySeconds(beats);
 
 const FEATURES: { icon: IconName; tone: string; title: string; line: string }[] = [
   { icon: "find", tone: "find", title: "Finds your supplier contracts", line: "It starts from who the company pays, then looks in the drive and mail for each supplier." },
@@ -15,7 +12,7 @@ const FEATURES: { icon: IconName; tone: string; title: string; line: string }[] 
   { icon: "decide", tone: "decide", title: "Tells the right person", line: "A notice deadline getting close, an invoice above the agreed rate, a supplier paid with no contract." },
 ];
 
-/** Step 1: what Sonar does, and two ways in: watch the story play, or walk through it yourself. */
+/** Step 1: what Sonar does, and two ways in: the clickable demo, which points at each click, or the Demo guide. */
 export function StepWelcome() {
   const { setOpen, startTour } = useGuide();
   const play = usePlayDemo();
@@ -36,7 +33,7 @@ export function StepWelcome() {
 
       <div className="welcome-ctas">
         <Button variant="primary" className="button--big" onClick={play}>
-          Watch the demo, {SECONDS} seconds
+          Start the clickable demo
         </Button>
         <Button
           className="button--big"

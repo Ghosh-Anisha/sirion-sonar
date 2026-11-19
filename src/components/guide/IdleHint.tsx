@@ -11,7 +11,7 @@ const ACTIVITY = ["pointerdown", "keydown", "wheel", "touchstart"] as const;
 /** After 20 seconds with nothing touched, a quiet line saying what to try next. Any activity hides it. */
 export function IdleHint() {
   const { current } = useJourney();
-  const { tour, autoplay } = useGuide();
+  const { tour, demo } = useGuide();
   const goNext = useDoNext();
   const [idle, setIdle] = useState(false);
 
@@ -29,7 +29,7 @@ export function IdleHint() {
     };
   }, []);
 
-  if (!idle || !current || tour || autoplay) return null;
+  if (!idle || !current || tour || demo) return null;
   return (
     <div className="idle-hint" role="status">
       <p>

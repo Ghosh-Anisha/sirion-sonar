@@ -1,10 +1,10 @@
 import { Outlet } from "react-router-dom";
 import { DemoDock } from "../guide/DemoDock";
 import { IdleHint } from "../guide/IdleHint";
-import { Director } from "../guide/Director";
 import { FocusRing } from "../guide/FocusRing";
 import { TourHost } from "../guide/TourHost";
 import { UnderTheHood } from "../thinking/UnderTheHood";
+import { RoleNotice } from "./RoleNotice";
 import { SampleBanner } from "./SampleBanner";
 import { SideNav } from "./SideNav";
 import { TopBar } from "./TopBar";
@@ -30,9 +30,9 @@ export function AppShell({ nav = true, topBar = true }: { nav?: boolean; topBar?
       </div>
       <DemoDock />
       <UnderTheHood />
+      <RoleNotice />
       <TourHost />
       <FocusRing />
-      <Director />
       <IdleHint />
     </>
   );

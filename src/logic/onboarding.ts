@@ -202,6 +202,11 @@ export function needsApproval(state: Onboarding): boolean {
   return state.role !== "it-admin";
 }
 
+/** Onboarding can go on once any one source is connected. The others can be added later. */
+export function anyConnected(state: Onboarding): boolean {
+  return Object.values(state.sources).some((s) => s.status === "connected");
+}
+
 export function allConnected(state: Onboarding): boolean {
   return Object.values(state.sources).every((s) => s.status === "connected");
 }

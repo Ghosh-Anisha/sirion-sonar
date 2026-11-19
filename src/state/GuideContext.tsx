@@ -26,17 +26,14 @@ function add<T>(list: T[], value: T): T[] {
   return list.includes(value) ? list : [...list, value];
 }
 
-/** Where the autoplay story is, while it runs. */
-export interface Autoplay {
+/** Where the clickable demo is, while it runs. */
+export interface Demo {
   index: number;
-  playing: boolean;
-  /** Set when Back moved here, so the beat sets the scene without pressing anything again. */
-  replay: boolean;
 }
 
 interface GuideValue extends Saved {
-  autoplay: Autoplay | null;
-  setAutoplay: (next: Autoplay | null) => void;
+  demo: Demo | null;
+  setDemo: (next: Demo | null) => void;
   setOpen: (open: boolean) => void;
   tour: TourScreen | null;
   startTour: (screen: TourScreen) => void;
@@ -51,7 +48,7 @@ const GuideContext = createContext<GuideValue | null>(null);
 export function GuideProvider({ children }: { children: ReactNode }) {
   const [saved, setSaved] = useState<Saved>(load);
   const [tour, setTour] = useState<TourScreen | null>(null);
-  const [autoplay, setAutoplay] = useState<Autoplay | null>(null);
+  const [demo, setDemo] = useState<Demo | null>(null);
 
   useEffect(() => {
     try {
@@ -64,8 +61,8 @@ export function GuideProvider({ children }: { children: ReactNode }) {
   const value = useMemo<GuideValue>(
     () => ({
       ...saved,
-      autoplay,
-      setAutoplay,
+      demo,
+      setDemo,
       setOpen: (open) => setSaved((s) => ({ ...s, open })),
       tour,
       startTour: setTour,
@@ -76,7 +73,7 @@ export function GuideProvider({ children }: { children: ReactNode }) {
       visit: (path) => setSaved((s) => (s.visited.includes(path) ? s : { ...s, visited: add(s.visited, path) })),
       nudgeClicked: (id) => setSaved((s) => (s.nudged.includes(id) ? s : { ...s, nudged: add(s.nudged, id) })),
     }),
-    [saved, tour, autoplay],
+    [saved, tour, demo],
   );
   return <GuideContext.Provider value={value}>{children}</GuideContext.Provider>;
 }

@@ -2,6 +2,7 @@ import { people } from "../../data/people";
 import { roles } from "../../data/sources";
 import { useOnboarding } from "../../state/OnboardingContext";
 import { useViewer } from "../../state/ViewerContext";
+import { Avatar } from "../layout/Avatar";
 import "./Welcome.css";
 
 /** Step 2: pick a role. It sets who the rest of the demo is viewed as. */
@@ -27,17 +28,20 @@ export function StepRole() {
                   setViewerId(person.id);
                 }}
               />
+              <Avatar person={person} size={36} />
               <span className="choice__body">
-                <span className="choice__title">{role.title}</span>
+                <span className="choice__title">
+                  {role.title} <span className={`role-tag role-tag--${person.role}`}>{person.name}</span>
+                </span>
                 <span className="choice__line">
-                  You are {person.name}. {role.line}
+                  {role.line}
                 </span>
               </span>
             </label>
           );
         })}
       </fieldset>
-      <p className="muted">This sets who you are for the rest of the demo. You can switch at any time from View as at the top.</p>
+      <p className="muted">This sets who you are for the rest of the demo. You can switch at any time from View as in the demo bar at the bottom.</p>
     </div>
   );
 }

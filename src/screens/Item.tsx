@@ -9,6 +9,7 @@ import { EvidenceList } from "../components/item/EvidenceList";
 import { History } from "../components/item/History";
 import { ItemActions } from "../components/item/ItemActions";
 import { NextStep } from "../components/item/NextStep";
+import { WhoSees } from "../components/item/WhoSees";
 import { PaymentsTable } from "../components/item/PaymentsTable";
 import { ButtonLink } from "../components/ui/ButtonLink";
 import { Card } from "../components/ui/Card";
@@ -112,6 +113,7 @@ export function Item() {
         </Card>
       </div>
 
+      <WhoSees item={item} />
       <History tour="item-history" entries={state.log.filter((e) => e.itemId === item.id)} empty="Nobody has acted on this yet." />
       {toast && <Toast message={toast} onClose={closeToast} />}
     </div>

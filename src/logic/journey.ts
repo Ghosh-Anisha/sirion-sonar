@@ -4,7 +4,7 @@ import { addDays } from "./calendar";
 import { contractDates } from "./dates";
 import type { FactEdits } from "./edits";
 import type { Item, ItemAction } from "./items";
-import { allConnected, type Onboarding } from "./onboarding";
+import { anyConnected, type Onboarding } from "./onboarding";
 
 /*
  * Which moments of the demo are done, worked out from what is already in app state,
@@ -46,7 +46,7 @@ export function momentsDone(input: JourneyInput): Record<MomentId, boolean> {
   const alert = cloudmetricAlert(contracts, demoStart);
   const amendment = actions[ORBIS_AMENDMENT_ITEM];
   return {
-    setup: allConnected(onboarding) && onboarding.approval.status === "approved",
+    setup: anyConnected(onboarding) && onboarding.approval.status === "approved",
     "first-read": onboarding.firstReadDone,
     confirm: Object.values(factEdits).some((edits) => Object.keys(edits).length > 0),
     deadline: alert !== null && today >= alert.alertOn,

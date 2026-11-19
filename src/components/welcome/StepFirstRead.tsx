@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { contracts } from "../../data/contracts";
 import { people } from "../../data/people";
 import { IT_ADMIN_ID, PILOT_SIZE, sources } from "../../data/sources";
-import { readEntries, widenEntry } from "../../logic/accessText";
+import { andList, readEntries, widenEntry } from "../../logic/accessText";
 import { tally } from "../../logic/firstRead";
 import { pipelineStages, scopeSteps, stageEntries } from "../../logic/pipeline";
 import { firstReadPlan } from "../../state/firstReadPlan";
@@ -37,10 +37,11 @@ export function StepFirstRead() {
 
   const pilot = state.start === "pilot" && !state.readAll;
   const steps = useMemo(() => scopeSteps(plan, pilot, PILOT_SIZE), [pilot]);
-  const products = useMemo(
-    () => sources.flatMap((s) => state.sources[s.id].scope?.products ?? [s.products[0]]),
-    [state.sources],
-  );
+  const products = useMemo(() => {
+    const connected = sources.flatMap((s) => (state.sources[s.id].status === "connected" ? (state.sources[s.id].scope?.products ?? []) : []));
+    return connected.length > 0 ? connected : sources.map((s) => s.products[0]);
+  }, [state.sources]);
+  const missing = sources.filter((s) => state.sources[s.id].status !== "connected").map((s) => s.name);
   const stages = useMemo(
     () => pipelineStages({ plan, steps, products, contracts, items, procurementLeadId: PROCUREMENT_LEAD.id }),
     [steps, products, items],
@@ -90,6 +91,8 @@ export function StepFirstRead() {
         <p>
           {pilot ? `Reading the pilot: the top ${steps.length} suppliers by spend.` : `Reading all ${steps.length} suppliers.`} This
           is a precomputed run on the sample data.
+          {missing.length > 0 &&
+            ` ${andList(missing)} ${missing.length === 1 ? "is" : "are"} not connected, so a real read would skip ${missing.length === 1 ? "it" : "them"}. The demo still shows the sample results.`}
         </p>
         {!done &&
           (running ? (

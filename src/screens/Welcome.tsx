@@ -2,7 +2,7 @@ import { useEffect, useRef, type ReactNode } from "react";
 import { Link, Navigate, useNavigate, useSearchParams } from "react-router-dom";
 import { people } from "../data/people";
 import { IT_ADMIN_ID, roles } from "../data/sources";
-import { allConnected, type Onboarding } from "../logic/onboarding";
+import { anyConnected, type Onboarding } from "../logic/onboarding";
 import type { ThinkingKey } from "../data/thinking";
 import { ThinkingBadge } from "../components/thinking/ThinkingBadge";
 import { Button } from "../components/ui/Button";
@@ -39,7 +39,7 @@ const STEPS: Step[] = [
     title: "Connect your sources",
     heading: "Connect your sources",
     body: <StepSources />,
-    blocker: (s) => (allConnected(s) ? null : "Connect all three sources to go on."),
+    blocker: (s) => (anyConnected(s) ? null : "Connect at least one source to go on."),
   },
   {
     note: "welcome.approval",

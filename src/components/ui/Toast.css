@@ -1,7 +1,7 @@
 .toast {
   position: fixed;
   right: var(--space-4);
-  bottom: var(--space-4);
+  bottom: calc(var(--dock-height, 0px) + var(--space-4));
   left: auto;
   z-index: 10;
   display: flex;

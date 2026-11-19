@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { accessRequest, approveEntry, connectEntry, readEntries, revokeEntry, scopeText } from "./accessText";
-import { allConnected, appendLog, INITIAL_ONBOARDING, needsApproval, parseOnboarding, reduceOnboarding, type SourceScope } from "./onboarding";
+import { allConnected, anyConnected, appendLog, INITIAL_ONBOARDING, needsApproval, parseOnboarding, reduceOnboarding, type SourceScope } from "./onboarding";
 
 const actor = (seq: number) => ({ on: "2026-11-19", by: "Kavya Raman", seq });
 const drive: SourceScope = { products: ["Google Drive"], folders: "chosen", chosen: ["Contracts", "Finance"], mail: "shared" };
@@ -118,5 +118,15 @@ describe("signing in", () => {
   it("keeps the work account and the day", () => {
     const state = reduceOnboarding(INITIAL_ONBOARDING, { type: "sign-in", email: "kavya.raman@tamarindhome.example", on: "2026-11-19" });
     expect(state.signedIn).toEqual({ email: "kavya.raman@tamarindhome.example", on: "2026-11-19" });
+  });
+});
+
+describe("anyConnected", () => {
+  it("lets onboarding go on once one source is connected", () => {
+    expect(anyConnected(INITIAL_ONBOARDING)).toBe(false);
+    const scope: SourceScope = { products: ["Google Drive"], folders: "all", chosen: [], mail: "shared" };
+    const one = reduceOnboarding(INITIAL_ONBOARDING, { type: "connect", source: "drive", scope, entry: connectEntry("drive", scope, actor(0)) });
+    expect(anyConnected(one)).toBe(true);
+    expect(allConnected(one)).toBe(false);
   });
 });

@@ -7,9 +7,9 @@ import { resetDemo } from "../../state/resetDemo";
 import { useJourney } from "../../state/useJourney";
 import { ViewAsSwitcher } from "../layout/ViewAsSwitcher";
 import { ThinkingToggle } from "../thinking/ThinkingToggle";
-import { AutoplayBar } from "./AutoplayBar";
+import { DemoRunner } from "./DemoRunner";
 import { DemoGuide } from "./DemoGuide";
-import { usePlayDemo } from "./usePlayDemo";
+import { DEMO_FLAG, usePlayDemo } from "./usePlayDemo";
 import "./Guide.css";
 
 /**
@@ -18,12 +18,24 @@ import "./Guide.css";
  */
 export function DemoDock() {
   const { pathname } = useLocation();
-  const { open, setOpen, startTour, tour, autoplay } = useGuide();
+  const { open, setOpen, startTour, tour, demo, setDemo } = useGuide();
   const play = usePlayDemo();
   const { count } = useJourney();
   const [more, setMore] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const screen = tourScreenFor(pathname);
+
+  // Start the clickable demo when it was asked for before a reset.
+  useEffect(() => {
+    try {
+      if (window.sessionStorage.getItem(DEMO_FLAG)) {
+        window.sessionStorage.removeItem(DEMO_FLAG);
+        setDemo({ index: 0 });
+      }
+    } catch {
+      // Session storage can be blocked. The demo then waits for its button.
+    }
+  }, [setDemo]);
 
   useEffect(() => {
     const el = ref.current;
@@ -41,13 +53,13 @@ export function DemoDock() {
 
   return (
     <div ref={ref} className="dock" role="region" aria-label="Demo controls">
-      {autoplay ? <AutoplayBar /> : open && !tour && <DemoGuide />}
+      {demo ? <DemoRunner /> : open && !tour && <DemoGuide />}
       <div className="dock__bar">
-        <button type="button" className="dock__play" onClick={play} disabled={autoplay !== null}>
+        <button type="button" className="dock__play" onClick={play} disabled={demo !== null}>
           <svg width="12" height="12" viewBox="0 0 16 16" aria-hidden="true">
             <path d="M4 2.5v11l9-5.5z" fill="currentColor" />
           </svg>
-          Play the demo
+          Start the clickable demo
         </button>
         <button
           type="button"

@@ -8,7 +8,7 @@ export function StepSources() {
   return (
     <div className="stack">
       <p>
-        Sonar asks for read-only access to three places. Pick every product the company uses for each, since many companies run more than one, then allow them. Every
+        Sonar asks for read-only access to up to three places. One is enough to go on, and the rest can be added later. Pick every product the company uses for each, then allow them. Every
         connect is written to the <Link to="/access">access log</Link>.
       </p>
       <div className="source-grid">

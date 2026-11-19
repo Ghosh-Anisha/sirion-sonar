@@ -61,17 +61,78 @@
   border-left: var(--border);
 }
 
-.viewer-chip__avatar {
+/* Each role has its own color, on avatars and role tags, so roles are easy to tell apart. */
+.avatar {
   display: inline-flex;
+  flex-shrink: 0;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
   font-size: var(--text-12);
   font-weight: var(--weight-semibold);
   color: var(--surface);
-  background: linear-gradient(135deg, var(--find), var(--decide));
   border-radius: var(--radius-badge);
+}
+
+.avatar--procurement-lead { background: linear-gradient(135deg, var(--brand), var(--decide)); }
+.avatar--finance-lead { background: linear-gradient(135deg, var(--check), var(--fix)); }
+.avatar--contract-owner { background: linear-gradient(135deg, var(--decide), var(--find)); }
+.avatar--it-admin { background: linear-gradient(135deg, var(--find), var(--ink)); }
+
+.role-tag {
+  display: inline-flex;
+  align-self: flex-start;
+  padding: 0 var(--space-2);
+  font-size: var(--text-12);
+  font-weight: var(--weight-semibold);
+  line-height: 18px;
+  border-radius: var(--radius-badge);
+}
+
+.role-tag--procurement-lead { color: var(--ink); background: var(--brand-soft); }
+.role-tag--finance-lead { color: var(--check); background: var(--check-soft); }
+.role-tag--contract-owner { color: var(--decide); background: var(--decide-soft); }
+.role-tag--it-admin { color: var(--find); background: var(--find-soft); }
+
+/* Says who you are now, each time the demo switches person. */
+.role-notice {
+  position: fixed;
+  top: calc(var(--space-12) + var(--space-6));
+  left: 50%;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: min(560px, calc(100vw - 32px));
+  padding: var(--space-3) var(--space-4);
+  background: var(--surface);
+  border: var(--border);
+  border-left: 4px solid var(--brand);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-popover);
+  transform: translateX(-50%);
+  animation: fade-in var(--fade);
+}
+
+.role-notice--finance-lead { border-left-color: var(--check); }
+.role-notice--contract-owner { border-left-color: var(--decide); }
+.role-notice--it-admin { border-left-color: var(--find); }
+
+.role-notice__text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.role-notice__close {
+  align-self: flex-start;
+  padding: 0;
+  color: var(--brand);
+  font: inherit;
+  font-size: var(--text-12);
+  background: none;
+  border: none;
+  cursor: pointer;
 }
 
 .viewer-chip__text {
@@ -84,10 +145,7 @@
   font-weight: var(--weight-semibold);
 }
 
-.viewer-chip__title {
-  font-size: var(--text-12);
-  color: var(--ink-2);
-}
+
 
 .topbar__controls {
   display: flex;

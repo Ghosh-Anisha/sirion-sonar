@@ -23,9 +23,11 @@ The app uses hash routes, so any static host works. On Vercel, import the repo a
 
 ## Walking through the demo
 
-Opening the site lands on a mock sign-in at `/login`. It asks for no password and checks nothing. Then comes the onboarding wizard at `/welcome`, where each source can connect more than one product, such as Google Drive and SharePoint. Watch the demo plays the whole story by itself in about 80 seconds. Walk through it yourself opens the Demo guide, which takes you through the nine moments of the user journey: setup, first read, confirm, a deadline gets close, decide, an invoice differs, an amendment arrives, nobody acts, and handoff. Do this next moves the clock and switches the viewer where a moment needs it. Skip to demo jumps straight to the list with the first read done.
+Opening the site lands on a mock sign-in at `/login`. It asks for no password and checks nothing. Then comes the onboarding wizard at `/welcome`, where each source can connect more than one product, such as Google Drive and SharePoint. Start the clickable demo points at each thing to press, one click at a time, and moves on when you press it. Do it for me presses it for you. Walk through it yourself opens the Demo guide, which takes you through the nine moments of the user journey: setup, first read, confirm, a deadline gets close, decide, an invoice differs, an amendment arrives, nobody acts, and handoff. Do this next moves the clock and switches the viewer where a moment needs it. Skip to demo jumps straight to the list with the first read done.
 
-In the top bar, Tour replays the tour for the current screen, Show the thinking adds Under the hood badges to each part of a screen, View as shows the demo as another person, the clock moves the date forward, and Reset demo starts again.
+The demo is seen through four roles, each with its own color: Kavya the procurement lead sees everything and gets what nobody owns, Arjun the finance lead sees invoices and prices, owners such as Neha and Farah see only their own suppliers, and Vikram the IT admin sees access, not contracts. Every item says who sees it and why.
+
+In the demo bar at the bottom, Tour replays the tour for the current screen, Show the thinking adds Under the hood badges to each part of a screen, View as shows the demo as another person, the clock moves the date forward, and Reset demo starts again.
 
 The Case section in the nav holds the reasoning: why intake, the problem, the stakeholders and the assumptions. How it works shows the eight step pipeline, the five agents, and where data lives.
 

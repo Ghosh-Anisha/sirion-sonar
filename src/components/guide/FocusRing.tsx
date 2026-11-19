@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
-import { beats } from "../../data/autoplay";
+import { demoSteps } from "../../data/demoSteps";
 import { useGuide } from "../../state/GuideContext";
 import { useJourney } from "../../state/useJourney";
 import "./Guide.css";
@@ -9,14 +9,14 @@ const CHECK_MS = 300;
 const PAD = 6;
 
 /**
- * A glowing ring around the thing to look at: the autoplay beat's focus while the story plays,
+ * A glowing ring around the thing to look at: the demo step's focus while the clickable demo runs,
  * or the next thing to click for the current moment. It never blocks a click.
  */
 export function FocusRing() {
-  const { autoplay, tour, nudged, nudgeClicked } = useGuide();
+  const { demo, tour, nudged, nudgeClicked } = useGuide();
   const { next } = useJourney();
-  const selector = autoplay ? (beats[autoplay.index].focus ?? null) : next && !nudged.includes(next.nudge) ? `[data-nudge="${next.nudge}"]` : null;
-  const nudgeId = !autoplay && next ? next.nudge : null;
+  const selector = demo ? (demoSteps[demo.index].focus ?? null) : next && !nudged.includes(next.nudge) ? `[data-nudge="${next.nudge}"]` : null;
+  const nudgeId = !demo && next ? next.nudge : null;
   const [box, setBox] = useState<{ top: number; left: number; width: number; height: number } | null>(null);
 
   useEffect(() => {
@@ -41,5 +41,5 @@ export function FocusRing() {
   }, [selector, nudgeId, nudgeClicked]);
 
   if (!box || tour) return null;
-  return createPortal(<span className={`focus-ring${autoplay ? " focus-ring--story" : ""}`} aria-hidden="true" style={box} />, document.body);
+  return createPortal(<span className={`focus-ring${demo ? " focus-ring--story" : ""}`} aria-hidden="true" style={box} />, document.body);
 }

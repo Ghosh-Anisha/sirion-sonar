@@ -7,6 +7,8 @@ import { StatTiles } from "../components/home/StatTiles";
 import { EmptyState } from "../components/ui/EmptyState";
 import { RevokedNotice } from "../components/home/RevokedNotice";
 import { useOnboarding } from "../state/OnboardingContext";
+import { ROLE_NAME, roleView } from "../logic/roles";
+import { useLedger } from "../state/useLedger";
 import { useNeedsYou } from "../state/useNeedsYou";
 import { useViewer } from "../state/ViewerContext";
 import "./Home.css";
@@ -27,6 +29,7 @@ export function Home() {
   const rows = useNeedsYou();
   const { viewer } = useViewer();
   const { firstReadDone } = useOnboarding().state;
+  const { items, vendors } = useLedger();
   const firstName = viewer.name.split(" ")[0];
   const urgent = rows.filter((r) => r.group === "urgent").length;
 
@@ -40,6 +43,9 @@ export function Home() {
         <p className="hero__eyebrow label">Needs you</p>
         <h1>What needs you today</h1>
         <p className="hero__lead">{summary(firstName, rows.length, urgent)}</p>
+        <p className="hero__role">
+          <span className={`role-tag role-tag--${viewer.role}`}>{ROLE_NAME[viewer.role]}</span> {roleView(viewer, items, vendors)}
+        </p>
         {viewer.role !== "it-admin" && <StatTiles rows={rows} />}
         {!firstReadDone && (
           <p className="home__setup">
