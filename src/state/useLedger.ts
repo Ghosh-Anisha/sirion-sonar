@@ -4,6 +4,7 @@ import { DEMO_START } from "../data/demo";
 import { emails } from "../data/emails";
 import { payments } from "../data/payments";
 import { vendors } from "../data/vendors";
+import { applyFactEdits } from "../logic/edits";
 import { buildItems, currentContracts, type Item } from "../logic/items";
 import { paidByVendor } from "../logic/match";
 import type { Contract, Payment } from "../data/types";
@@ -14,6 +15,8 @@ export interface Ledger {
   today: string;
   /** Contracts as they now read: the sample facts with people's checks and accepted amendments applied. */
   contracts: Contract[];
+  /** The same contracts before any amendment, with people's checks applied. */
+  originals: Contract[];
   /** Every item for today, open and done. */
   items: Item[];
   /** Supplier payments by vendor, up to today. */
@@ -30,6 +33,7 @@ export function useLedger(): Ledger {
     return {
       today,
       contracts: currentContracts(sampleContracts, emails, actions, factEdits),
+      originals: sampleContracts.map((c) => applyFactEdits(c, factEdits[c.id] ?? {})),
       items: buildItems({ today, firstReadOn: DEMO_START, vendors, contracts: sampleContracts, payments, emails, actions, factEdits }),
       paid: paidByVendor(payments, vendors, today),
     };

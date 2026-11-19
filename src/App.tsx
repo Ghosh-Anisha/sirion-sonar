@@ -2,6 +2,7 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import { AppShell } from "./components/layout/AppShell";
 import { Contract } from "./screens/Contract";
 import { Contracts } from "./screens/Contracts";
+import { Email } from "./screens/Email";
 import { Home } from "./screens/Home";
 import { Item } from "./screens/Item";
 import { Placeholder } from "./screens/Placeholder";
@@ -26,7 +27,7 @@ export function App() {
               <Route path="item/:id" element={<Item />} />
               <Route path="contract/:id" element={<Contract />} />
               <Route path="versions/:id" element={<Versions />} />
-              <Route path="email" element={<Placeholder title="Weekly email" />} />
+              <Route path="email" element={<Email />} />
               <Route path="measures" element={<Placeholder title="Measures" />} />
               <Route path="privacy" element={<Placeholder title="Privacy" />} />
               <Route path="sirion" element={<Placeholder title="Sirion" />} />
