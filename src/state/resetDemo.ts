@@ -10,6 +10,6 @@ export function resetDemo() {
   } catch {
     // Storage can be blocked. The reload still resets what is in memory.
   }
-  window.location.hash = "#/";
+  window.location.hash = "#/login";
   window.location.reload();
 }

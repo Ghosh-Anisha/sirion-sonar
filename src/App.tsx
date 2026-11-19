@@ -1,5 +1,6 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import { AppShell } from "./components/layout/AppShell";
+import { StoryShell } from "./components/layout/StoryShell";
 import { AccessLog } from "./screens/AccessLog";
 import { Architecture } from "./screens/Architecture";
 import { Assumptions } from "./screens/Assumptions";
@@ -13,8 +14,9 @@ import { Measures } from "./screens/Measures";
 import { Privacy } from "./screens/Privacy";
 import { Problem } from "./screens/Problem";
 import { Sirion } from "./screens/Sirion";
-import { Start } from "./screens/Start";
+import { Solution } from "./screens/Solution";
 import { Stakeholders } from "./screens/Stakeholders";
+import { Story } from "./screens/Story";
 import { Summary } from "./screens/Summary";
 import { Styleguide } from "./screens/Styleguide";
 import { Versions } from "./screens/Versions";
@@ -36,11 +38,20 @@ export function App() {
             <ThinkingProvider>
               <GuideProvider>
                 <Routes>
+                  <Route index element={<Navigate to="/story" replace />} />
+                  <Route element={<StoryShell />}>
+                    <Route path="story" element={<Story />} />
+                    <Route path="solution" element={<Solution />} />
+                    <Route path="why" element={<Why />} />
+                    <Route path="problem" element={<Problem />} />
+                    <Route path="stakeholders" element={<Stakeholders />} />
+                    <Route path="assumptions" element={<Assumptions />} />
+                    <Route path="measures" element={<Measures />} />
+                  </Route>
                   <Route element={<AppShell nav={false} topBar={false} />}>
                     <Route path="login" element={<Login />} />
                   </Route>
                   <Route element={<AppShell nav={false} />}>
-                    <Route index element={<Start />} />
                     <Route path="welcome" element={<Welcome />} />
                     <Route path="setup" element={<Navigate to="/welcome" replace />} />
                   </Route>
@@ -52,14 +63,9 @@ export function App() {
                     <Route path="contract/:id" element={<Contract />} />
                     <Route path="versions/:id" element={<Versions />} />
                     <Route path="email" element={<Email />} />
-                    <Route path="measures" element={<Measures />} />
                     <Route path="privacy" element={<Privacy />} />
                     <Route path="sirion" element={<Sirion />} />
                     <Route path="architecture" element={<Architecture />} />
-                    <Route path="why" element={<Why />} />
-                    <Route path="problem" element={<Problem />} />
-                    <Route path="stakeholders" element={<Stakeholders />} />
-                    <Route path="assumptions" element={<Assumptions />} />
                     <Route path="summary" element={<Summary />} />
                     <Route path="styleguide" element={<Styleguide />} />
                     <Route path="*" element={<Navigate to="/home" replace />} />

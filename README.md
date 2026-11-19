@@ -21,6 +21,17 @@ npm run preview    # serve the build
 
 The app uses hash routes, so any static host works. On Vercel, import the repo and accept the Vite defaults: build `npm run build`, output `dist`.
 
+## How the site is laid out
+
+The site reads as a story first and a product second. A stepper at the top runs through four steps:
+
+1. **The problem** at `/story`: a six panel comic, then why intake, who is involved and what we assumed.
+2. **The solution** at `/solution`: the whole product as one diagram, with an example invoice you can play through it.
+3. **Try it** at `/welcome`: sign-in, onboarding and the product itself.
+4. **How we know** at `/measures`: the north star and the measures, worked out live.
+
+The Case menu holds the short case pages: Why intake, The problem, Stakeholders and Assumptions. Every story page ends with one line on why it matters and a button to the next.
+
 ## Walking through the demo
 
 Opening the site lands on a mock sign-in at `/login`. It asks for no password and checks nothing. Then comes the onboarding wizard at `/welcome`, where each source can connect more than one product, such as Google Drive and SharePoint. Start the clickable demo points at each thing to press, one click at a time, and moves on when you press it. Do it for me presses it for you. Walk through it yourself opens the Demo guide, which takes you through the nine moments of the user journey: setup, first read, confirm, a deadline gets close, decide, an invoice differs, an amendment arrives, nobody acts, and handoff. Do this next moves the clock and switches the viewer where a moment needs it. Skip to demo jumps straight to the list with the first read done.

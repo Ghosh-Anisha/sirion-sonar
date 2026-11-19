@@ -17,6 +17,8 @@ import { firstReadPlan } from "../state/firstReadPlan";
 const skipped = reduceOnboarding(INITIAL_ONBOARDING, skipEvent(INITIAL_ONBOARDING, firstReadPlan, { on: DEMO_START, by: "Kavya Raman", seq: 0 }, "Vikram Nair", "kavya.raman@tamarindhome.example"));
 
 const PATHS: Record<TourScreen, string> = {
+  story: "/story",
+  solution: "/solution",
   login: "/login",
   welcome: "/welcome",
   home: "/home",

@@ -6,6 +6,7 @@ import { TourHost } from "../guide/TourHost";
 import { UnderTheHood } from "../thinking/UnderTheHood";
 import { RoleNotice } from "./RoleNotice";
 import { SampleBanner } from "./SampleBanner";
+import { SiteHeader } from "./SiteHeader";
 import { SideNav } from "./SideNav";
 import { TopBar } from "./TopBar";
 import "./AppShell.css";
@@ -20,6 +21,7 @@ export function AppShell({ nav = true, topBar = true }: { nav?: boolean; topBar?
       <button type="button" className="skip-link" onClick={() => document.getElementById("main")?.focus()}>
         Skip to content
       </button>
+      <SiteHeader />
       {topBar && <TopBar />}
       <SampleBanner />
       <div className={nav ? "shell" : "shell shell--single"}>

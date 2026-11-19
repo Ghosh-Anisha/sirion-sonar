@@ -10,6 +10,8 @@ export interface TourStep {
 }
 
 export type TourScreen =
+  | "story"
+  | "solution"
   | "login"
   | "welcome"
   | "home"
@@ -29,6 +31,19 @@ export type TourScreen =
   | "assumptions";
 
 export const tours: Record<TourScreen, TourStep[]> = {
+  story: [
+    { target: "story-hook", title: "The problem in one line", body: "A contract does nothing on its own. The rest of this page shows what that costs." },
+    { target: "story-comic", title: "Six panels", body: "Scroll to reveal each one. Press a panel to see it larger with one more line." },
+    { target: "story-tests", title: "Why start at intake", body: "Turn each card for the line of evidence behind it." },
+    { target: "story-matrix", title: "Where the money is", body: "Hover or focus a dot to read the problem it stands for." },
+    { target: "story-next", title: "Then the solution", body: "Each story page ends with one line on why it matters and a button to the next." },
+  ],
+  solution: [
+    { target: "solution-play", title: "Follow one invoice", body: "Play runs one invoice through the whole product in about 12 seconds. Step through it by hand if you like." },
+    { target: "solution-diagram", title: "The whole product", body: "Left to right, from what happens in the company to the person who acts. Press any part to see under the hood." },
+    { target: "solution-audit", title: "Every fact has a trail", body: "Hover a pill for a real example from the sample data." },
+    { target: "solution-real", title: "What is real", body: "This prototype computes the dates and the list for real. The reading and the connections are simulated." },
+  ],
   login: [
     { target: "login-sso", title: "Sign in the usual way", body: "The procurement or finance lead signs in with the company's Google or Microsoft account." },
     { target: "login-email", title: "Or a work email", body: "The sample procurement lead's email is filled in. Continue signs in as her." },
@@ -101,24 +116,24 @@ export const tours: Record<TourScreen, TourStep[]> = {
     { target: "data-map", title: "Where data lives", body: "Originals stay in the customer's drive. Only masked snippets reach a model." },
   ],
   why: [
-    { target: "intake-tests", title: "Four tests", body: "Intake passes all four. Each card links to where it shows up in the prototype." },
-    { target: "matrix", title: "Where the money is", body: "The costly problems are the ones nobody complains about. The prototype leads with those." },
-    { target: "other-stages", title: "Why not the others", body: "Negotiation and repository both need something the company does not have yet." },
+    { target: "story-head", title: "The point first", body: "Each case page states its point in one sentence at the top." },
+    { target: "story-tests", title: "Four tests", body: "Turn each card for the line of evidence behind it." },
+    { target: "story-next", title: "So what", body: "The page ends with why it matters and a button to the next page." },
   ],
   problem: [
-    { target: "problem-costs", title: "What it costs", body: "Each cost links to the item in the prototype that shows it." },
-    { target: "problem-assumption", title: "The big assumption", body: "Nobody clearly owns a renewal. The product is built to test it." },
-    { target: "problem-evidence", title: "What we know", body: "The evidence comes from the brief alone. The sample data proves nothing." },
+    { target: "story-head", title: "The point first", body: "What goes wrong, and how much evidence we have for it." },
+    { target: "problem-costs", title: "What it costs", body: "Each cost links to the screen in the prototype that shows it." },
+    { target: "story-next", title: "So what", body: "The page ends with why it matters and a button to the next page." },
   ],
   stakeholders: [
-    { target: "power-map", title: "Power and interest", body: "Pick a group to see what it wants." },
-    { target: "conflict-table", title: "Where they pull apart", body: "Pick a conflict to light up its two groups and see what Sonar does." },
-    { target: "stakeholders-side", title: "The detail", body: "What you pick shows here, with a link to where it plays out." },
+    { target: "story-head", title: "The point first", body: "Everyone thinks someone else owns the renewal." },
+    { target: "story-stakeholders", title: "Groups and conflicts", body: "Pick a group for what it wants, or a conflict to light up its two groups." },
+    { target: "story-next", title: "So what", body: "The page ends with why it matters and a button to the next page." },
   ],
   assumptions: [
-    { target: "assumptions-list", title: "What we take as true", body: "Each assumption links to the screen where it shows up." },
-    { target: "assumption-open", title: "The least settled", body: "Read-only access would take longest to get in a real company." },
-    { target: "dock-guide", title: "Back to the story", body: "The Demo guide in the bar at the bottom picks up at the next moment you have not seen." },
+    { target: "story-head", title: "The point first", body: "Read-only access is the bet we are least sure of." },
+    { target: "story-assumptions", title: "How settled", body: "Each bar shows how sure we are, and each card links to where it shows up." },
+    { target: "story-next", title: "So what", body: "The page ends with why it matters and a button to the next page." },
   ],
 };
 

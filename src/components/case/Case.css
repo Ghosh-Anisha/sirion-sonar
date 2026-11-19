@@ -1,22 +1,4 @@
-.case {
-  gap: var(--space-8);
-}
-
-.case-lead {
-  font-size: var(--text-16);
-}
-
-.case-line {
-  padding: var(--space-3) var(--space-4);
-  background: var(--surface);
-  border-left: 4px solid var(--brand);
-  border-radius: var(--radius-card);
-}
-
-.case-source {
-  font-size: var(--text-12);
-  color: var(--ink-2);
-}
+/* The parts of the case shared with the story: links to where it plays out, and the stakeholder map. */
 
 .plays-out {
   display: inline-flex;
@@ -30,124 +12,7 @@
   color: var(--ink-2);
 }
 
-.case-cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: var(--space-4);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.case-card {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-  padding: var(--space-4);
-  background: var(--surface);
-  border: var(--border);
-  border-radius: var(--radius-card);
-}
-
-.case-card ul {
-  margin: 0;
-  padding-left: var(--space-4);
-}
-
-.case-card--assumption {
-  background: var(--brand-soft);
-  border-color: var(--brand);
-}
-
-.case-card--assumption h2 {
-  font-size: var(--text-16);
-}
-
-.case-card--gap {
-  border-style: dashed;
-  border-color: var(--ink-2);
-}
-
-.case-columns {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: var(--space-4);
-}
-
-.case-list {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-}
-
-.case-list li {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
-}
-
-/* Latent versus blatant */
-.matrix {
-  margin: 0;
-}
-
-.matrix__grid {
-  display: grid;
-  grid-template-columns: 96px repeat(2, minmax(0, 1fr));
-  gap: var(--space-2);
-}
-
-.matrix__col {
-  padding: 0 var(--space-2);
-  color: var(--ink-2);
-}
-
-.matrix__row {
-  display: flex;
-  align-items: center;
-  color: var(--ink-2);
-}
-
-.quadrant {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-  min-height: 160px;
-  padding: var(--space-4);
-  background: var(--surface);
-  border: var(--border);
-  border-radius: var(--radius-card);
-}
-
-.quadrant--empty {
-  background: var(--bg);
-  border-style: dashed;
-}
-
-.quadrant__problems {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.quadrant__problems li {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
-  padding-left: var(--space-3);
-  border-left: 2px solid var(--brand);
-}
-
 /* Stakeholder map */
-.stakeholders {
-  display: grid;
-  grid-template-columns: minmax(0, 2fr) minmax(220px, 1fr);
-  gap: var(--space-6);
-  align-items: start;
-}
 
 .power-map {
   margin: 0;
@@ -191,8 +56,11 @@
 }
 
 .power-map__quad--tl { top: var(--space-2); left: var(--space-3); }
+
 .power-map__quad--tr { top: var(--space-2); right: var(--space-3); }
+
 .power-map__quad--bl { bottom: var(--space-2); left: var(--space-3); }
+
 .power-map__quad--br { bottom: var(--space-2); right: var(--space-3); }
 
 .power-map__group {
@@ -227,60 +95,6 @@
   border-color: var(--brand);
 }
 
-.conflict-table__pick {
-  padding: 0;
-  font-size: var(--text-14);
-  text-transform: none;
-  letter-spacing: normal;
-  color: var(--brand);
-  font: inherit;
-  font-weight: var(--weight-medium);
-  text-align: left;
-  text-decoration: underline;
-  background: none;
-  border: none;
-  cursor: pointer;
-}
-
-.conflict-table__row--on > * {
-  background: var(--check-soft);
-}
-
-.conflict-table__detail td {
-  background: var(--check-soft);
-}
-
-.conflict-table__detail p {
-  margin-bottom: var(--space-2);
-}
-
-/* Assumptions */
-.assumptions {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-  margin: 0;
-  padding-left: var(--space-6);
-}
-
-.assumption {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-  padding: var(--space-3) var(--space-4);
-  background: var(--surface);
-  border: var(--border);
-  border-radius: var(--radius-card);
-}
-
-.assumption--open {
-  border: 2px solid var(--urgent);
-}
-
-.assumption__flag {
-  color: var(--urgent);
-}
-
 .power-list {
   display: none;
 }
@@ -304,36 +118,6 @@
     display: none;
   }
 
-  /* Each conflict reads as a card: the title, who it is between, then why. */
-  .conflict-table thead {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip: rect(0 0 0 0);
-  }
-
-  .conflict-table,
-  .conflict-table tbody,
-  .conflict-table tr,
-  .conflict-table th,
-  .conflict-table td {
-    display: block;
-    width: 100%;
-  }
-
-  .conflict-table tr {
-    padding: var(--space-3) 0;
-    border-bottom: var(--border);
-  }
-
-  .conflict-table th,
-  .conflict-table td {
-    padding: var(--space-1) var(--space-4);
-    border: none;
-    background: none;
-  }
-
   .power-list {
     display: flex;
     flex-direction: column;
@@ -342,19 +126,6 @@
     background: var(--surface);
     border: var(--border);
     border-radius: var(--radius-card);
-  }
-
-  .stakeholders {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .matrix__grid {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .matrix__corner,
-  .matrix__col {
-    display: none;
   }
 
 }

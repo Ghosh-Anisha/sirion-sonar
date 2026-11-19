@@ -1,0 +1,192 @@
+:root {
+  --site-header-height: 56px;
+}
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 35;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-6);
+  min-height: var(--site-header-height);
+  padding: var(--space-2) var(--space-6);
+  background: rgb(255 255 255 / 0.9);
+  backdrop-filter: blur(8px);
+  border-bottom: var(--border);
+}
+
+.site-header__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--ink);
+  font-size: var(--text-16);
+  font-weight: var(--weight-semibold);
+  text-decoration: none;
+}
+
+.stepper {
+  flex: 1;
+}
+
+.stepper ol {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.stepper li {
+  display: flex;
+  align-items: center;
+}
+
+.stepper li:not(:last-child)::after {
+  content: "";
+  width: 24px;
+  height: 2px;
+  margin-left: var(--space-1);
+  background: var(--line);
+}
+
+.stepper__step {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-3) var(--space-1) var(--space-1);
+  color: var(--ink-2);
+  font-weight: var(--weight-medium);
+  text-decoration: none;
+  border-radius: var(--radius-badge);
+}
+
+.stepper__step:hover {
+  color: var(--ink);
+  background: var(--bg);
+}
+
+.stepper__number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  font-size: var(--text-12);
+  font-weight: var(--weight-semibold);
+  color: var(--ink);
+  border: 1px solid var(--ink-2);
+  border-radius: var(--radius-badge);
+}
+
+.stepper__step--on {
+  color: var(--ink);
+  font-weight: var(--weight-semibold);
+  background: var(--brand-soft);
+}
+
+.stepper__step--on .stepper__number {
+  color: var(--surface);
+  background: linear-gradient(135deg, var(--brand), var(--decide));
+  border-color: transparent;
+}
+
+.case-menu {
+  position: relative;
+}
+
+.case-menu summary {
+  padding: var(--space-1) var(--space-3);
+  font-weight: var(--weight-medium);
+  list-style: none;
+  border: var(--border);
+  border-radius: var(--radius-button);
+  cursor: pointer;
+}
+
+.case-menu summary::-webkit-details-marker {
+  display: none;
+}
+
+.case-menu summary::after {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-left: var(--space-2);
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: translateY(-2px) rotate(45deg);
+}
+
+.case-menu ul {
+  position: absolute;
+  top: calc(100% + var(--space-1));
+  right: 0;
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  min-width: 180px;
+  margin: 0;
+  padding: var(--space-1);
+  list-style: none;
+  background: var(--surface);
+  border: var(--border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-popover);
+}
+
+.case-menu a {
+  display: block;
+  padding: var(--space-2) var(--space-3);
+  color: var(--ink);
+  text-decoration: none;
+  border-radius: var(--radius-button);
+}
+
+.case-menu a:hover,
+.case-menu a.active {
+  background: var(--brand-soft);
+}
+
+/* Below this width the steps take their own row under the brand. */
+@media (max-width: 960px) {
+  .stepper {
+    order: 3;
+    flex-basis: 100%;
+  }
+
+  .case-menu {
+    margin-left: auto;
+  }
+}
+
+@media (max-width: 720px) {
+  .site-header {
+    padding: var(--space-2) var(--space-4);
+  }
+
+  .stepper ol {
+    justify-content: space-between;
+  }
+
+  .stepper li:not(:last-child)::after {
+    display: none;
+  }
+}
+
+/* On a phone only the current step shows its name. The others keep it for screen readers. */
+@media (max-width: 560px) {
+  .stepper__step:not(.stepper__step--on) .stepper__label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+}

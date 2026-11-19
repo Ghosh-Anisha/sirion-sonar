@@ -150,7 +150,7 @@ textarea:focus {
 }
 
 .hero__eyebrow {
-  color: var(--brand);
+  color: var(--ink-2);
 }
 
 .hero__lead {

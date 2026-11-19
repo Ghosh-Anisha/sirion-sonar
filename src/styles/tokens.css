@@ -61,4 +61,16 @@
 
   --content-max: 1120px;
   --fade: 120ms ease-out;
+
+  /*
+   * The story layer: only for the story pages (/story, /solution, the case pages and Measures).
+   * Larger type, a serif headline, a soft brand tint and roomier spacing. Everything else uses the tokens above.
+   */
+  --story-font-headline: Georgia, "Times New Roman", serif;
+  --story-headline: 40px;
+  --story-lead: 18px;
+  --story-space: 64px;
+  --story-space-lg: 96px;
+  --story-tint: linear-gradient(180deg, var(--brand-soft) 0%, var(--bg) 520px);
+  --story-reveal: 260ms ease-out;
 }
