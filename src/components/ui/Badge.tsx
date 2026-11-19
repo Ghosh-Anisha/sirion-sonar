@@ -1,9 +1,9 @@
+import type { Label } from "../../data/types";
 import { Icon } from "./Icon";
 import "./Badge.css";
 
 export type ItemType = "decide" | "check" | "fix" | "find";
-export type ConfidenceLabel = "confirmed" | "derived" | "bounded" | "unknown";
-export type BadgeKind = ItemType | ConfidenceLabel | "urgent";
+export type BadgeKind = ItemType | Label | "urgent";
 
 const TEXT: Record<BadgeKind, string> = {
   decide: "Decide",

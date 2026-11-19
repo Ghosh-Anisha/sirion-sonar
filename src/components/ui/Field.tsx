@@ -1,12 +1,13 @@
 import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
-import { Badge, type ConfidenceLabel } from "./Badge";
+import type { Label } from "../../data/types";
+import { Badge } from "./Badge";
 import "./Field.css";
 
 interface FieldProps {
   label: string;
   value: ReactNode;
-  confidence?: ConfidenceLabel;
+  confidence?: Label;
   source?: { text: string; to: string };
 }
 
