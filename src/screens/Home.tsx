@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import type { UrgencyGroup } from "../logic/alerts";
 import { CoverageStrip } from "../components/home/CoverageStrip";
 import { ItemGroup } from "../components/home/ItemGroup";
+import { NextUp } from "../components/home/NextUp";
 import { EmptyState } from "../components/ui/EmptyState";
 import { RevokedNotice } from "../components/home/RevokedNotice";
 import { useOnboarding } from "../state/OnboardingContext";
@@ -45,6 +46,7 @@ export function Home() {
       </header>
 
       <RevokedNotice />
+      {viewer.role !== "it-admin" && rows.length > 0 && <NextUp row={rows[0]} urgentCount={urgent} />}
       <CoverageStrip />
 
       {viewer.role === "it-admin" ? (

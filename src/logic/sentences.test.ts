@@ -5,7 +5,7 @@ import { emails } from "../data/emails";
 import { payments } from "../data/payments";
 import { vendors } from "../data/vendors";
 import { buildItems } from "./items";
-import { actionLabel, daysAway, itemSentence } from "./sentences";
+import { actionLabel, daysAway, dueIn, itemSentence } from "./sentences";
 
 const itemsOn = (today: string) =>
   buildItems({ today, firstReadOn: DEMO_START, vendors, contracts, payments, emails, actions: {} });
@@ -102,5 +102,15 @@ describe("one sentence per item", () => {
         expect(s.endsWith("."), s).toBe(true);
       }
     }
+  });
+});
+
+describe("dueIn", () => {
+  it("says how close an item is", () => {
+    expect(dueIn(12)).toBe("Due in 12 days");
+    expect(dueIn(1)).toBe("Due tomorrow");
+    expect(dueIn(0)).toBe("Due today");
+    expect(dueIn(-1)).toBe("1 day overdue");
+    expect(dueIn(-5)).toBe("5 days overdue");
   });
 });

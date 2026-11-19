@@ -72,95 +72,194 @@
   gap: var(--space-2);
 }
 
-/* Top bar */
-.topbar-actions {
-  gap: var(--space-1);
+/* The demo dock, at the bottom so the top of the screen is only the product */
+body {
+  padding-bottom: var(--dock-height, 0);
 }
 
-/* Demo guide */
-.demo-guide {
+/* Anything scrolled into view lands above the dock, not under it. */
+html {
+  scroll-padding-bottom: var(--dock-height, 0);
+}
+
+.dock {
   position: fixed;
-  /* Clears the top bar and the sample banner. */
-  top: calc(var(--space-12) * 2);
-  right: var(--space-4);
-  bottom: var(--space-4);
+  right: 0;
+  bottom: 0;
+  left: 0;
   z-index: 50;
+  background: var(--ink);
+  color: var(--surface);
+  box-shadow: var(--shadow-popover);
+}
+
+.dock__bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+  max-width: var(--content-max);
+  margin: 0 auto;
+  padding: var(--space-2) var(--space-6);
+}
+
+.dock .dock__label {
+  color: var(--surface);
+}
+
+.dock__button,
+.dock__guide {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 32px;
+  padding: var(--space-1) var(--space-3);
+  color: var(--surface);
+  font: inherit;
+  font-weight: var(--weight-medium);
+  background: transparent;
+  border: 1px solid rgb(255 255 255 / 0.4);
+  border-radius: var(--radius-button);
+  cursor: pointer;
+}
+
+.dock__button:hover:not(:disabled),
+.dock__guide:hover {
+  background: rgb(255 255 255 / 0.12);
+}
+
+.dock__button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.dock__guide {
+  color: var(--ink);
+  background: var(--surface);
+  border-color: var(--surface);
+}
+
+.dock__guide:hover {
+  background: var(--brand-soft);
+}
+
+.dock__guide--on {
+  color: var(--surface);
+  background: var(--brand);
+  border-color: var(--brand);
+}
+
+.dock__progress {
+  padding: 0 var(--space-2);
+  font-size: var(--text-12);
+  line-height: 20px;
+  color: var(--ink);
+  background: var(--brand-soft);
+  border-radius: var(--radius-badge);
+}
+
+.dock :focus-visible {
+  outline-color: var(--surface);
+}
+
+.dock__more {
+  display: none;
+}
+
+.dock__extra {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+  margin-left: auto;
+}
+
+.dock .view-as .label,
+.dock .thinking-toggle {
+  color: var(--surface);
+}
+
+.dock .view-as select {
+  max-width: 260px;
+}
+
+/* Demo guide, a strip above the dock bar */
+.demo-guide {
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
-  width: min(300px, calc(100vw - 32px));
-  padding: var(--space-4);
-  overflow-y: auto;
+  gap: var(--space-3);
+  max-width: var(--content-max);
+  margin: 0 auto;
+  padding: var(--space-3) var(--space-6);
+  color: var(--ink);
   background: var(--surface);
-  border: var(--border);
-  border-radius: var(--radius-card);
-  box-shadow: var(--shadow-popover);
+  border-radius: var(--radius-card) var(--radius-card) 0 0;
   animation: fade-in var(--fade);
-}
-
-.demo-guide__head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.demo-guide__head h2 {
-  font-size: var(--text-16);
 }
 
 .demo-guide__now {
   display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3) var(--space-6);
+}
+
+.demo-guide__text {
+  display: flex;
+  flex: 1 1 360px;
   flex-direction: column;
-  align-items: flex-start;
+  gap: var(--space-1);
+}
+
+.demo-guide__name {
+  font-size: var(--text-16);
+}
+
+.demo-guide__actions {
   gap: var(--space-2);
-  padding: var(--space-3);
-  background: var(--brand-soft);
-  border-radius: var(--radius-card);
 }
 
 .demo-guide__list {
   display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
+  gap: var(--space-2);
   margin: 0;
-  padding: 0;
+  padding: 0 0 var(--space-1);
+  overflow-x: auto;
   list-style: none;
 }
 
 .demo-guide__moment {
   display: flex;
+  flex-shrink: 0;
   align-items: center;
-  gap: var(--space-2);
+  gap: var(--space-1);
   padding: var(--space-1) var(--space-2);
+  font-size: var(--text-12);
   color: var(--ink-2);
-  border-radius: var(--radius-button);
+  border: var(--border);
+  border-radius: var(--radius-badge);
 }
 
 .demo-guide__moment--now {
   color: var(--ink);
   font-weight: var(--weight-semibold);
-  background: var(--bg);
+  background: var(--brand-soft);
+  border-color: var(--brand);
 }
 
 .demo-guide__moment--done {
-  color: var(--ink);
+  color: var(--confirmed);
+  background: var(--confirmed-soft);
+  border-color: var(--confirmed-soft);
 }
 
 .demo-guide__tick {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 20px;
-  height: 20px;
-  font-size: var(--text-12);
-  border: var(--border);
-  border-radius: var(--radius-badge);
-}
-
-.demo-guide__moment--done .demo-guide__tick {
-  color: var(--confirmed);
-  background: var(--confirmed-soft);
-  border-color: var(--confirmed);
+  width: 16px;
+  height: 16px;
 }
 
 /* Nudges */
@@ -200,7 +299,7 @@
 
 .idle-hint {
   position: fixed;
-  bottom: var(--space-4);
+  bottom: calc(var(--dock-height, 0px) + var(--space-4));
   left: var(--space-4);
   z-index: 45;
   display: flex;
@@ -277,11 +376,36 @@
 }
 
 @media (max-width: 720px) {
+  .dock__bar,
   .demo-guide {
-    top: auto;
-    left: var(--space-4);
-    max-height: 70vh;
-    width: auto;
+    padding-left: var(--space-4);
+    padding-right: var(--space-4);
+  }
+
+  .dock__more {
+    display: inline-flex;
+  }
+
+  .dock__extra {
+    display: none;
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .dock__extra--open {
+    display: flex;
+  }
+
+  .dock__label,
+  .demo-guide__list,
+  .demo-guide__text .muted {
+    display: none;
+  }
+
+  .demo-guide {
+    gap: var(--space-2);
+    padding-top: var(--space-2);
+    padding-bottom: var(--space-2);
   }
 
   .summary__row {

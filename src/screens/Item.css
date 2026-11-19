@@ -24,9 +24,18 @@
   color: var(--ink-2);
 }
 
-.item-screen__escalated {
-  color: var(--urgent);
-  font-weight: var(--weight-medium);
+/* The header carries the item's urgency as a bar down its left edge, matching its row on Home. */
+.item-screen__header {
+  padding-left: var(--space-4);
+  border-left: 4px solid var(--line);
+}
+
+.item-screen__header--urgent {
+  border-left-color: var(--urgent);
+}
+
+.item-screen__header--month {
+  border-left-color: var(--check);
 }
 
 .item-screen__grid {

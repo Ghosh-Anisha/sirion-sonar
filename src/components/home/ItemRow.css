@@ -12,6 +12,20 @@
   border-bottom: none;
 }
 
+/* A bar down the left edge says how close the item is. The chip says it in words. */
+.item-row--urgent {
+  box-shadow: inset 4px 0 0 var(--urgent);
+  background: var(--fix-soft);
+}
+
+.item-row--month {
+  box-shadow: inset 4px 0 0 var(--check);
+}
+
+.item-row--later {
+  box-shadow: inset 4px 0 0 var(--line);
+}
+
 .item-row__badges {
   display: flex;
   flex-direction: column;
@@ -39,14 +53,10 @@
 .item-row__meta {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   gap: var(--space-1) var(--space-4);
   font-size: var(--text-12);
   color: var(--ink-2);
-}
-
-.item-row__escalated {
-  color: var(--urgent);
-  font-weight: var(--weight-medium);
 }
 
 .item-row__action {
@@ -65,4 +75,9 @@
   .item-row__action {
     justify-self: start;
   }
+}
+
+/* Teal is 4.24:1 on the urgent tint, so links on an urgent row use ink. */
+.item-row--urgent .why-link {
+  color: var(--ink);
 }

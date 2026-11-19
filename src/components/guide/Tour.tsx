@@ -28,14 +28,22 @@ interface Box {
   height: number;
 }
 
-/** Where the coach mark goes: below the spotlight if there is room, else above, kept inside the window. */
-function cardPosition(box: Box): { top?: number; bottom?: number; left: number } {
+/** The bottom of the usable window: above the demo dock, which stays fixed at the bottom. */
+function usableBottom(): number {
+  const dock = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--dock-height")) || 0;
+  return window.innerHeight - dock;
+}
+
+/** Where the coach mark goes: below the spotlight if there is room, else above, kept clear of the dock. */
+function cardPosition(box: Box): { top: number; left: number } {
   const width = Math.min(CARD_WIDTH, window.innerWidth - 32);
   const left = Math.min(Math.max(box.left, 16), window.innerWidth - width - 16);
+  const bottom = usableBottom();
   const below = box.top + box.height + PAD + GAP;
-  if (window.innerHeight - below >= CARD_ROOM) return { top: below, left };
-  if (box.top - PAD - GAP >= CARD_ROOM) return { bottom: window.innerHeight - box.top + PAD + GAP, left };
-  return { top: Math.max(16, window.innerHeight - CARD_ROOM - 16), left };
+  if (bottom - below >= CARD_ROOM) return { top: below, left };
+  const above = box.top - PAD - GAP - CARD_ROOM;
+  if (above >= 16) return { top: above, left };
+  return { top: Math.max(16, bottom - CARD_ROOM - 16), left };
 }
 
 interface TourProps {
@@ -59,7 +67,7 @@ export function Tour({ steps, onClose }: TourProps) {
     const el = step ? find(step.target) : null;
     if (!el) return setBox(null);
     const r = el.getBoundingClientRect();
-    setBox({ top: r.top, left: r.left, width: r.width, height: Math.min(r.height, window.innerHeight * TALL) });
+    setBox({ top: r.top, left: r.left, width: r.width, height: Math.min(r.height, usableBottom() * TALL) });
   }, [step]);
 
   useEffect(() => {
@@ -75,7 +83,7 @@ export function Tour({ steps, onClose }: TourProps) {
       else onClose();
       return;
     }
-    const tall = el.getBoundingClientRect().height > window.innerHeight * TALL;
+    const tall = el.getBoundingClientRect().height > usableBottom() * TALL;
     el.scrollIntoView({ block: tall ? "start" : "center", inline: "nearest", behavior: reducedMotion() ? "auto" : "smooth" });
     measure();
     cardRef.current?.focus();

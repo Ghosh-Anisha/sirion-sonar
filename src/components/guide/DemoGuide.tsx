@@ -9,57 +9,61 @@ import { Button } from "../ui/Button";
 import { Icon } from "../ui/Icon";
 import "./Guide.css";
 
-/** The nine moments of the story as a checklist, with the current one and a single Do this next. */
+/** The nine moments as a strip above the demo controls: where you are, one Do this next, and the steps ticked so far. */
 export function DemoGuide() {
-  const { open, setOpen } = useGuide();
-  const journey = useJourney();
+  const { setOpen } = useGuide();
+  const { current, done, count } = useJourney();
   const goNext = useDoNext();
-  if (!open) return null;
-  const { current, done, count } = journey;
   const person = current ? people.find((p) => p.id === current.personId) : null;
 
   return (
-    <aside id="demo-guide" className="demo-guide" aria-labelledby="demo-guide-title">
-      <header className="demo-guide__head">
-        <h2 id="demo-guide-title">Demo guide</h2>
-        <Button variant="quiet" onClick={() => setOpen(false)} aria-label="Collapse the demo guide">
-          Hide
-        </Button>
-      </header>
-
+    <section id="demo-guide" className="demo-guide" aria-labelledby="demo-guide-title">
       <div className="demo-guide__now" role="status">
-        {current ? (
-          <>
-            <p className="label">
-              Moment <span className="num">{moments.indexOf(current) + 1}</span> of <span className="num">{moments.length}</span>
+        <div className="demo-guide__text">
+          <p className="label">
+            {current ? (
+              <>
+                Demo guide, moment <span className="num">{moments.indexOf(current) + 1}</span> of <span className="num">{moments.length}</span>
+              </>
+            ) : (
+              "Demo guide, all nine moments done"
+            )}
+          </p>
+          <h2 id="demo-guide-title" className="demo-guide__name">
+            {current ? current.name : "That is the whole story"}
+          </h2>
+          {current && (
+            <p>
+              {current.todo}
+              {person && <span className="muted"> You will be viewing as {person.name}.</span>}
             </p>
-            <h3>{current.name}</h3>
-            <p>{current.todo}</p>
-            {person && <p className="muted">You will be viewing as {person.name}, {person.title}.</p>}
-          </>
-        ) : (
-          <>
-            <p className="label">All nine moments done</p>
-            <h3>That is the whole story</h3>
-          </>
-        )}
-        <Button variant="primary" onClick={goNext}>
-          {current ? "Do this next" : "See the summary"}
-        </Button>
+          )}
+        </div>
+        <div className="row demo-guide__actions">
+          <Button variant="primary" onClick={goNext}>
+            {current ? "Do this next" : "See the summary"}
+          </Button>
+          <Button variant="quiet" onClick={() => setOpen(false)} aria-label="Hide the demo guide">
+            Hide
+          </Button>
+        </div>
       </div>
 
       <ol className="demo-guide__list" aria-label={`${count} of ${moments.length} moments done`}>
-        {moments.map((m, i) => (
-          <li key={m.id} className={`demo-guide__moment${done[m.id] ? " demo-guide__moment--done" : ""}${m.id === current?.id ? " demo-guide__moment--now" : ""}`}>
-            <span className="demo-guide__tick" aria-hidden="true">
-              {done[m.id] ? <Icon name="confirmed" size={12} /> : <span className="num">{i + 1}</span>}
-            </span>
-            <span>{m.name}</span>
-            <span className="visually-hidden">{done[m.id] ? ", done" : m.id === current?.id ? ", next" : ""}</span>
-          </li>
-        ))}
+        {moments.map((m, i) => {
+          const state = done[m.id] ? "done" : m.id === current?.id ? "now" : "todo";
+          return (
+            <li key={m.id} className={`demo-guide__moment demo-guide__moment--${state}`} aria-current={state === "now" ? "step" : undefined}>
+              <span className="demo-guide__tick" aria-hidden="true">
+                {state === "done" ? <Icon name="confirmed" size={12} /> : <span className="num">{i + 1}</span>}
+              </span>
+              <span>{m.name}</span>
+              <span className="visually-hidden">{state === "done" ? ", done" : state === "now" ? ", next" : ""}</span>
+            </li>
+          );
+        })}
       </ol>
-    </aside>
+    </section>
   );
 }
 

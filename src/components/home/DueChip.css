@@ -1,0 +1,39 @@
+.due-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 0 var(--space-2);
+  font-size: var(--text-12);
+  font-weight: var(--weight-semibold);
+  line-height: 20px;
+  white-space: nowrap;
+  border-radius: var(--radius-badge);
+}
+
+.due-chip--urgent {
+  color: var(--urgent);
+  background: var(--fix-soft);
+  border: 1px solid var(--urgent);
+}
+
+.due-chip--month {
+  color: var(--check);
+  background: var(--check-soft);
+}
+
+.due-chip--later {
+  color: var(--ink-2);
+  background: var(--unknown-soft);
+}
+
+.escalated-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 var(--space-2);
+  font-size: var(--text-12);
+  font-weight: var(--weight-medium);
+  line-height: 20px;
+  color: var(--surface);
+  background: var(--urgent);
+  border-radius: var(--radius-badge);
+}

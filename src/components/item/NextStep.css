@@ -1,0 +1,24 @@
+.next-step {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+  padding: var(--space-3);
+  background: var(--bg);
+  border-left: 4px solid var(--line);
+  border-radius: var(--radius-button);
+}
+
+.next-step--urgent {
+  background: var(--fix-soft);
+  border-left-color: var(--urgent);
+}
+
+.next-step--month {
+  background: var(--check-soft);
+  border-left-color: var(--check);
+}
+
+.next-step .label {
+  width: 100%;
+}

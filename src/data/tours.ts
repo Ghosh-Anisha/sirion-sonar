@@ -32,7 +32,7 @@ export const tours: Record<TourScreen, TourStep[]> = {
     { target: "wizard-progress", title: "Eight short steps", body: "This bar shows where you are. A refresh keeps your place." },
     { target: "walkthrough", title: "Want a guide", body: "Start the walkthrough opens the Demo guide, which takes you through the story one moment at a time." },
     { target: "wizard-skip", title: "In a hurry", body: "Skip to demo connects everything with the defaults and takes you to the list with the first read done." },
-    { target: "topbar-tour", title: "Replay any time", body: "The Tour button plays the tour for whatever screen you are on." },
+    { target: "dock-tour", title: "Replay any time", body: "The demo bar at the bottom holds the demo controls. Tour this screen plays the tour for whatever screen you are on." },
   ],
   home: [
     { target: "needs-you-list", title: "The list", body: "Everything that needs a person, one sentence each, with the nearest deadline at the top." },
@@ -112,7 +112,7 @@ export const tours: Record<TourScreen, TourStep[]> = {
   assumptions: [
     { target: "assumptions-list", title: "What we take as true", body: "Each assumption links to the screen where it shows up." },
     { target: "assumption-open", title: "The least settled", body: "Read-only access would take longest to get in a real company." },
-    { target: "topbar-guide", title: "Back to the story", body: "The Demo guide picks up at the next moment you have not seen." },
+    { target: "dock-guide", title: "Back to the story", body: "The Demo guide in the bar at the bottom picks up at the next moment you have not seen." },
   ],
 };
 

@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom";
-import { DemoGuide } from "../guide/DemoGuide";
+import { DemoDock } from "../guide/DemoDock";
 import { IdleHint } from "../guide/IdleHint";
 import { NudgeDot } from "../guide/NudgeDot";
 import { TourHost } from "../guide/TourHost";
@@ -24,7 +24,7 @@ export function AppShell({ nav = true }: { nav?: boolean }) {
           <Outlet />
         </main>
       </div>
-      <DemoGuide />
+      <DemoDock />
       <UnderTheHood />
       <TourHost />
       <NudgeDot />

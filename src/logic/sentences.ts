@@ -17,6 +17,14 @@ export function daysAway(today: string, date: string): string {
   return days === -1 ? "yesterday" : `${-days} days ago`;
 }
 
+/** "Due in 12 days", "Due tomorrow", "Due today", "1 day overdue": how close an item is, for its chip. */
+export function dueIn(daysLeft: number): string {
+  if (daysLeft > 1) return `Due in ${daysLeft} days`;
+  if (daysLeft === 1) return "Due tomorrow";
+  if (daysLeft === 0) return "Due today";
+  return daysLeft === -1 ? "1 day overdue" : `${-daysLeft} days overdue`;
+}
+
 export function itemSentence(item: Item, vendorName: string, today: string): string {
   const d = item.detail;
   const by = formatShortDate(item.dueDate);

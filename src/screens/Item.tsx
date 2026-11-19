@@ -8,6 +8,7 @@ import { DraftReply } from "../components/item/DraftReply";
 import { EvidenceList } from "../components/item/EvidenceList";
 import { History } from "../components/item/History";
 import { ItemActions } from "../components/item/ItemActions";
+import { NextStep } from "../components/item/NextStep";
 import { PaymentsTable } from "../components/item/PaymentsTable";
 import { ButtonLink } from "../components/ui/ButtonLink";
 import { Card } from "../components/ui/Card";
@@ -92,6 +93,7 @@ export function Item() {
 
         <Card tour="item-actions" title="What to do" actions={<ThinkingBadge at="item.draft" />}>
           <div className="stack">
+            <NextStep row={row} />
             <ItemActions item={item} onAct={act} />
             {item.type === "decide" && !decision && (
               <p className="muted">Choose one and Sonar drafts the reply for you to read before anything is sent.</p>
