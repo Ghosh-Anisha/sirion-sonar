@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { contracts } from "../data/contracts";
-import { DEMO_START } from "../data/demo";
+import { DEMO_START, ORBIS_AMENDMENT_ARRIVES } from "../data/demo";
 import { emails } from "../data/emails";
 import { payments } from "../data/payments";
 import { people } from "../data/people";
@@ -30,34 +30,41 @@ describe("traceEmail", () => {
     }
   });
 
-  it("routes the Orbis amendment to Versions, not to the list", () => {
-    expect(trace("orbis-amendment").route).toEqual({ kind: "versions", contractId: "orbis-facilities", to: "/versions/orbis-facilities" });
-    expect(result("orbis-amendment", "compare")).toBe(
-      "Changes clauses 2, 3, 5. The end date would move from 31 Jan 2027 to 30 Jun 2027, and the notice deadline from 1 Jan 2027 to 1 May 2027.",
+  it("routes the Orbis amendment to Versions, not to the list, once it arrives", () => {
+    const arrived: InboundContext = {
+      ...ctx,
+      today: ORBIS_AMENDMENT_ARRIVES,
+      items: buildItems({ today: ORBIS_AMENDMENT_ARRIVES, firstReadOn: DEMO_START, vendors, contracts, payments, emails, actions: {} }),
+    };
+    const t = traceEmail(emails.find((e) => e.id === "orbis-amendment")!, arrived);
+    expect(t.route).toEqual({ kind: "versions", contractId: "orbis-facilities", to: "/versions/orbis-facilities" });
+    expect(t.stages.find((s) => s.id === "compare")!.result).toBe(
+      "Changes clauses 2, 3, 4. The end date would move from 1 Apr 2027 to 31 Mar 2028, and the notice deadline from 1 Jan 2027 to 2 Dec 2027.",
     );
-    expect(result("orbis-amendment", "route")).toContain("Farah Siddiqui to accept or reject");
+    expect(t.stages.find((s) => s.id === "route")!.result).toContain("Farah Siddiqui to accept or reject");
   });
 
-  it("ends the Brightline email as a Check item with the invoice, the agreed rate and the clause, plus a Fix", () => {
-    expect(trace("brightline-invoice").route).toMatchObject({ kind: "item", itemIds: ["check:brightline-invoice", "fix:brightline-invoice"] });
+  it("ends the Brightline email as a Check item with the invoice, the agreed rate and the clause, and finds the on-time level met", () => {
+    expect(trace("brightline-invoice").route).toMatchObject({ kind: "item", itemIds: ["check:brightline-invoice"] });
     expect(result("brightline-invoice", "compare")).toBe(
-      "Billed Rs 8,31,600. At Rs 18,500 per trip in clause 3, the same work comes to Rs 7,77,000, so it is Rs 54,600 over. 38 of 42 trips on time in October, 90.5%, below the 95% in the contract.",
+      "Billed Rs 6,27,900. At Rs 42 per km for a 10 tonne truck in clause 4, the same work comes to Rs 5,73,300, so it is Rs 54,600 over. 37 of 38 trips on time in October, 97.4%, at or above the 95% in the contract.",
     );
-    expect(result("brightline-invoice", "route")).toBe("Added 2 items to Needs you for Rohan Das.");
+    expect(result("brightline-invoice", "route")).toBe("Added an item to Needs you for Rohan Das.");
   });
 
   it("compares Ledgerline's price rise with the cap, and sends it to the procurement lead because nobody owns it", () => {
-    expect(result("ledgerline-price-rise", "compare")).toBe("A 15% rise against a cap of 7% at most in clause 3. It is over the cap by 8%.");
+    expect(result("ledgerline-price-rise", "compare")).toBe("A 15% rise against a cap of 5% at most in clause 5. It is over the cap by 10%.");
     expect(result("ledgerline-price-rise", "route")).toBe("Added an item to Needs you for Kavya Raman, because nobody owns this supplier.");
   });
 
   it("files a matching invoice with no item", () => {
-    expect(trace("greenleaf-invoice").route).toEqual({ kind: "filed", contractId: "greenleaf-pantry" });
-    expect(result("greenleaf-invoice", "explain")).toBe("It matches the contract, so nothing needs a person.");
+    expect(trace("datavane-invoice").route).toEqual({ kind: "filed", contractId: "datavane-subscription" });
+    expect(result("datavane-invoice", "compare")).toBe("Billed Rs 9,60,000, which matches Rs 9,60,000 a year in clause 4.");
+    expect(result("datavane-invoice", "explain")).toBe("It matches the contract, so nothing needs a person.");
   });
 
   it("adds an email from a supplier with no contract to its Find item", () => {
-    expect(result("bluepeak-invoice", "look-up")).toMatch(/^No contract on file for Bluepeak Security Services\. 2 payments totalling Rs 1,12,000/);
+    expect(result("bluepeak-invoice", "look-up")).toMatch(/^No contract on file for Bluepeak Security Services\. 1 payment totalling Rs 56,000/);
     expect(trace("bluepeak-invoice").route).toMatchObject({ kind: "item", itemIds: ["find:bluepeak"] });
   });
 

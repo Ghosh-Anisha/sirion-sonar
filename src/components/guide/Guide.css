@@ -180,6 +180,11 @@ html {
 }
 
 /* Demo guide, a strip above the dock bar */
+.demo-guide__clock {
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-2);
+}
+
 .demo-guide {
   display: flex;
   flex-direction: column;

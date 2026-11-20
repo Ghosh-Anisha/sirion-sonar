@@ -1,17 +1,24 @@
 import { people } from "../data/people";
+import { tally } from "../logic/firstRead";
 import { ledgerRows } from "../logic/ledger";
+import { firstReadPlan } from "../state/firstReadPlan";
 import { useLedger } from "../state/useLedger";
 import { LedgerMiniRow } from "./LedgerMiniRow";
 import { Part } from "./Part";
 
-const SHOWN = ["cloudmetric-subscription", "brightline-logistics", "orbis-facilities", "kestrel-freight", "pinecrest-msa"];
+const SHOWN = ["cloudmetric-subscription", "brightline-logistics", "orbis-facilities", "kestrel-marketing", "pinecrest-msa"];
 
 /** Column 4: the record, a few rows of the live ledger with their labels. */
 export function LedgerColumn() {
   const { contracts, vendors, paid, today } = useLedger();
   const rows = ledgerRows(contracts, vendors, people, paid, today).filter((r) => SHOWN.includes(r.contractId));
+  const read = tally(firstReadPlan.steps, firstReadPlan.steps.length);
   return (
     <Part id="ledger" thinking="contract.dates" label="The record, the ledger of contracts with their dates and labels" className="ledger-mini">
+      <span className="ledger-mini__tally">
+        First read: <span className="num">{firstReadPlan.steps.length}</span> suppliers, <span className="num">{read.full}</span> found, <span className="num">{read.partial}</span> partial,{" "}
+        <span className="num">{read.none}</span> not found.
+      </span>
       <span className="ledger-mini__head">
         <span>Vendor</span>
         <span>Notice by</span>

@@ -25,21 +25,21 @@ describe("planFirstRead", () => {
     expect(spends).toEqual([...spends].sort((a, b) => b - a));
   });
 
-  it("ends at 9 found, 2 partial and 13 not found", () => {
-    expect(tally(plan.steps, plan.steps.length)).toEqual({ full: 9, partial: 2, none: 13 });
+  it("ends at 10 found, 2 partial and 12 not found", () => {
+    expect(tally(plan.steps, plan.steps.length)).toEqual({ full: 10, partial: 2, none: 12 });
     expect(tally(plan.steps, 0)).toEqual({ full: 0, partial: 0, none: 0 });
   });
 
   it("explains partial reads with what is missing", () => {
     const kestrel = plan.steps.find((s) => s.vendorId === "kestrel")!;
-    expect(kestrel).toMatchObject({ result: "partial", files: ["Ops/Scans/SCAN_0047.pdf"] });
+    expect(kestrel).toMatchObject({ result: "partial", files: ["Marketing/Scans/SCAN_0047.pdf"] });
     expect(kestrel.note).toMatch(/unreadable/);
   });
 
   it("logs every file and message it opened, and the searches that opened nothing", () => {
     expect(plan.access[0]).toMatchObject({ source: "payables" });
     expect(plan.access.filter((a) => a.source === "drive" && a.text.startsWith("Opened"))).toHaveLength(contracts.length);
-    expect(plan.access.filter((a) => a.text.includes("Opened nothing"))).toHaveLength(13);
+    expect(plan.access.filter((a) => a.text.includes("Opened nothing"))).toHaveLength(12);
     expect(plan.access.filter((a) => a.source === "mail")).toHaveLength(emails.length);
   });
 });

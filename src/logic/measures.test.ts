@@ -30,13 +30,15 @@ const signalOf = (m: ReturnType<typeof run>, id: string) => m.signals.find((x) =
 const decide = (kind: ItemAction["kind"], on: string): ItemAction => ({ kind, on, by: "kavya" });
 
 describe("deadlinesSoFar", () => {
-  it("lists the four renewal deadlines in view on the first day", () => {
+  it("lists the six renewal deadlines in view on the first day", () => {
     const found = deadlinesSoFar(contracts, paidByVendor(payments, vendors, DEMO_START), DEMO_START, DEMO_START);
     expect(found.map((d) => d.itemId).sort()).toEqual([
-      "decide:kestrel-freight:2027-01-29",
+      "decide:greenleaf-grounds:2026-12-01",
+      "decide:kestrel-marketing:2027-01-29",
       "decide:ledgerline-payroll:2026-12-01",
       "decide:orbis-facilities:2027-01-01",
       "decide:quillstone-retainer:2026-12-10",
+      "decide:swiftlane-transport:2027-01-01",
     ]);
   });
 
@@ -48,7 +50,7 @@ describe("deadlinesSoFar", () => {
 
 describe("northStar", () => {
   it("counts nothing until a deadline is decided or passes", () => {
-    expect(run(DEMO_START).northStar).toEqual({ decidedInTime: 0, missed: 0, pending: 4, share: null });
+    expect(run(DEMO_START).northStar).toEqual({ decidedInTime: 0, missed: 0, pending: 6, share: null });
   });
 
   it("goes up when a renewal is decided before its deadline", () => {
@@ -58,7 +60,8 @@ describe("northStar", () => {
 
   it("counts a deadline that passed with no decision as missed", () => {
     const m = run("2026-12-02", { "decide:quillstone-retainer:2026-12-10": decide("end", "2026-12-02") });
-    expect(m.northStar).toMatchObject({ decidedInTime: 1, missed: 1, share: 50 });
+    // Ledgerline and Greenleaf both passed 1 Dec with no decision.
+    expect(m.northStar).toMatchObject({ decidedInTime: 1, missed: 2, share: 33 });
   });
 
   it("does not count a renewal that was only sent a reply as decided", () => {
@@ -69,8 +72,8 @@ describe("northStar", () => {
 describe("supporting metrics", () => {
   it("starts from the sample data", () => {
     const m = run(DEMO_START);
-    expect(metricOf(m, "coverage")).toMatchObject({ value: 88, target: 70, status: "on-track" });
-    expect(metricOf(m, "confirmed")).toMatchObject({ value: 8, target: 50, status: "off-track", detail: "1 of 12 contracts have every date checked" });
+    expect(metricOf(m, "coverage")).toMatchObject({ value: 91, target: 70, status: "on-track" });
+    expect(metricOf(m, "confirmed")).toMatchObject({ value: 17, target: 50, status: "off-track", detail: "2 of 12 contracts have every date checked" });
     expect(metricOf(m, "time-to-decision")).toMatchObject({ value: null, status: "no-data" });
     expect(metricOf(m, "real-flags")).toMatchObject({ value: null, status: "no-data" });
     expect(metricOf(m, "unowned").value).toBe(7);

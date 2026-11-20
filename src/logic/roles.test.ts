@@ -13,9 +13,9 @@ const person = (id: string) => people.find((p) => p.id === id)!;
 
 describe("roleView", () => {
   it("says what each role sees, with the counts", () => {
-    expect(roleView(person("kavya"), items, vendors)).toMatch(/^As procurement lead you see every item, 21 in all, and the \d+ nobody owns come to you\.$/);
-    expect(roleView(person("arjun"), items, vendors)).toMatch(/^As finance lead you see .* \d+ of 21 items\.$/);
-    expect(roleView(person("neha"), items, vendors)).toMatch(/^As a contract owner you see only your own \d+ suppliers, \d+ of 21 items\.$/);
+    expect(roleView(person("kavya"), items, vendors)).toMatch(/^As procurement lead you see every item, 20 in all, and the \d+ nobody owns come to you\.$/);
+    expect(roleView(person("arjun"), items, vendors)).toMatch(/^As finance lead you see .* \d+ of 20 items\.$/);
+    expect(roleView(person("neha"), items, vendors)).toMatch(/^As a contract owner you see only your own \d+ suppliers, \d+ of 20 items\.$/);
     expect(roleView(person("vikram"), items, vendors)).toMatch(/no contract contents/);
   });
 });

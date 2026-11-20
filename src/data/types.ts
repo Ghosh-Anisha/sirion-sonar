@@ -33,10 +33,16 @@ export type FactField =
   | "termMonths"
   | "renewalTermMonths"
   | "noticeDays"
+  | "noticeMonths"
+  | "renewalOptionMonths"
   | "annualFee"
   | "monthlyFee"
   | "unitRate"
   | "priceCapPercent"
+  | "priceNoticeDays"
+  | "surchargeCapPercent"
+  | "markupPercent"
+  | "conversionFeePercent"
   | "slaOnTimePercent"
   | "slaCreditPercent";
 
@@ -53,11 +59,12 @@ export interface Fact {
   label: Label;
   /** Person id of whoever checked it against the contract, or null if nobody has. */
   confirmedBy: string | null;
-  /** For rates, what one unit is, such as "per trip". */
+  /** For rates, what one unit is, such as "per km". */
   unit?: string;
 }
 
 export interface Clause {
+  /** The clause number. "0" is the opening paragraph that names the parties. */
   id: string;
   heading: string;
   page: number;
@@ -77,6 +84,8 @@ export interface Contract {
   facts: Fact[];
   /** What is missing or unreadable, for partial contracts. */
   gap: string | null;
+  /** Where the sample's wording was adapted from. Shown as a short credit under the text. */
+  sourceNote: string;
 }
 
 /** A change to a contract. Each clause replaces the clause with the same id. */

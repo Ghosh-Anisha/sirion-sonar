@@ -292,6 +292,10 @@
   gap: var(--space-1) var(--space-2);
 }
 
+.ledger-mini__tally {
+  color: var(--ink);
+}
+
 .ledger-mini__head {
   font-weight: var(--weight-semibold);
   color: var(--ink-2);

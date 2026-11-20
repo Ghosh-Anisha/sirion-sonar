@@ -222,7 +222,7 @@ export const pushDesign: PushRow[] = [
   { what: "Weekly email", when: "Once a week", goesTo: "Each owner, with their own items", says: "Each item with its reason and one link to act on it" },
   { what: "Deadline alerts", when: "90, 30 and 7 days before a notice deadline", goesTo: "The owner", says: "The renewal, the date to decide by, and what the contract allows" },
   { what: "New arrivals", when: "When a supplier email, notice or invoice is matched", goesTo: "The owner", says: "The item it creates, with the difference from the contract" },
-  { what: "Escalation", when: "No action by the 30 day alert, and again at 7 days", goesTo: "The procurement lead, who sees it as urgent at 7 days", says: "The same item, marked untouched" },
+  { what: "Escalation", when: "No action by the 30 day alert, and again at 7 days", goesTo: "The procurement lead, who sees it as urgent from 21 days out", says: "The same item, marked untouched" },
 ];
 
 /* ------------------------------------------------------------------
@@ -274,7 +274,7 @@ export const afterIntake = {
   askTitle: "AskSirion, on this ledger",
   askNote: "Illustrative, answered from the confirmed ledger.",
   questions: [
-    { id: "march", text: "Which contracts renew in March?" },
+    { id: "april", text: "Which contracts renew in April?" },
     { id: "above-rate", text: "Which suppliers were paid above the agreed rate this year?" },
     { id: "no-owner", text: "Which suppliers have no owner?" },
   ],

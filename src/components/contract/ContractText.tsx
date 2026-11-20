@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import type { Contract } from "../../data/types";
+import { clauseTitle } from "../../logic/factFormat";
 import { highlightSegments } from "../../logic/highlight";
 import "./ContractText.css";
 
@@ -24,7 +25,7 @@ export function ContractText({ contract, activeSentence }: ContractTextProps) {
       {contract.clauses.map((clause) => (
         <section key={clause.id} className="contract-text__clause">
           <h3>
-            {clause.id}. {clause.heading} <span className="contract-text__page">page {clause.page}</span>
+            {clauseTitle(clause)} <span className="contract-text__page">page {clause.page}</span>
           </h3>
           <p>
             {highlightSegments(clause.text, sentences).map((seg, i) => {
@@ -39,6 +40,9 @@ export function ContractText({ contract, activeSentence }: ContractTextProps) {
           </p>
         </section>
       ))}
+      <p className="contract-text__source" title={contract.sourceNote}>
+        Adapted from a Law Insider sample.
+      </p>
     </article>
   );
 }

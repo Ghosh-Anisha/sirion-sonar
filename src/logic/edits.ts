@@ -27,7 +27,7 @@ export function applyFactEdits(contract: Contract, edits: FactEdits): Contract {
 }
 
 const DATE_FIELDS: FactField[] = ["startDate", "endDate"];
-const WHOLE_FIELDS: FactField[] = ["termMonths", "renewalTermMonths", "noticeDays"];
+const WHOLE_FIELDS: FactField[] = ["termMonths", "renewalTermMonths", "renewalOptionMonths", "noticeDays", "noticeMonths", "priceNoticeDays"];
 
 export type ParsedInput = { ok: true; value: string | number } | { ok: false; error: string };
 

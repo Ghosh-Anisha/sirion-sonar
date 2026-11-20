@@ -53,12 +53,17 @@ describe("a correction flows through to the dates and the list", () => {
     expect(itemsWith(edits, DEMO_START).find((i) => i.vendorId === "cloudmetric")).toMatchObject({ type: "decide", dueDate: "2027-01-30" });
   });
 
-  it("turns Pinecrest from Unknown into a dated contract once the term is typed in", () => {
-    const edited = applyFactEdits(pinecrest, { termMonths: { kind: "corrected", value: 18, by: "neha", on: DEMO_START } });
+  it("turns Pinecrest from Unknown into a dated contract once the Order Form's term and notice are typed in", () => {
+    const termOnly = applyFactEdits(pinecrest, { termMonths: { kind: "corrected", value: 18, by: "rohan", on: DEMO_START } });
+    expect(contractDates(termOnly.facts, DEMO_START).label).toBe("unknown");
+    const edited = applyFactEdits(pinecrest, {
+      termMonths: { kind: "corrected", value: 18, by: "rohan", on: DEMO_START },
+      noticeDays: { kind: "corrected", value: 30, by: "rohan", on: DEMO_START },
+    });
     expect(contractDates(edited.facts, DEMO_START)).toMatchObject({
       label: "derived",
-      endDate: "2027-03-09",
-      noticeDeadline: "2027-02-07",
+      endDate: "2027-02-11",
+      noticeDeadline: "2027-01-12",
     });
   });
 });
@@ -91,8 +96,8 @@ describe("edits and amendments together", () => {
 
   it("keeps a correction made after the amendment was accepted", () => {
     const edits = { "orbis-facilities": { noticeDays: { kind: "corrected" as const, value: 90, by: "farah", on: DEMO_START } } };
-    expect(orbisDecide({}, "2027-02-01")?.dueDate).toBe("2027-05-01");
-    expect(orbisDecide(edits, "2027-01-01")?.dueDate).toBe("2027-04-01");
+    expect(orbisDecide({}, "2027-09-10")?.dueDate).toBe("2027-12-02");
+    expect(orbisDecide(edits, "2027-10-10")?.dueDate).toBe("2028-01-01");
   });
 
   it("drops earlier corrections to fields the amendment replaces", () => {

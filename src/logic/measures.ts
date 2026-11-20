@@ -111,7 +111,7 @@ export interface Metric {
   question: string;
   value: number | null;
   unit: "percent" | "days" | "count";
-  /** A plain reading of the value, such as "11 of 24 suppliers". */
+  /** A plain reading of the value, such as "24 suppliers, 10 found, 2 partial, 12 not found". */
   detail: string;
   target: number | null;
   targetText: string;
@@ -185,7 +185,7 @@ export function measures(input: MeasureInput): Measures {
       question: "Of the suppliers we pay, how many have a contract record linked",
       value: cover.spendShare,
       unit: "percent",
-      detail: `${cover.full + cover.partial} of ${cover.paid} suppliers, by share of spend`,
+      detail: `${cover.paid} suppliers, ${cover.full} found, ${cover.partial} partial, ${cover.none} not found. The share is of spend.`,
       target: 70,
       targetText: "70% of spend in the first month",
       better: "higher",

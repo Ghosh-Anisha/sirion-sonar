@@ -15,10 +15,12 @@ const items = buildItems({ today: DEMO_START, firstReadOn: DEMO_START, vendors, 
 const ask = (id: Parameters<typeof askSirion>[0]) => askSirion(id, ledger, items, vendors, DEMO_START);
 
 describe("askSirion", () => {
-  it("lists the contracts whose term ends in March", () => {
-    const answer = ask("march");
-    expect(answer.rows.length).toBeGreaterThan(0);
-    expect(answer.rows.every((r) => r[1].includes("Mar"))).toBe(true);
+  it("lists the contracts whose term ends in April: Cloudmetric and Orbis", () => {
+    const answer = ask("april");
+    expect(answer.rows.map((r) => r.slice(0, 2)).sort()).toEqual([
+      ["Cloudmetric", "30 Apr 2027"],
+      ["Orbis Facility Services", "1 Apr 2027"],
+    ]);
   });
 
   it("finds the supplier billed above the agreed rate this year", () => {

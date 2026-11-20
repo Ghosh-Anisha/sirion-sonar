@@ -29,7 +29,7 @@ export const moments: Moment[] = [
     name: "First read",
     personId: "kavya",
     todo: "Run the first read and watch Sonar build the vendor list and read each supplier.",
-    saw: "24 suppliers, 9 found, 2 partial and 13 paid with no contract on file.",
+    saw: "24 suppliers, 10 found, 2 partial and 12 not found.",
   },
   {
     id: "confirm",
@@ -71,7 +71,7 @@ export const moments: Moment[] = [
     name: "Nobody acts",
     personId: "kavya",
     todo: "Move the clock forward 30 days and see untouched items go up to the procurement lead.",
-    saw: "Untouched items escalating to the procurement lead, and turning urgent at 7 days.",
+    saw: "Untouched items escalating to the procurement lead, and turning urgent 21 days out.",
   },
   {
     id: "handoff",

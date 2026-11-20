@@ -1,6 +1,6 @@
 import type { Contract, Label } from "../data/types";
 import { andList } from "./accessText";
-import type { AccessEntry, FirstRead, ReadStep } from "./firstRead";
+import { tally, type AccessEntry, type FirstRead, type ReadStep } from "./firstRead";
 import type { Item, ItemType } from "./items";
 
 /*
@@ -64,7 +64,8 @@ export function pipelineStages({ plan, steps, products, contracts, items, procur
   const facts = own.flatMap((c) => c.facts);
   const open = items.filter((i) => i.status === "open" && ids.has(i.vendorId));
   const told = new Set(open.map((i) => i.ownerId ?? procurementLeadId)).size;
-  const found = steps.filter((s) => s.result !== "none").length;
+  const counts = tally(steps, steps.length);
+  const count = (result: keyof typeof counts) => counts[result];
   const sorted = (result: string) => plan.lines.filter((l) => l.result === result).length;
 
   return [
@@ -96,7 +97,7 @@ export function pipelineStages({ plan, steps, products, contracts, items, procur
       line: "Searches the drive and mail for each supplier by name and email domain, highest spend first.",
       total: steps.length,
       unit: "suppliers searched",
-      result: `${found} have a contract file. ${steps.length - found} have nothing on file.`,
+      result: `${steps.length} suppliers, ${count("full")} found, ${count("partial")} partial, ${count("none")} not found.`,
     },
     {
       id: "sort",

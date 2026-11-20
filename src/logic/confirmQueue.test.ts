@@ -14,18 +14,19 @@ describe("datesToConfirm", () => {
   it("lists the riskiest unchecked dates, earliest deadline first", () => {
     const queue = datesToConfirm(contracts, DEMO_START, paid);
     expect(queue.map((d) => [d.contract.id, d.deadline])).toEqual([
+      ["greenleaf-grounds", "2026-12-01"],
       ["ledgerline-payroll", "2026-12-01"],
       ["quillstone-retainer", "2026-12-10"],
       ["orbis-facilities", "2027-01-01"],
-      ["cloudmetric-subscription", "2027-03-01"],
-      ["vantage-print", "2027-03-01"],
+      ["swiftlane-transport", "2027-01-01"],
     ]);
   });
 
   it("leaves out dates already confirmed, and ones a yes cannot settle", () => {
     const ids = datesToConfirm(contracts, DEMO_START, paid, 20).map((d) => d.contract.id);
-    expect(ids).not.toContain("saffron-retainer");
-    expect(ids).not.toContain("kestrel-freight");
+    expect(ids).not.toContain("datavane-subscription");
+    expect(ids).not.toContain("talentbridge-staffing");
+    expect(ids).not.toContain("kestrel-marketing");
     expect(ids).not.toContain("pinecrest-msa");
   });
 });

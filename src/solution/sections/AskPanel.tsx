@@ -9,7 +9,7 @@ import "./Sections.css";
 /** A mini AskSirion: three example questions, each answered by code from the sample ledger. Marked illustrative. */
 export function AskPanel() {
   const { contracts, vendors, paid, today, items } = useLedger();
-  const [asked, setAsked] = useState<QuestionId>("march");
+  const [asked, setAsked] = useState<QuestionId>("april");
   const answer = askSirion(asked, ledgerRows(contracts, vendors, people, paid, today), items, vendors, today);
   const question = afterIntake.questions.find((q) => q.id === asked)!;
 

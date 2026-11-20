@@ -45,7 +45,7 @@ export function WeeklyEmail() {
           <>
             <p>
               Here is what needs you this week, earliest first. Each one has a link that opens it in Sonar.
-              {urgent > 0 && ` ${urgent === 1 ? "One is" : `${urgent} are`} due within 7 days.`}
+              {urgent > 0 && ` ${urgent === 1 ? "One is" : `${urgent} are`} due within 21 days.`}
             </p>
             <ol className="mail__items">
               {rows.map(({ item, sentence, routing }) => (

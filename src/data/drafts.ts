@@ -50,5 +50,5 @@ export const draftTemplates: Record<DraftKey, DraftTemplate> = {
 };
 
 /** Messages go out from the product's own address, never from a person's mailbox. */
-export const SENDING_ADDRESS = "sonar@tamarindhome.example";
-export const COMPANY_NAME = "Tamarind Home Goods";
+export const SENDING_ADDRESS = "sonar@haldenfoods.example";
+export const COMPANY_NAME = "Halden Foods";

@@ -39,9 +39,9 @@ describe("routeItem", () => {
     expect(routeItem(late, "2027-01-30", "kavya").escalated).toBe(true);
   });
 
-  it("is urgent at 7 days and after the deadline passes", () => {
-    expect(routeItem(item(), "2027-02-21", "kavya").urgent).toBe(false);
-    expect(routeItem(item(), "2027-02-22", "kavya").urgent).toBe(true);
+  it("is urgent at 21 days and after the deadline passes", () => {
+    expect(routeItem(item(), "2027-02-07", "kavya").urgent).toBe(false);
+    expect(routeItem(item(), "2027-02-08", "kavya").urgent).toBe(true);
     expect(routeItem(item(), "2027-03-05", "kavya")).toMatchObject({ urgent: true, daysLeft: -4 });
   });
 
@@ -61,8 +61,8 @@ describe("routeItem", () => {
 
 describe("urgencyGroup", () => {
   it("groups by how close the due date is", () => {
-    expect(urgencyGroup(routeItem(item(), "2027-02-22", "kavya"))).toBe("urgent");
-    expect(urgencyGroup(routeItem(item(), "2027-02-21", "kavya"))).toBe("month");
+    expect(urgencyGroup(routeItem(item(), "2027-02-08", "kavya"))).toBe("urgent");
+    expect(urgencyGroup(routeItem(item(), "2027-02-07", "kavya"))).toBe("month");
     expect(urgencyGroup(routeItem(item(), "2027-01-30", "kavya"))).toBe("month");
     expect(urgencyGroup(routeItem(item(), "2027-01-29", "kavya"))).toBe("later");
   });

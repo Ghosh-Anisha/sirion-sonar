@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { contracts } from "../data/contracts";
 import { DEMO_START } from "../data/demo";
-import { contractDates, noticeDeadline, rollForward, yearlyPaymentMonth } from "./dates";
+import { contractDates, noticeDeadline, noticeDeadlineFor, rollForward, yearlyPaymentMonth } from "./dates";
 
 const factsOf = (id: string) => contracts.find((c) => c.id === id)!.facts;
 
@@ -33,6 +33,16 @@ describe("noticeDeadline", () => {
   });
 });
 
+describe("noticeDeadlineFor", () => {
+  it("counts days back from the end date", () => {
+    expect(noticeDeadlineFor("2027-04-30", { days: 60, months: null })).toBe("2027-03-01");
+  });
+
+  it("counts calendar months back when the contract gives months, keeping month end", () => {
+    expect(noticeDeadlineFor("2027-08-31", { days: null, months: 3 })).toBe("2027-05-31");
+  });
+});
+
 describe("yearlyPaymentMonth", () => {
   it("finds a supplier paid in the same month each year", () => {
     expect(yearlyPaymentMonth(["2025-03-12", "2026-03-10"])).toBe(3);
@@ -55,35 +65,40 @@ describe("contractDates on the sample contracts", () => {
     });
   });
 
-  it("Orbis: start date plus a 12 month term gives 31 Jan 2027", () => {
+  it("Orbis: 1 Apr 2027 less 90 days of notice gives 1 Jan 2027", () => {
     expect(contractDates(factsOf("orbis-facilities"), DEMO_START)).toMatchObject({
       label: "derived",
-      endDate: "2027-01-31",
+      endDate: "2027-04-01",
       noticeDeadline: "2027-01-01",
     });
   });
 
-  it("Greenleaf pantry: an end date already passed rolls to the next term", () => {
-    expect(contractDates(factsOf("greenleaf-pantry"), DEMO_START)).toMatchObject({
-      endDate: "2027-09-30",
-      noticeDeadline: "2027-08-31",
-    });
-  });
-
-  it("Brightline: does not renew, so the dates stay put", () => {
-    expect(contractDates(factsOf("brightline-logistics"), DEMO_START)).toMatchObject({
-      endDate: "2027-06-30",
-      noticeDeadline: "2027-04-01",
+  it("Greenleaf: the first year has passed, the Client's yearly option sets the next date, and it does not renew on its own", () => {
+    expect(contractDates(factsOf("greenleaf-grounds"), DEMO_START)).toMatchObject({
+      endDate: "2026-12-31",
+      noticeDeadline: "2026-12-01",
       autoRenews: false,
     });
   });
 
-  it("Saffron Lane: every deadline fact checked by the owner, so Confirmed", () => {
-    expect(contractDates(factsOf("saffron-retainer"), DEMO_START).label).toBe("confirmed");
+  it("Arjun Rao: does not renew and gives no notice period, so the decision is due by the end date", () => {
+    expect(contractDates(factsOf("arjun-rao-consultant"), DEMO_START)).toMatchObject({
+      endDate: "2027-02-28",
+      noticeDeadline: "2027-02-28",
+      autoRenews: false,
+    });
+  });
+
+  it("Datavane: every deadline fact checked by the owner, so Confirmed, with notice in months", () => {
+    expect(contractDates(factsOf("datavane-subscription"), DEMO_START)).toMatchObject({
+      label: "confirmed",
+      endDate: "2027-08-31",
+      noticeDeadline: "2027-05-31",
+    });
   });
 
   it("Kestrel: unreadable start, paid every March, so a Bounded window", () => {
-    const dates = contractDates(factsOf("kestrel-freight"), DEMO_START, ["2025-03-12", "2026-03-10"]);
+    const dates = contractDates(factsOf("kestrel-marketing"), DEMO_START, ["2025-03-14", "2026-03-12"]);
     expect(dates).toEqual({
       label: "bounded",
       endDate: null,
@@ -95,7 +110,7 @@ describe("contractDates on the sample contracts", () => {
   });
 
   it("Kestrel without a payment rhythm has no window", () => {
-    const dates = contractDates(factsOf("kestrel-freight"), DEMO_START, []);
+    const dates = contractDates(factsOf("kestrel-marketing"), DEMO_START, []);
     expect(dates.label).toBe("bounded");
     expect(dates.earliestDeadline).toBeNull();
   });

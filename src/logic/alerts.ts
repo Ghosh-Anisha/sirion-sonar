@@ -5,8 +5,8 @@ import type { Item } from "./items";
 export const ALERT_DAYS = [90, 30, 7] as const;
 /** An open item escalates once it has waited this long, or once its deadline is this close. */
 export const ESCALATE_DAYS = 30;
-/** An open item is urgent this close to its deadline. */
-export const URGENT_DAYS = 7;
+/** An open item is urgent this close to its deadline. Wider than the 7 day alert, so a 21 day notice window shows as urgent from its first day. */
+export const URGENT_DAYS = 21;
 /** Items due within this many days are grouped under This month. */
 export const THIS_MONTH_DAYS = 30;
 
@@ -35,7 +35,7 @@ export interface Routing {
 /**
  * Works out who an item goes to on a given day.
  * The owner gets it first. If it has had no action by the 30 day alert, or for 30 days
- * since it opened, it also goes to the procurement lead. At 7 days it is urgent.
+ * since it opened, it also goes to the procurement lead. At 21 days it is urgent.
  * An item with no owner goes to the procurement lead from the start.
  */
 export function routeItem(item: Item, today: string, procurementLeadId: string): Routing {

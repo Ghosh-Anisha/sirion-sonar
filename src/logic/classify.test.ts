@@ -62,9 +62,9 @@ describe("on the sample payments", () => {
     expect(supplierPayments(payments).every(isVendorLine)).toBe(true);
   });
 
-  it("splits the 62 lines into 48 supplier, 12 dropped and 2 not sure", () => {
+  it("splits the 62 lines into 50 supplier, 10 dropped and 2 not sure", () => {
     const counts = { supplier: 0, "not-supplier": 0, "not-sure": 0 };
     for (const p of payments) counts[classifyPayment(p).result] += 1;
-    expect(counts).toEqual({ supplier: 48, "not-supplier": 12, "not-sure": 2 });
+    expect(counts).toEqual({ supplier: 50, "not-supplier": 10, "not-sure": 2 });
   });
 });

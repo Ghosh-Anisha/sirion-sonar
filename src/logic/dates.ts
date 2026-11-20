@@ -28,6 +28,17 @@ export function noticeDeadline(end: string, noticeDays: number | null): string {
   return addDays(end, -(noticeDays ?? 0));
 }
 
+/** The notice period as the contract gives it: in days, or in calendar months back from the end date. */
+export interface NoticePeriod {
+  days: number | null;
+  months: number | null;
+}
+
+/** The last day to give notice, counting calendar months when the contract gives months (31 Aug less 3 months is 31 May). */
+export function noticeDeadlineFor(end: string, notice: NoticePeriod): string {
+  return notice.months ? addMonths(end, -notice.months) : noticeDeadline(end, notice.days);
+}
+
 /**
  * The month a supplier is paid in, if it is paid once a year in the same month.
  * Needs payments in at least two different years. Month is counted from 1.
@@ -46,16 +57,18 @@ export function yearlyPaymentMonth(paymentDates: string[]): number | null {
  */
 export function contractDates(facts: Fact[], today: string, paymentDates: string[] = []): ContractDates {
   const label = deadlineLabel(facts);
-  const renewal = numberValue(facts, "renewalTermMonths");
-  const notice = numberValue(facts, "noticeDays");
+  const autoRenewal = numberValue(facts, "renewalTermMonths");
+  // A renewal only the customer can trigger still sets the next date to decide by, but it does not renew on its own.
+  const renewal = autoRenewal ?? numberValue(facts, "renewalOptionMonths");
+  const notice: NoticePeriod = { days: numberValue(facts, "noticeDays"), months: numberValue(facts, "noticeMonths") };
   const term = numberValue(facts, "termMonths");
   const start = dateValue(facts, "startDate");
-  const autoRenews = renewal !== null;
+  const autoRenews = autoRenewal !== null;
 
   const initialEnd = dateValue(facts, "endDate") ?? (start && term ? termEnd(start, term) : null);
   if (initialEnd) {
     const endDate = rollForward(initialEnd, renewal, today);
-    const deadline = noticeDeadline(endDate, notice);
+    const deadline = noticeDeadlineFor(endDate, notice);
     return { label, endDate, noticeDeadline: deadline, earliestDeadline: deadline, latestDeadline: deadline, autoRenews };
   }
 
@@ -64,7 +77,7 @@ export function contractDates(facts: Fact[], today: string, paymentDates: string
     const year = Math.max(...paymentDates.map((d) => Number(d.slice(0, 4))));
     const [firstDay, lastDay] = monthRange(year, month);
     const deadlineFrom = (startDate: string) =>
-      noticeDeadline(rollForward(termEnd(startDate, term), renewal, today), notice);
+      noticeDeadlineFor(rollForward(termEnd(startDate, term), renewal, today), notice);
     return {
       label,
       endDate: null,

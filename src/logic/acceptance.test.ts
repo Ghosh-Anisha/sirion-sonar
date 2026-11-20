@@ -1,12 +1,14 @@
 import { describe, expect, it } from "vitest";
 import { contracts } from "../data/contracts";
-import { DEMO_START } from "../data/demo";
+import { DEMO_START, ORBIS_AMENDMENT_ARRIVES } from "../data/demo";
 import { emails } from "../data/emails";
 import { payments } from "../data/payments";
 import { people } from "../data/people";
 import { vendors } from "../data/vendors";
 import { routeItem } from "./alerts";
 import { amendmentItemId } from "./arrivals";
+import { contractDates } from "./dates";
+import { numberValue } from "./facts";
 import { buildItems, currentContracts, type ItemAction } from "./items";
 import { paidByVendor } from "./match";
 import { measures } from "./measures";
@@ -42,35 +44,49 @@ describe("Check 2: the clock adds a Cloudmetric Decide item, then escalates it",
     expect(routeItem(item, "2026-12-31", leadId)).toMatchObject({ escalated: true, recipients: ["neha", leadId] });
   });
 
-  it("marks it urgent at 7 days", () => {
-    const item = cloudmetricDecide("2027-02-22")!;
-    expect(routeItem(item, "2027-02-22", leadId).urgent).toBe(true);
+  it("marks it urgent 21 days out, so it is urgent by the 7 day alert", () => {
+    expect(routeItem(cloudmetricDecide("2027-02-07")!, "2027-02-07", leadId).urgent).toBe(false);
+    expect(routeItem(cloudmetricDecide("2027-02-08")!, "2027-02-08", leadId).urgent).toBe(true);
+    expect(routeItem(cloudmetricDecide("2027-02-22")!, "2027-02-22", leadId).urgent).toBe(true);
   });
 });
 
 describe("Check 3: accepting the Orbis amendment moves its dates", () => {
-  const accepted = { [amendmentItemId("orbis-amendment")]: { kind: "accepted", on: DEMO_START, by: "farah" } as ItemAction };
+  const accepted = { [amendmentItemId("orbis-amendment")]: { kind: "accepted", on: ORBIS_AMENDMENT_ARRIVES, by: "farah" } as ItemAction };
+  const orbisNow = (actions: Record<string, ItemAction>) =>
+    currentContracts(contracts, emails, actions, {}).find((c) => c.id === "orbis-facilities")!;
 
-  it("changes the end date and the notice deadline", () => {
-    const before = itemsOn(DEMO_START).find((i) => i.type === "decide" && i.vendorId === "orbis")!;
-    expect(before.detail).toMatchObject({ dates: { endDate: "2027-01-31", noticeDeadline: "2027-01-01" } });
+  it("is not there on day one, and arrives by email during the demo", () => {
+    expect(itemsOn(DEMO_START).some((i) => i.id === "change:orbis-amendment")).toBe(false);
+    expect(itemsOn(ORBIS_AMENDMENT_ARRIVES).find((i) => i.id === "change:orbis-amendment")).toMatchObject({ type: "check", reason: "change", ownerId: "farah" });
+  });
 
-    const after = itemsOn("2027-02-01", accepted).find((i) => i.type === "decide" && i.vendorId === "orbis")!;
-    expect(after.detail).toMatchObject({ dates: { endDate: "2027-06-30", noticeDeadline: "2027-05-01" } });
+  it("moves the end date to 31 Mar 2028, the notice to 120 days, the deadline to 2 Dec 2027 and the fee to Rs 4,41,000", () => {
+    const before = itemsOn(ORBIS_AMENDMENT_ARRIVES).find((i) => i.type === "decide" && i.vendorId === "orbis")!;
+    expect(before.detail).toMatchObject({ dates: { endDate: "2027-04-01", noticeDeadline: "2027-01-01" } });
+
+    const orbis = orbisNow(accepted);
+    expect(contractDates(orbis.facts, ORBIS_AMENDMENT_ARRIVES)).toMatchObject({ endDate: "2028-03-31", noticeDeadline: "2027-12-02" });
+    expect(numberValue(orbis.facts, "noticeDays")).toBe(120);
+    expect(numberValue(orbis.facts, "monthlyFee")).toBe(441000);
+
+    const after = itemsOn("2027-09-10", accepted).find((i) => i.type === "decide" && i.vendorId === "orbis")!;
+    expect(after.detail).toMatchObject({ dates: { endDate: "2028-03-31", noticeDeadline: "2027-12-02" } });
   });
 
   it("clears the old renewal item, because the new deadline is more than 90 days away", () => {
-    expect(itemsOn(DEMO_START, accepted).some((i) => i.type === "decide" && i.vendorId === "orbis")).toBe(false);
+    expect(itemsOn(ORBIS_AMENDMENT_ARRIVES, accepted).some((i) => i.type === "decide" && i.vendorId === "orbis")).toBe(false);
   });
 
   it("marks the amendment item done", () => {
-    expect(itemsOn(DEMO_START, accepted).find((i) => i.id === "change:orbis-amendment")?.status).toBe("done");
+    expect(itemsOn(ORBIS_AMENDMENT_ARRIVES, accepted).find((i) => i.id === "change:orbis-amendment")?.status).toBe("done");
   });
 
   it("keeps the original dates if the amendment is rejected", () => {
-    const rejected = { [amendmentItemId("orbis-amendment")]: { kind: "rejected", on: DEMO_START, by: "farah" } as ItemAction };
-    const item = itemsOn(DEMO_START, rejected).find((i) => i.type === "decide" && i.vendorId === "orbis")!;
-    expect(item.detail).toMatchObject({ dates: { endDate: "2027-01-31" } });
+    const rejected = { [amendmentItemId("orbis-amendment")]: { kind: "rejected", on: ORBIS_AMENDMENT_ARRIVES, by: "farah" } as ItemAction };
+    const item = itemsOn(ORBIS_AMENDMENT_ARRIVES, rejected).find((i) => i.type === "decide" && i.vendorId === "orbis")!;
+    expect(item.detail).toMatchObject({ dates: { endDate: "2027-04-01" } });
+    expect(numberValue(orbisNow(rejected).facts, "monthlyFee")).toBe(420000);
   });
 });
 
@@ -81,14 +97,15 @@ describe("Check 4: the Brightline Check item shows the invoice, the agreed amoun
     expect(item.detail).toMatchObject({
       kind: "invoice",
       invoiceNumber: "BL/26-27/0871",
-      invoiced: 831600,
-      agreed: 777000,
+      invoiced: 627900,
+      agreed: 573300,
       difference: 54600,
       term: {
         contractId: "brightline-logistics",
         fact: {
-          sentence: "The Customer will pay Rs 18,500 for each full truck trip between the Bhiwandi warehouse and the Pune store.",
-          page: 2,
+          value: 42,
+          sentence: "The agreed rate is Rs 42 per kilometre for a 10 tonne truck and Rs 58 per kilometre for a 20 tonne truck.",
+          page: 1,
         },
       },
     });
@@ -132,5 +149,81 @@ describe("Check 7: Measures numbers come from the sample data and change when it
     const before = measuresWith({}).metrics.find((m) => m.id === "unowned")!.value!;
     const after = measuresWith({ "decide:quillstone-retainer:2026-12-10": { kind: "end", on: DEMO_START, by: leadId } });
     expect(after.metrics.find((m) => m.id === "unowned")!.value).toBe(before - 1);
+  });
+});
+
+describe("The sample contracts' notice deadlines, as docs/contracts expects them", () => {
+  const paid = paidByVendor(payments, vendors, DEMO_START);
+  const deadline = (id: string) => {
+    const contract = contracts.find((c) => c.id === id)!;
+    return contractDates(contract.facts, DEMO_START, (paid.get(contract.vendorId) ?? []).map((p) => p.date)).noticeDeadline;
+  };
+
+  it.each([
+    ["ledgerline-payroll", "2026-12-01"],
+    ["greenleaf-grounds", "2026-12-01"],
+    ["quillstone-retainer", "2026-12-10"],
+    ["orbis-facilities", "2027-01-01"],
+    ["swiftlane-transport", "2027-01-01"],
+    ["cloudmetric-subscription", "2027-03-01"],
+    ["brightline-logistics", "2027-04-01"],
+    ["talentbridge-staffing", "2027-05-16"],
+    ["datavane-subscription", "2027-05-31"],
+  ])("%s: notice by %s", (id, expected) => {
+    expect(deadline(id)).toBe(expected);
+  });
+
+  it("gives Greenleaf a deadline but not an automatic renewal, because only the Client can renew", () => {
+    const greenleaf = contracts.find((c) => c.id === "greenleaf-grounds")!;
+    expect(contractDates(greenleaf.facts, DEMO_START)).toMatchObject({ endDate: "2026-12-31", autoRenews: false });
+  });
+
+  it("gives Kestrel a window, not a date, and Pinecrest nothing", () => {
+    const kestrel = contracts.find((c) => c.id === "kestrel-marketing")!;
+    const dates = contractDates(kestrel.facts, DEMO_START, (paid.get("kestrel") ?? []).map((p) => p.date));
+    expect(dates).toMatchObject({ label: "bounded", noticeDeadline: null, earliestDeadline: "2027-01-29", latestDeadline: "2027-02-28" });
+    expect(deadline("pinecrest-msa")).toBeNull();
+  });
+});
+
+describe("Day one on Home", () => {
+  const open = itemsOn(DEMO_START).filter((i) => i.status === "open");
+  const urgent = open.filter((i) => routeItem(i, DEMO_START, leadId).urgent);
+
+  it("shows Ledgerline, Greenleaf and Quillstone as urgent Decide items", () => {
+    expect(urgent.filter((i) => i.type === "decide").map((i) => i.vendorId).sort()).toEqual(["greenleaf", "ledgerline", "quillstone"]);
+  });
+
+  it("shows a Check item from the Ledgerline email: 15% against a 5% cap", () => {
+    expect(open.find((i) => i.id === "check:ledgerline-price-rise")?.detail).toMatchObject({
+      kind: "price-rise",
+      current: 65000,
+      proposed: 74750,
+      increasePercent: 15,
+      capPercent: 5,
+      effectiveFrom: "2027-01-01",
+    });
+  });
+
+  it("files the Datavane invoice, which matches the contract, with no item", () => {
+    expect(open.some((i) => i.id.includes("datavane"))).toBe(false);
+  });
+
+  it("raises a Find item for every supplier paid with no contract", () => {
+    expect(open.filter((i) => i.type === "find")).toHaveLength(12);
+  });
+});
+
+describe("The Cloudmetric alert points", () => {
+  it("fires 90 days out on 1 Dec 2026, 30 days out on 30 Jan 2027 and 7 days out on 22 Feb 2027", () => {
+    const fired = (today: string) => routeItem(cloudmetricDecide(today)!, today, leadId).alertsFired;
+    expect(fired("2026-12-01")).toEqual([90]);
+    expect(fired("2027-01-29")).toEqual([90]);
+    expect(fired("2027-01-30")).toEqual([90, 30]);
+    expect(fired("2027-02-22")).toEqual([90, 30, 7]);
+  });
+
+  it("has escalated to the procurement lead by 29 Jan 2027, the demo guide's escalation date", () => {
+    expect(routeItem(cloudmetricDecide("2027-01-29")!, "2027-01-29", leadId)).toMatchObject({ escalated: true, recipients: ["neha", leadId] });
   });
 });

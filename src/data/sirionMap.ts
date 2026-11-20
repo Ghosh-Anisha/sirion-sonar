@@ -38,6 +38,6 @@ export const sirionLayers: SirionLayer[] = [
   {
     name: "AskSirion",
     from: "Sirion's assistant",
-    does: "Answers questions such as which contracts renew in March, from the confirmed ledger.",
+    does: "Answers questions such as which contracts renew in April, from the confirmed ledger.",
   },
 ];

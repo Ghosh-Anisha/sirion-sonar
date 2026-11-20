@@ -1,3 +1,4 @@
+import { ORBIS_AMENDMENT_ARRIVES } from "../data/demo";
 import type { MomentId } from "../data/journey";
 import type { Contract } from "../data/types";
 import { addDays } from "./calendar";
@@ -84,7 +85,8 @@ export function nextAction(moment: MomentId, input: Pick<JourneyInput, "onboardi
     case "invoice":
       return { to: `/item/${encodeURIComponent(BRIGHTLINE_INVOICE_ITEM)}`, clock: null, nudge: `act:${BRIGHTLINE_INVOICE_ITEM}` };
     case "amendment":
-      return { to: "/versions/orbis-facilities", clock: null, nudge: "accept-amendment" };
+      // The amendment arrives by email after day one, so move the clock to its arrival if it is behind.
+      return { to: "/versions/orbis-facilities", clock: today < ORBIS_AMENDMENT_ARRIVES ? ORBIS_AMENDMENT_ARRIVES : null, nudge: "accept-amendment" };
     case "nobody-acts": {
       const target = addDays(demoStart, NOBODY_ACTS_DAYS);
       return { to: "/home", clock: today < target ? target : null, nudge: "escalated" };

@@ -66,7 +66,7 @@ describe("matchVendor", () => {
   });
 
   it("returns an unsure match rather than guessing", () => {
-    expect(matchVendor("Pinecrest Analytics Research LLP", vendors)).toMatchObject({ vendor: { id: "pinecrest" }, match: "unsure" });
+    expect(matchVendor("Pinecrest Industrial Packaging LLP", vendors)).toMatchObject({ vendor: { id: "pinecrest" }, match: "unsure" });
   });
 
   it("returns null for a stranger", () => {

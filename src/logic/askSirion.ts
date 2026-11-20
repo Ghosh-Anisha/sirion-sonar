@@ -8,7 +8,7 @@ import type { LedgerRow } from "./ledger";
  * This shows the kind of answer a platform gives from a confirmed ledger. It is not a model.
  */
 
-export type QuestionId = "march" | "above-rate" | "no-owner";
+export type QuestionId = "april" | "above-rate" | "no-owner";
 
 export interface Answer {
   columns: string[];
@@ -17,10 +17,10 @@ export interface Answer {
 
 export function askSirion(id: QuestionId, ledger: LedgerRow[], items: Item[], vendors: Vendor[], today: string): Answer {
   switch (id) {
-    case "march":
+    case "april":
       return {
         columns: ["Supplier", "Term ends", "Label"],
-        rows: ledger.filter((r) => r.endDate?.slice(5, 7) === "03").map((r) => [r.supplier, formatDate(r.endDate!), r.label[0].toUpperCase() + r.label.slice(1)]),
+        rows: ledger.filter((r) => r.endDate?.slice(5, 7) === "04").map((r) => [r.supplier, formatDate(r.endDate!), r.label[0].toUpperCase() + r.label.slice(1)]),
       };
     case "above-rate": {
       const year = today.slice(0, 4);

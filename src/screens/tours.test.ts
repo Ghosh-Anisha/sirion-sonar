@@ -1,7 +1,7 @@
 import { createElement } from "react";
 import { renderToString } from "react-dom/server";
 import { MemoryRouter } from "react-router-dom";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { App } from "../App";
 import { DEMO_START } from "../data/demo";
 import { tours, tourScreenFor, type TourScreen } from "../data/tours";
@@ -13,6 +13,15 @@ import { firstReadPlan } from "../state/firstReadPlan";
  * Every tour step must point at something that is really on its screen. This renders each
  * screen the way a first-time viewer sees it after Skip to demo, and the welcome screen fresh.
  */
+
+/*
+ * The Orbis amendment arrives by email after day one, and the demo reaches Versions after it has.
+ * Render every screen as it looks once the amendment is in, so the Versions tour has its amendment to point at.
+ */
+vi.mock("../data/demo", async (importOriginal) => {
+  const real = await importOriginal<typeof import("../data/demo")>();
+  return { ...real, ORBIS_AMENDMENT_ARRIVES: real.DEMO_START };
+});
 
 const skipped = reduceOnboarding(INITIAL_ONBOARDING, skipEvent(INITIAL_ONBOARDING, firstReadPlan, { on: DEMO_START, by: "Kavya Raman", seq: 0 }, "Vikram Nair", "kavya.raman@tamarindhome.example"));
 

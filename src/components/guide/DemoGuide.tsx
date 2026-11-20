@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { CLOUDMETRIC_90_DAY_ALERT, CLOUDMETRIC_ESCALATION, DEMO_START } from "../../data/demo";
 import { moments } from "../../data/journey";
 import { people } from "../../data/people";
 import { useClock } from "../../state/ClockContext";
@@ -9,9 +10,17 @@ import { Button } from "../ui/Button";
 import { Icon } from "../ui/Icon";
 import "./Guide.css";
 
+/** Clock shortcuts to the points the demo is built around. */
+const CLOCK_JUMPS = [
+  { on: CLOUDMETRIC_90_DAY_ALERT, label: "Go to Cloudmetric's 90 day alert" },
+  { on: CLOUDMETRIC_ESCALATION, label: "Go to the escalation" },
+  { on: DEMO_START, label: "Reset to day one" },
+];
+
 /** The nine moments as a strip above the demo controls: where you are, one Do this next, and the steps ticked so far. */
 export function DemoGuide() {
   const { setOpen } = useGuide();
+  const { today, setToday } = useClock();
   const { current, done, count } = useJourney();
   const goNext = useDoNext();
   const person = current ? people.find((p) => p.id === current.personId) : null;
@@ -50,6 +59,15 @@ export function DemoGuide() {
             Hide
           </Button>
         </div>
+      </div>
+
+      <div className="row demo-guide__clock" role="group" aria-label="Move the demo clock">
+        <span className="label">Jump the clock</span>
+        {CLOCK_JUMPS.map((jump) => (
+          <Button key={jump.on} variant="quiet" aria-pressed={today === jump.on} onClick={() => setToday(jump.on)}>
+            {jump.label}
+          </Button>
+        ))}
       </div>
 
       <ol className="demo-guide__list" aria-label={`${count} of ${moments.length} moments done`}>

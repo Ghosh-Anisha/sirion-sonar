@@ -14,7 +14,7 @@ import { useViewer } from "../state/ViewerContext";
 import "./Home.css";
 
 const GROUPS: { id: UrgencyGroup; title: string; hint: string }[] = [
-  { id: "urgent", title: "Urgent", hint: "Due within 7 days or already past." },
+  { id: "urgent", title: "Urgent", hint: "Due within 21 days or already past." },
   { id: "month", title: "This month", hint: "Due within 30 days." },
   { id: "later", title: "Later", hint: "Due after that." },
 ];

@@ -29,16 +29,15 @@ describe("reviewQueue on the sample data", () => {
   it("is the confirmation queue: riskiest first, confirmed contracts left out", () => {
     expect(reviewQueue(contracts, payments, vendors, DEMO_START).map((e) => [e.contractId, e.earliestDeadline])).toEqual([
       ["pinecrest-msa", null],
-      ["kestrel-freight", "2027-01-29"],
+      ["kestrel-marketing", "2027-01-29"],
+      ["greenleaf-grounds", "2026-12-01"],
       ["ledgerline-payroll", "2026-12-01"],
       ["quillstone-retainer", "2026-12-10"],
       ["orbis-facilities", "2027-01-01"],
+      ["swiftlane-transport", "2027-01-01"],
+      ["arjun-rao-consultant", "2027-02-28"],
       ["cloudmetric-subscription", "2027-03-01"],
-      ["vantage-print", "2027-03-01"],
       ["brightline-logistics", "2027-04-01"],
-      ["northstar-seats", "2027-05-02"],
-      ["greenleaf-water", "2027-06-14"],
-      ["greenleaf-pantry", "2027-08-31"],
     ]);
   });
 });

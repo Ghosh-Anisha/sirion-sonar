@@ -88,8 +88,8 @@ export const demoSteps: DemoStep[] = [
   { moment: "first-read", caption: "Run the first read. Code sorts the payments, agents find and read each contract.", action: { click: "[data-nudge=run-first-read]", label: "Click Run the first read" } , done: (s) => s.onboarding.readStage > 0 || read(s) },
   { moment: "first-read", caption: "Watch the eight steps. Each says whether code, a model or an agent does it.", focus: ".pipeline" , done: (s) => read(s) },
   { moment: "first-read", caption: "Skip to the end of the read.", action: { press: "Skip to the end", label: "Click Skip to the end" } , done: (s) => read(s) },
-  { moment: "first-read", caption: "24 suppliers: 9 found, 2 partial, 13 with no contract. On to the finding.", action: { click: "[data-nudge=wizard-next]", label: "Click Next" } , done: (s) => step(s, 6) || inProduct(s) },
-  { moment: "first-read", caption: "13 suppliers are paid with no contract on file. That is what Sonar found.", focus: ".wizard__step .table-wrap" , done: (s) => step(s, 7) || inProduct(s) },
+  { moment: "first-read", caption: "24 suppliers: 10 found, 2 partial, 12 not found. On to the finding.", action: { click: "[data-nudge=wizard-next]", label: "Click Next" } , done: (s) => step(s, 6) || inProduct(s) },
+  { moment: "first-read", caption: "12 suppliers are paid with no contract on file. That is what Sonar found.", focus: ".wizard__step .table-wrap" , done: (s) => step(s, 7) || inProduct(s) },
   { moment: "first-read", caption: "Give them owners.", action: { click: "[data-nudge=wizard-next]", label: "Click Assign owners" } , done: (s) => step(s, 7) || inProduct(s) },
   { moment: "first-read", caption: "Owners are filled in. Two are left empty on purpose, so their items come to Kavya.", focus: ".wizard__step .table-wrap" , done: (s) => inProduct(s) },
   { moment: "first-read", caption: "Open the list.", action: { click: "[data-nudge=wizard-next]", label: "Click Go to Needs you" } , done: (s) => inProduct(s) },
@@ -117,10 +117,10 @@ export const demoSteps: DemoStep[] = [
   // An amendment arrives, as Farah, a contract owner
   { moment: "amendment", caption: "Now be Farah. She owns Orbis, the facilities supplier.", action: { viewer: "farah", label: "Switch to Farah" } , done: (s) => s.viewerId === "farah" || orbisAnswered(s) },
   { moment: "amendment", caption: "Her list.", action: nav("/home", "Click Home") , done: (s) => (s.viewerId === "farah" && at(s, "/home")) || at(s, "/item/change:orbis") || at(s, "/versions/orbis") || orbisAnswered(s) },
-  { moment: "amendment", caption: "Orbis emailed an amendment. Open it.", action: { click: '[data-nudge="item:change:orbis-amendment"]', label: "Click Review change" } , done: (s) => at(s, "/item/change:orbis") || at(s, "/versions/orbis") || orbisAnswered(s) },
+  { moment: "amendment", caption: "Orbis emailed its First Amendment on 25 Nov. Open it.", action: { click: '[data-nudge="item:change:orbis-amendment"]', label: "Click Review change" } , done: (s) => at(s, "/item/change:orbis") || at(s, "/versions/orbis") || orbisAnswered(s) },
   { moment: "amendment", caption: "Open the versions to compare it with the original.", action: { press: "Open versions", label: "Click Open versions" } , done: (s) => at(s, "/versions/orbis") || orbisAnswered(s) },
   { moment: "amendment", caption: "The changes are tracked clause by clause.", focus: "[data-tour=versions-redline]" , done: (s) => orbisAnswered(s) },
-  { moment: "amendment", caption: "Accept it. The end date moves to 30 Jun 2027.", action: { click: "[data-nudge=accept-amendment]", label: "Click Accept" } , done: (s) => orbisAnswered(s) },
+  { moment: "amendment", caption: "Accept it. The end date moves to 31 Mar 2028 and the notice deadline to 2 Dec 2027.", action: { click: "[data-nudge=accept-amendment]", label: "Click Accept" } , done: (s) => orbisAnswered(s) },
   // Nobody acts, as Kavya again
   { moment: "nobody-acts", caption: "Back to Kavya, who gets whatever nobody acts on.", action: { viewer: "kavya", label: "Switch to Kavya" } , done: (s) => orbisAnswered(s) && s.viewerId === "kavya" },
   { moment: "nobody-acts", caption: "Move the clock to 19 Dec, 30 days on.", action: { clock: "2026-12-19", label: "Move to 19 Dec" } , done: (s) => s.today >= "2026-12-19" },

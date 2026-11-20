@@ -39,20 +39,23 @@ describe("compareClauses on the Orbis amendment", () => {
   const amendment = emails.find((e) => e.id === "orbis-amendment")!.amendment!;
   const changes = compareClauses(orbis.clauses, applyAmendment(orbis, amendment).clauses);
 
-  it("marks clauses 2, 3 and 5 as changed and the rest as the same", () => {
-    expect(changes.map((c) => [c.id, c.status])).toEqual([
-      ["1", "same"],
-      ["2", "changed"],
-      ["3", "changed"],
-      ["4", "same"],
-      ["5", "changed"],
-    ]);
+  it("marks clauses 2, 3 and 4 as changed and the rest as the same", () => {
+    expect(changes.filter((c) => c.status !== "same").map((c) => c.id)).toEqual(["2", "3", "4"]);
+    expect(changes).toHaveLength(orbis.clauses.length);
   });
 
-  it("shows the notice period change as 30 removed and 60 added", () => {
+  it("shows the notice period change as ninety (90) removed and one hundred and twenty (120) added", () => {
     const notice = changes.find((c) => c.id === "3")!;
-    expect(notice.parts).toContainEqual({ kind: "removed", text: "30 " });
-    expect(notice.parts).toContainEqual({ kind: "added", text: "60 " });
+    expect(rebuild(notice.parts, "before")).toContain("ninety (90) days'");
+    expect(rebuild(notice.parts, "after")).toContain("one hundred and twenty (120) days'");
+    expect(notice.parts.filter((p) => p.kind === "removed").map((p) => p.text).join("")).toContain("ninety (90)");
+    expect(notice.parts.filter((p) => p.kind === "added").map((p) => p.text).join("")).toContain("one hundred and twenty (120)");
+  });
+
+  it("shows the fee change from Rs 4,20,000 to Rs 4,41,000", () => {
+    const fee = changes.find((c) => c.id === "4")!;
+    expect(fee.parts.filter((p) => p.kind === "removed").map((p) => p.text).join("")).toContain("4,20,000");
+    expect(fee.parts.filter((p) => p.kind === "added").map((p) => p.text).join("")).toContain("4,41,000 from 1 December 2026");
   });
 
   it("handles clauses that only one version has", () => {

@@ -14,7 +14,7 @@ const rows = ledgerRows(contracts, vendors, people, paid, DEMO_START);
 describe("ledgerRows", () => {
   it("has one row per contract, confirmed first", () => {
     expect(rows).toHaveLength(12);
-    expect(rows[0]).toMatchObject({ supplier: "Saffron Lane Studio", owner: "Neha Kulkarni", label: "confirmed", endDate: "2027-03-31", noticeDeadline: "2027-03-01" });
+    expect(rows[0]).toMatchObject({ supplier: "Datavane Analytics", owner: "Neha Kulkarni", label: "confirmed", endDate: "2027-08-31", noticeDeadline: "2027-05-31" });
     expect(rows.map((r) => r.label).slice(-2)).toEqual(["bounded", "unknown"]);
   });
 
@@ -23,7 +23,7 @@ describe("ledgerRows", () => {
   });
 
   it("explains the dates it cannot give exactly", () => {
-    expect(rows.find((r) => r.contractId === "kestrel-freight")!.note).toBe("Notice deadline falls between 2027-01-29 and 2027-02-28");
+    expect(rows.find((r) => r.contractId === "kestrel-marketing")!.note).toBe("Notice deadline falls between 2027-01-29 and 2027-02-28");
     expect(rows.find((r) => r.contractId === "pinecrest-msa")!.note).toMatch(/Order Form/);
     expect(rows.find((r) => r.contractId === "ledgerline-payroll")!.owner).toBe("No owner");
   });
@@ -35,7 +35,7 @@ describe("ledgerRows", () => {
         : c,
     );
     const confirmed = ledgerRows(edited, vendors, people, paid, DEMO_START).filter((r) => r.label === "confirmed");
-    expect(confirmed.map((r) => r.supplier)).toEqual(["Cloudmetric", "Saffron Lane Studio"]);
+    expect(confirmed.map((r) => r.supplier)).toEqual(["Cloudmetric", "Datavane Analytics", "Talentbridge Staffing"]);
   });
 });
 
@@ -44,7 +44,7 @@ describe("ledgerCsv", () => {
     const lines = ledgerCsv(rows).trimEnd().split("\r\n");
     expect(lines[0]).toBe("supplier,contract,owner,end_date,notice_deadline,label,note");
     expect(lines).toHaveLength(13);
-    expect(lines[1]).toBe("Saffron Lane Studio,Saffron Lane marketing retainer,Neha Kulkarni,2027-03-31,2027-03-01,confirmed,");
+    expect(lines[1]).toBe("Datavane Analytics,Datavane reporting subscription,Neha Kulkarni,2027-08-31,2027-05-31,confirmed,");
   });
 
   it("quotes values with commas or quotes", () => {

@@ -44,18 +44,22 @@ describe("draftFor", () => {
   it("asks Brightline for a corrected invoice with the computed amounts", () => {
     const draft = draftOf(byId("check:brightline-invoice"))!;
     expect(draft.to).toBe("billing@brightline-logistics.example");
-    expect(draft.body).toContain("Invoice BL/26-27/0871 comes to Rs 8,31,600.");
-    expect(draft.body).toContain("clause 3 of our agreement, Rs 18,500 per trip, the same work comes to Rs 7,77,000");
+    expect(draft.body).toContain("Invoice BL/26-27/0871 comes to Rs 6,27,900.");
+    expect(draft.body).toContain("clause 4 of our agreement, Rs 42 per km for a 10 tonne truck, the same work comes to Rs 5,73,300");
     expect(draft.body).toContain("difference of Rs 54,600");
   });
 
   it("offers Ledgerline the fee at the cap", () => {
     const draft = draftOf(byId("check:ledgerline-price-rise"))!;
-    expect(draft.body).toContain("limited to 7%, and the new fee is 15% higher. We can accept a fee of up to Rs 69,550 a month.");
+    expect(draft.body).toContain("limited to 5%, and the new fee is 15% higher. We can accept a fee of up to Rs 68,250 a month.");
   });
 
-  it("claims Brightline's service credit", () => {
-    expect(draftOf(byId("fix:brightline-invoice"))!.body).toContain("Please send a credit note for Rs 41,580.");
+  it("claims a service credit when Brightline misses its on-time level", () => {
+    // The sample shipment log meets the level, so this checks the claim with a log that misses it.
+    const late = emails.map((e) => (e.id === "brightline-invoice" ? { ...e, deliveries: { month: "2026-10", trips: 38, onTime: 34 } } : e));
+    const fix = buildItems({ today: DEMO_START, firstReadOn: DEMO_START, vendors, contracts, payments, emails: late, actions: {} }).find((i) => i.id === "fix:brightline-invoice")!;
+    const draft = draftFor(fix, null, { vendor: vendors.find((v) => v.id === "brightline")!, contract: contracts.find((c) => c.id === "brightline-logistics"), email: late.find((e) => e.id === "brightline-invoice"), sender: "Rohan Das, Operations manager" })!;
+    expect(draft.body).toContain("Please send a credit note for Rs 12,558.");
   });
 
   it("has no draft for an amendment, which is answered on Versions", () => {

@@ -10,13 +10,13 @@ const masked = mask(privacyDocument.text, dictionary);
 
 describe("mask", () => {
   it("swaps supplier, company, people, contact and bank details for tokens", () => {
-    expect(masked.text).toContain("between [COMPANY_1] (the Customer) and [SUPPLIER_1] ([SUPPLIER_1]).");
-    expect(masked.text).toContain("Notices go to [PERSON_1] at [EMAIL_1] for the Customer, and to [PERSON_2] at [EMAIL_2] or [PHONE_1] for [SUPPLIER_1].");
+    expect(masked.text).toContain('between [SUPPLIER_1] ("Provider") and [COMPANY_1] ("Customer").');
+    expect(masked.text).toContain("Notices go to [PERSON_1] at [EMAIL_1] for the Customer, and to [PERSON_2] at [EMAIL_2] or [PHONE_1] for Provider.");
     expect(masked.text).toContain("into [SUPPLIER_1]'s account [ACCOUNT_1], IFSC [IFSC_1].");
   });
 
   it("leaves dates and amounts in place, because code works those out", () => {
-    for (const kept of ["1 May 2024", "30 April 2025", "60 days", "Rs 14,40,000", "12 months"]) {
+    for (const kept of ["1 May 2026", "30 April 2027", "sixty (60) days", "Rs 18,00,000", "twelve (12) months"]) {
       expect(masked.text).toContain(kept);
     }
   });
@@ -41,7 +41,7 @@ describe("restore", () => {
   });
 
   it("restores the masked document to the original exactly, apart from supplier spellings", () => {
-    expect(restore(masked.text, masked.tokens)).toContain("Notices go to Neha Kulkarni at neha.kulkarni@tamarindhome.example");
+    expect(restore(masked.text, masked.tokens)).toContain("Notices go to Neha Kulkarni at neha.kulkarni@haldenfoods.example");
   });
 
   it("refuses a token it never issued", () => {

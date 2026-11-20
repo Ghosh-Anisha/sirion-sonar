@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { contracts } from "../data/contracts";
-import { DEMO_START } from "../data/demo";
+import { DEMO_START, ORBIS_AMENDMENT_ARRIVES } from "../data/demo";
 import { emails } from "../data/emails";
 import { payments } from "../data/payments";
 import { vendors } from "../data/vendors";
@@ -33,8 +33,8 @@ describe("itemSentence on the sample data", () => {
   });
 
   it("says a contract that does not renew ends, and asks about extending", () => {
-    expect(sentenceFor("2027-01-01", "decide:brightline-logistics:2027-04-01")).toBe(
-      "Brightline Logistics ends on 30 Jun 2027, so tell them by 1 Apr if you want to extend, which is in 90 days.",
+    expect(sentenceFor(DEMO_START, "decide:greenleaf-grounds:2026-12-01")).toBe(
+      "Greenleaf Landscaping ends on 31 Dec 2026, so tell them by 1 Dec if you want to extend, which is in 12 days.",
     );
   });
 
@@ -46,38 +46,41 @@ describe("itemSentence on the sample data", () => {
   });
 
   it("gives the safe date for a Bounded contract", () => {
-    expect(sentenceFor(DEMO_START, "decide:kestrel-freight:2027-01-29")).toBe(
-      "Kestrel Freight Carriers renews on a date the scan does not show, so tell them by 29 Jan to be safe, which is in 71 days.",
+    expect(sentenceFor(DEMO_START, "decide:kestrel-marketing:2027-01-29")).toBe(
+      "Kestrel Creative renews on a date the scan does not show, so tell them by 29 Jan to be safe, which is in 71 days.",
     );
   });
 
   it("states the invoice amount and the difference", () => {
     expect(sentenceFor(DEMO_START, "check:brightline-invoice")).toBe(
-      "Brightline Logistics billed Rs 8,31,600 on invoice BL/26-27/0871, which is Rs 54,600 more than the agreed rate, so check it before it is paid.",
+      "Brightline Logistics billed Rs 6,27,900 on invoice BL/26-27/0871, which is Rs 54,600 more than the agreed rate, so check it before it is paid.",
     );
   });
 
   it("states the price rise against the cap", () => {
     expect(sentenceFor(DEMO_START, "check:ledgerline-price-rise")).toBe(
-      "Ledgerline Payroll Services wants to raise its fee by 15% to Rs 74,750 a month from 1 Jan 2027, above the 7% cap in the contract, so reply before 1 Dec.",
+      "Ledgerline Payroll Services wants to raise its fee by 15% to Rs 74,750 a month from 1 Jan 2027, above the 5% cap in the contract, so reply before 1 Dec.",
     );
   });
 
   it("states the missed service level and the credit", () => {
-    expect(sentenceFor(DEMO_START, "fix:brightline-invoice")).toBe(
-      "Brightline Logistics delivered 38 of 42 trips on time in October, below the 95% in the contract, so you are owed a credit of Rs 41,580.",
+    // The sample shipment log meets the level, so this checks the sentence with a log that misses it.
+    const late = emails.map((e) => (e.id === "brightline-invoice" ? { ...e, deliveries: { month: "2026-10", trips: 38, onTime: 34 } } : e));
+    const fix = buildItems({ today: DEMO_START, firstReadOn: DEMO_START, vendors, contracts, payments, emails: late, actions: {} }).find((i) => i.id === "fix:brightline-invoice")!;
+    expect(itemSentence(fix, "Brightline Logistics", DEMO_START)).toBe(
+      "Brightline Logistics delivered 34 of 38 trips on time in October, below the 95% in the contract, so you are owed a credit of Rs 12,558.",
     );
   });
 
   it("states the amendment's change of date", () => {
-    expect(sentenceFor(DEMO_START, "change:orbis-amendment")).toBe(
-      "Orbis Facility Services sent an amendment that moves the end date from 31 Jan 2027 to 30 Jun 2027, so accept it or reject it.",
+    expect(sentenceFor(ORBIS_AMENDMENT_ARRIVES, "change:orbis-amendment")).toBe(
+      "Orbis Facility Services sent an amendment that moves the end date from 1 Apr 2027 to 31 Mar 2028, so accept it or reject it.",
     );
   });
 
   it("states what was paid with no contract", () => {
     expect(sentenceFor(DEMO_START, "find:bluepeak")).toBe(
-      "You have paid Bluepeak Security Services Rs 1,12,000 with no contract on file, so find it or ask them for one.",
+      "You have paid Bluepeak Security Services Rs 56,000 with no contract on file, so find it or ask them for one.",
     );
   });
 

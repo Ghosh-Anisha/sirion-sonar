@@ -13,8 +13,8 @@ describe("invoicePlay", () => {
   it("follows the Brightline invoice in six steps with real amounts", () => {
     const steps = invoicePlay(items.find((i) => i.id === "check:brightline-invoice"), "Brightline Logistics", "Rohan Das", "Arjun Mehta");
     expect(steps).toHaveLength(6);
-    expect(steps[0].caption).toBe("Brightline Logistics sends invoice BL/26-27/0871 for Rs 8,31,600.");
-    expect(steps[2].caption).toBe("The contract and its agreed rate of Rs 18,500 per trip are looked up.");
+    expect(steps[0].caption).toBe("Brightline Logistics sends invoice BL/26-27/0871 for Rs 6,27,900.");
+    expect(steps[2].caption).toBe("The contract and its agreed rate of Rs 42 per km for a 10 tonne truck are looked up.");
     expect(steps[3].caption).toBe("Code finds the difference: Rs 54,600 above the agreed rate.");
     expect(steps[4].lit).toEqual(["cockpit-check:brightline-invoice"]);
     expect(steps.flatMap((s) => s.caption).join(" ")).not.toMatch(/[—–!]/);

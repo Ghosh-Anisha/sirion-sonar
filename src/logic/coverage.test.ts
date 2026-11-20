@@ -7,7 +7,7 @@ import { coverage } from "./coverage";
 
 describe("coverage", () => {
   it("counts suppliers we pay by how much of a contract we hold", () => {
-    expect(coverage(vendors, contracts, payments, DEMO_START)).toMatchObject({ paid: 24, full: 9, partial: 2, none: 13 });
+    expect(coverage(vendors, contracts, payments, DEMO_START)).toMatchObject({ paid: 24, full: 10, partial: 2, none: 12 });
   });
 
   it("agrees with each supplier's recorded status", () => {

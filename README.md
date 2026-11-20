@@ -2,7 +2,7 @@
 
 Sirion Sonar is a push-based list of things that need a person's attention on supplier contracts. It builds a ledger of the company's supplier contracts by finding the contracts itself, then watches that ledger and tells the right person when something needs them.
 
-This repository is a static prototype with sample data. There is no backend, no real API call and no login. The sample company is Tamarind Home Goods, and every supplier, person, contract, payment and email in it is fictional.
+This repository is a static prototype with sample data. There is no backend, no real API call and no login. The sample company is Halden Foods, and every supplier, person, contract, payment and email in it is fictional.
 
 Live demo: https://sirion-sonar.vercel.app
 

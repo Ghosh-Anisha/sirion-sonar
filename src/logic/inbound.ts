@@ -107,7 +107,7 @@ function compare(email: Email, own: Contract[], ctx: InboundContext): string {
   }
   if (email.invoice) {
     const terms: RateTerm[] = own.flatMap((c) =>
-      c.facts.filter((f) => f.field === "unitRate" || f.field === "monthlyFee").map((fact) => ({ contractId: c.id, fact })),
+      c.facts.filter((f) => f.field === "unitRate" || f.field === "monthlyFee" || f.field === "annualFee").map((fact) => ({ contractId: c.id, fact })),
     );
     const check = checkInvoice(email.invoice, terms);
     if (check) {

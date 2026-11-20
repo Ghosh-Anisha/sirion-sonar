@@ -1,4 +1,5 @@
 import type { ClauseChange } from "../../logic/redline";
+import { clauseTitle } from "../../logic/factFormat";
 import { Redline } from "./Redline";
 import "./Versions.css";
 
@@ -27,13 +28,13 @@ export function ClauseCompare({ changes, originalTitle, amendmentTitle }: Clause
         <div key={c.id} className={`compare__row compare__row--${c.status}`} role="row">
           <div role="cell" className="compare__cell">
             <h4>
-              {c.id}. {c.heading}
+              {clauseTitle(c)}
             </h4>
             <p>{c.before ?? "Not in this version."}</p>
           </div>
           <div role="cell" className="compare__cell">
             <h4>
-              {c.id}. {c.heading} <span className={`compare__tag compare__tag--${c.status}`}>{TAG[c.status]}</span>
+              {clauseTitle(c)} <span className={`compare__tag compare__tag--${c.status}`}>{TAG[c.status]}</span>
             </h4>
             <p>{c.status === "same" ? c.after : <Redline parts={c.parts} />}</p>
           </div>

@@ -2,7 +2,7 @@ import type { Person, Vendor } from "../data/types";
 import type { DictionaryEntry } from "./mask";
 
 /** The company's own name, masked like any other party. */
-export const COMPANY_NAMES = ["Tamarind Home Goods Pvt Ltd", "Tamarind Home Goods"];
+export const COMPANY_NAMES = ["Halden Foods Private Limited", "Halden Foods"];
 
 /**
  * The masking dictionary: every supplier spelling from the vendor list, the company's

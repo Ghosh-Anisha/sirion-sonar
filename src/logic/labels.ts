@@ -23,7 +23,7 @@ export function weakestLabel(labels: Label[]): Label {
  * Returns null when the document does not give enough to work out a term at all.
  */
 export function deadlineFacts(facts: Fact[]): Fact[] | null {
-  const optional = [findFact(facts, "renewalTermMonths"), findFact(facts, "noticeDays")];
+  const optional = (["renewalTermMonths", "renewalOptionMonths", "noticeDays", "noticeMonths"] as const).map((field) => findFact(facts, field));
   const end = findFact(facts, "endDate");
   const start = findFact(facts, "startDate");
   const term = findFact(facts, "termMonths");

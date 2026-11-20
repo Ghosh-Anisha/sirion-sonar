@@ -29,7 +29,7 @@ describe("proposedOwner", () => {
 
 describe("itemsFromSource", () => {
   it("finds the open items each source feeds", () => {
-    expect(itemsFromSource("payables", items)).toHaveLength(13);
+    expect(itemsFromSource("payables", items)).toHaveLength(12);
     expect(itemsFromSource("drive", items).every((i) => i.type === "decide")).toBe(true);
     expect(itemsFromSource("mail", items).length).toBeGreaterThan(0);
     expect(itemsFromSource("mail", items).every((i) => i.reason === "arrival" || i.reason === "change")).toBe(true);
