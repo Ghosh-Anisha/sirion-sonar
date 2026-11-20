@@ -1,8 +1,10 @@
 import { createContext, useContext, useMemo, useReducer, type ReactNode } from "react";
+import { SENT_TO_SIRION_BEFORE_DEMO } from "../data/demo";
 import type { Amendment, FactField } from "../data/types";
 import type { Draft } from "../logic/drafts";
 import { dropEditsReplacedBy, type FactEdit, type FactEdits } from "../logic/edits";
 import type { ItemAction } from "../logic/items";
+import type { SirionSend } from "../logic/sirionHandoff";
 import { useOnboarding } from "./OnboardingContext";
 
 /** A message that went out, after the owner clicked send and confirmed. */
@@ -28,6 +30,8 @@ export interface DemoState {
   log: LogEntry[];
   /** When each item was first opened, so Measures can tell whether alerts are read. */
   opened: Record<string, string>;
+  /** Contracts their owner sent to Sirion, by contract id. */
+  sirion: Record<string, SirionSend>;
 }
 
 type Event =
@@ -35,9 +39,10 @@ type Event =
   | { type: "send"; itemId: string; message: SentMessage; markDone: boolean; text: string }
   | { type: "edit-fact"; contractId: string; field: FactField; edit: FactEdit; text: string }
   | { type: "open-item"; itemId: string; on: string }
+  | { type: "send-to-sirion"; contractId: string; send: SirionSend; text: string }
   | { type: "answer-amendment"; itemId: string; amendment: Amendment; action: ItemAction; text: string };
 
-const INITIAL: DemoState = { actions: {}, sent: {}, factEdits: {}, log: [], opened: {} };
+const INITIAL: DemoState = { actions: {}, sent: {}, factEdits: {}, log: [], opened: {}, sirion: SENT_TO_SIRION_BEFORE_DEMO };
 
 function logged(state: DemoState, entry: Omit<LogEntry, "id">): LogEntry[] {
   return [...state.log, { ...entry, id: state.log.length + 1 }];
@@ -82,6 +87,12 @@ function reduce(state: DemoState, event: Event): DemoState {
         log: logged(state, { on: action.on, by: action.by, text: event.text, itemId, contractId: amendment.contractId }),
       };
     }
+    case "send-to-sirion":
+      return {
+        ...state,
+        sirion: { ...state.sirion, [event.contractId]: event.send },
+        log: logged(state, { on: event.send.on, by: event.send.by, text: event.text, contractId: event.contractId }),
+      };
     case "open-item":
       return state.opened[event.itemId] ? state : { ...state, opened: { ...state.opened, [event.itemId]: event.on } };
   }

@@ -1,4 +1,5 @@
 import type { FactEdits } from "../logic/edits";
+import { contracts } from "./contracts";
 import type { ItemAction } from "../logic/items";
 import type { Onboarding } from "../logic/onboarding";
 import type { MomentId } from "./journey";
@@ -12,6 +13,8 @@ export interface DemoSnapshot {
   factEdits: Record<string, FactEdits>;
   viewerId: string;
   today: string;
+  /** Contracts sent to Sirion, by contract id. */
+  sirion: Record<string, unknown>;
 }
 
 /*
@@ -55,6 +58,10 @@ const inProduct = (s: DemoSnapshot) => read(s) && !at(s, "/welcome") && !at(s, "
 const cloudmetricItem = "decide:cloudmetric-subscription:2027-03-01";
 const cloudDecided = (s: DemoSnapshot) => s.actions[cloudmetricItem] !== undefined;
 const orbisAnswered = (s: DemoSnapshot) => s.actions["change:orbis-amendment"] !== undefined;
+const cloudContract = "cloudmetric-subscription";
+const cloudFacts = contracts.find((c) => c.id === cloudContract)!.facts.length;
+const cloudChecked = (s: DemoSnapshot) => Object.keys(s.factEdits[cloudContract] ?? {}).length >= cloudFacts;
+const cloudInSirion = (s: DemoSnapshot) => cloudContract in s.sirion;
 const nav = (path: string, label: string): Action => ({ click: `a.sidenav__link[href="#${path}"]`, label, fallback: path });
 
 export const demoSteps: DemoStep[] = [
@@ -99,7 +106,10 @@ export const demoSteps: DemoStep[] = [
   { moment: "confirm", caption: "Her list is shorter now, only her own suppliers. Open Contracts to check a date.", action: nav("/contracts", "Click Contracts") , done: (s) => at(s, "/contracts") || at(s, "/contract/cloudmetric") || "cloudmetric-subscription" in s.factEdits },
   { moment: "confirm", caption: "Open the Cloudmetric contract.", action: { press: "Cloudmetric analytics subscription", label: "Click Cloudmetric" } , done: (s) => at(s, "/contract/cloudmetric") || "cloudmetric-subscription" in s.factEdits },
   { moment: "confirm", caption: "Each fact shows the sentence it came from. Confirm the start date against it.", action: { click: "[data-nudge=confirm-fact]", label: "Click Confirm" } , done: (s) => Object.keys(s.factEdits["cloudmetric-subscription"] ?? {}).length > 0 },
-  { moment: "confirm", caption: "Derived became Confirmed, with her name on it.", focus: "[data-tour=fact-table]" , done: (s) => s.today >= "2026-12-01" },
+  { moment: "confirm", caption: "Derived became Confirmed, with her name on it. The other facts read right too. Confirm them.", action: { click: "[data-nudge=confirm-all]", label: "Click Confirm the rest" } , done: (s) => cloudChecked(s) || cloudInSirion(s) || s.today >= "2026-12-01" },
+  { moment: "confirm", caption: "Every fact is checked, so Cloudmetric is ready for Sirion. Send it.", action: { press: "Send to Sirion", label: "Click Send to Sirion" } , done: (s) => cloudInSirion(s) || s.today >= "2026-12-01" },
+  { moment: "confirm", caption: "Nothing goes to Sirion until the owner says yes.", action: { press: "Yes, send to Sirion", label: "Click Yes, send to Sirion" } , done: (s) => cloudInSirion(s) || s.today >= "2026-12-01" },
+  { moment: "confirm", caption: "Cloudmetric is in Sirion now, with her name and the date. Sonar keeps watching its dates.", focus: "[data-tour=contract-sirion]" , done: (s) => s.today >= "2026-12-01" },
   // A deadline gets close
   { moment: "deadline", caption: "Move the clock to 1 Dec, 90 days before the Cloudmetric notice deadline.", action: { clock: "2026-12-01", label: "Move to 1 Dec" } , done: (s) => s.today >= "2026-12-01" },
   { moment: "deadline", caption: "Back to her list.", action: nav("/home", "Click Home") , done: (s) => s.today >= "2026-12-01" && (at(s, "/home") || at(s, "/item/decide:cloudmetric") || cloudDecided(s)) },
@@ -128,6 +138,7 @@ export const demoSteps: DemoStep[] = [
   { moment: "nobody-acts", caption: "Items nobody touched have gone up to her, marked in red.", focus: ".escalated-pill" , done: (s) => at(s, "/sirion") || at(s, "/summary") },
   // Handoff
   { moment: "handoff", caption: "Open the Sirion handoff.", action: nav("/sirion", "Click Sirion") , done: (s) => at(s, "/sirion") || at(s, "/summary") },
+  { moment: "handoff", caption: "Each contract says where it stands: in Sirion with who sent it, ready for its owner to send, or what it still needs.", focus: "[data-tour=sirion-status]" , done: (s) => at(s, "/summary") },
   { moment: "handoff", caption: "The checked ledger is clean data for Sirion, where redlining and workflow pick up.", focus: "[data-tour=sirion-ledger]" , done: (s) => at(s, "/summary") },
   { moment: null, caption: "That is the whole story. Take over and try any screen, or read the case behind it.", action: { go: "/summary" } },
 ];

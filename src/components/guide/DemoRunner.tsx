@@ -1,9 +1,10 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { demoSteps, type DemoSnapshot } from "../../data/demoSteps";
 import { moments } from "../../data/journey";
 import { people } from "../../data/people";
 import { syncedStep } from "../../logic/demoSync";
+import { formatShortDate } from "../../logic/format";
 import { useClock } from "../../state/ClockContext";
 import { useDemoState } from "../../state/DemoStateContext";
 import { useOnboarding } from "../../state/OnboardingContext";
@@ -20,9 +21,9 @@ const AFTER_CLICK_MS = 450;
 
 /**
  * The clickable demo. Each step points at one thing, and the bar follows the app: it shows the step after the
- * last one the app says has happened, however the viewer got there. Next moves the bar on by hand and never acts
- * on the app. Back shows an earlier step until the viewer does something. Switching person and moving the clock
- * have their own button, because there is nothing on screen to click for them.
+ * last one the app says has happened, however the viewer got there. Next on a step that has not happened yet
+ * does it first, so the app never falls behind the bar. Back shows an earlier step until the viewer does
+ * something. Switching person and moving the clock also have their own button.
  */
 export function DemoRunner() {
   const { demo, setDemo } = useGuide();
@@ -35,6 +36,10 @@ export function DemoRunner() {
   const [target, setTarget] = useState<HTMLElement | null>(null);
   const [missing, setMissing] = useState(false);
   const [hold, setHold] = useState<number | null>(null);
+  /** When Next was last pressed. A second press inside the pause after a click is a double-click, not a new step. */
+  const lastNext = useRef(0);
+  /** True while a click's move waits out its pause, so Next cannot press the next screen's control by mistake. */
+  const moving = useRef(false);
 
   const snapshot = useMemo<DemoSnapshot>(
     () => ({
@@ -45,6 +50,7 @@ export function DemoRunner() {
       factEdits: demoState.factEdits,
       viewerId: viewer.id,
       today,
+      sirion: demoState.sirion,
     }),
     [pathname, onboarding, demoState, viewer.id, today],
   );
@@ -59,12 +65,31 @@ export function DemoRunner() {
   const last = index === demoSteps.length - 1;
   const go = (to: number) => setDemo({ index: Math.min(Math.max(to, 0), demoSteps.length - 1) });
   const back = () => setHold(Math.max(index - 1, 0));
-  /** Next steps forward through a held step first, then moves the bar past where the app is. */
+  /** Moves the bar past where the app is. */
+  const advance = () => {
+    setHold(null);
+    go(Math.max(index, Math.max(syncedStep(demoSteps, snapshot), floor) - 1) + 1);
+  };
+
+  /**
+   * Next steps forward through a held step first. On a step that has not happened, it does the step,
+   * so the screen keeps up: it presses the control (the click listener then moves the bar), goes to
+   * the screen when the control is not showing, or switches person or moves the clock.
+   */
   const next = () => {
+    const now = Date.now();
+    if (moving.current || now - lastNext.current < AFTER_CLICK_MS) return;
+    lastNext.current = now;
     const reached = Math.max(syncedStep(demoSteps, snapshot), floor);
     if (hold !== null && hold + 1 < reached) return setHold(hold + 1);
-    setHold(null);
-    go(Math.max(index, reached - 1) + 1);
+    const pending = hold === null && action !== undefined && !(step.done?.(snapshot) ?? false);
+    if (pending && pressedByViewer(action)) {
+      const el = target ?? findTarget(action);
+      if (el) return el.click();
+      if ("click" in action && action.fallback) navigate(action.fallback);
+    }
+    if (pending && ("clock" in action || "viewer" in action)) return setScene();
+    advance();
   };
 
   // Find what this step points at, waiting a little for the screen to render.
@@ -98,7 +123,9 @@ export function DemoRunner() {
     const onClick = (e: MouseEvent) => {
       if (moved || !clickMatches(e.target, action)) return;
       moved = true;
+      moving.current = true;
       window.setTimeout(() => {
+        moving.current = false;
         setHold(null);
         go(index + 1);
       }, AFTER_CLICK_MS);
@@ -111,12 +138,20 @@ export function DemoRunner() {
   const setScene = () => {
     if (action && "clock" in action) setToday(action.clock);
     else if (action && "viewer" in action) setViewerId(action.viewer);
-    next();
+    advance();
   };
 
   const moment = moments.find((m) => m.id === step.moment);
   const person = action && "viewer" in action ? people.find((p) => p.id === action.viewer) : null;
   const waitsForClick = pressedByViewer(action) && !missing;
+  // The person and the clock are picked from a box, not pressed, so their highlight says so.
+  const hotspotLabel = person
+    ? `Pick ${person.name.split(" ")[0]} here`
+    : action && "clock" in action
+      ? `Pick ${formatShortDate(action.clock)} here`
+      : action && "label" in action
+        ? action.label
+        : "";
 
   return (
     <section className="demo-bar" aria-labelledby="demo-caption">
@@ -133,7 +168,7 @@ export function DemoRunner() {
           </p>
           {waitsForClick && action && "label" in action && (
             <p className="demo-bar__hint">
-              <span className="demo-bar__pulse" aria-hidden="true" /> {action.label} on the screen and this bar follows. Already done it? Press Next in this bar.
+              <span className="demo-bar__pulse" aria-hidden="true" /> {action.label} on the screen, or press Next and the demo clicks it for you.
             </p>
           )}
         </div>
@@ -156,7 +191,7 @@ export function DemoRunner() {
           </Button>
         </div>
       </div>
-      {target && action && "label" in action && <DemoHotspot target={target} label={action.label} />}
+      {target && action && "label" in action && <DemoHotspot target={target} label={hotspotLabel} />}
     </section>
   );
 }

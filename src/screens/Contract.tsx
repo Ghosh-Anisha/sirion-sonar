@@ -5,7 +5,9 @@ import { vendors } from "../data/vendors";
 import type { Fact } from "../data/types";
 import { ContractText } from "../components/contract/ContractText";
 import { FactTable } from "../components/contract/FactTable";
+import { SirionCard } from "../components/contract/SirionCard";
 import { History } from "../components/item/History";
+import { Button } from "../components/ui/Button";
 import { Card } from "../components/ui/Card";
 import { EmptyState } from "../components/ui/EmptyState";
 import { Field } from "../components/ui/Field";
@@ -13,6 +15,7 @@ import { Toast } from "../components/ui/Toast";
 import { contractDates } from "../logic/dates";
 import { fieldLabel, formatFactValue } from "../logic/factFormat";
 import { formatDate } from "../logic/format";
+import { handoffStatus } from "../logic/sirionHandoff";
 import { useDemoState } from "../state/DemoStateContext";
 import { useLedger } from "../state/useLedger";
 import { useViewer } from "../state/ViewerContext";
@@ -38,6 +41,27 @@ export function Contract() {
   const selected = (params.get("fact") as Fact["field"] | null) ?? null;
   const activeSentence = contract.facts.find((f) => f.field === selected)?.sentence ?? null;
   const hasAmendment = emails.some((e) => e.amendment?.contractId === contract.id);
+  const sirion = handoffStatus(contract, state.sirion[contract.id]);
+  const canSend = viewer.role === "procurement-lead" || viewer.id === vendor.ownerId;
+  const unchecked = contract.facts.filter((f) => f.label !== "confirmed" && f.value !== null);
+
+  const confirmRest = () => {
+    for (const fact of unchecked) {
+      dispatch({
+        type: "edit-fact",
+        contractId: contract.id,
+        field: fact.field,
+        edit: { kind: "confirmed", value: fact.value, by: viewer.id, on: today },
+        text: `confirmed the ${fieldLabel(fact.field).toLowerCase()}, ${formatFactValue(fact)}.`,
+      });
+    }
+    setToast(`${unchecked.length} ${unchecked.length === 1 ? "fact" : "facts"} confirmed.`);
+  };
+
+  const sendToSirion = () => {
+    dispatch({ type: "send-to-sirion", contractId: contract.id, send: { by: viewer.id, on: today }, text: `sent ${contract.title} to Sirion.` });
+    setToast(`${contract.title} sent to Sirion.`);
+  };
 
   const edit = (fact: Fact, kind: "confirmed" | "corrected", value: Fact["value"]) => {
     const name = fieldLabel(fact.field).toLowerCase();
@@ -88,9 +112,16 @@ export function Contract() {
         )}
       </Card>
 
+      <SirionCard contract={contract} status={sirion} canSend={canSend} onSend={sendToSirion} />
+
       <div className="row">
         <ThinkingBadge at="contract.facts" />
         <ThinkingBadge at="contract.text" />
+        {unchecked.length > 0 && unchecked.length < contract.facts.length && (
+          <Button variant="secondary" onClick={confirmRest} data-nudge="confirm-all">
+            Confirm the rest ({unchecked.length})
+          </Button>
+        )}
       </div>
       <div className="contract-screen__grid">
         <FactTable

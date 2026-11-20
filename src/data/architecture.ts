@@ -263,6 +263,7 @@ export const afterIntake = {
   pitch: "This is the pitch. The import into Sirion is not built.",
   handoffTitle: "Handoff pack",
   handoff: ["The confirmed ledger", "The contracts as managed copies", "The version history", "The owners"],
+  handoffRule: "A contract goes once its owner has confirmed every fact and pressed Send to Sirion. One that is half checked stays in Sonar.",
   capabilities: [
     { name: "AskSirion", line: "Ask the confirmed ledger in plain language." },
     { name: "Redlining", line: "Clause edits in Word, tracked against the contract." },

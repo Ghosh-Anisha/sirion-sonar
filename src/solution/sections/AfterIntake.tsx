@@ -33,6 +33,7 @@ export function AfterIntake() {
                 <li key={h}>{h}</li>
               ))}
             </ul>
+            <p className="after__rule">{afterIntake.handoffRule}</p>
           </div>
           <ul className="after__caps" aria-label="What Sirion adds">
             {afterIntake.capabilities.map((c) => (

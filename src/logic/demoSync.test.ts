@@ -6,7 +6,7 @@ import { INITIAL_ONBOARDING, reduceOnboarding } from "./onboarding";
 import { skipEvent } from "./skip";
 import { firstReadPlan } from "../state/firstReadPlan";
 
-const fresh: DemoSnapshot = { path: "/login", onboarding: INITIAL_ONBOARDING, actions: {}, sent: {}, factEdits: {}, viewerId: "kavya", today: DEMO_START };
+const fresh: DemoSnapshot = { path: "/login", onboarding: INITIAL_ONBOARDING, actions: {}, sent: {}, factEdits: {}, viewerId: "kavya", today: DEMO_START, sirion: {} };
 const skipped = reduceOnboarding(INITIAL_ONBOARDING, skipEvent(INITIAL_ONBOARDING, firstReadPlan, { on: DEMO_START, by: "Kavya Raman", seq: 0 }, "Vikram Nair", "kavya.raman@tamarindhome.example"));
 const caption = (s: DemoSnapshot) => demoSteps[syncedStep(demoSteps, s)].caption;
 const cloudmetric = "decide:cloudmetric-subscription:2027-03-01";

@@ -35,8 +35,8 @@ export const moments: Moment[] = [
     id: "confirm",
     name: "Confirm",
     personId: "neha",
-    todo: "Open the Cloudmetric contract and confirm a fact against its sentence.",
-    saw: "A fact checked against the sentence it came from, turning the date from Derived to Confirmed.",
+    todo: "Open the Cloudmetric contract, confirm its facts against their sentences, and send it to Sirion.",
+    saw: "Facts checked against the sentences they came from, turning Derived into Confirmed, and the checked contract sent to Sirion.",
   },
   {
     id: "deadline",
@@ -77,7 +77,7 @@ export const moments: Moment[] = [
     id: "handoff",
     name: "Handoff",
     personId: "kavya",
-    todo: "See the confirmed ledger ready to hand over to Sirion.",
-    saw: "The confirmed ledger as clean data for Sirion, and where its platform picks up.",
+    todo: "See which contracts are in Sirion, which are ready to send, and what the rest still need.",
+    saw: "Cloudmetric in Sirion once Neha confirmed and sent it, the rest waiting with their reason, and where Sirion's platform picks up.",
   },
 ];

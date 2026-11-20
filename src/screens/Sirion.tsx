@@ -9,11 +9,17 @@ import { Table, type Column } from "../components/ui/Table";
 import { Toast } from "../components/ui/Toast";
 import { formatDate } from "../logic/format";
 import { ledgerCsv, ledgerRows, type LedgerRow } from "../logic/ledger";
+import { handoffLabel, handoffStatus, type HandoffStatus } from "../logic/sirionHandoff";
+import { useDemoState } from "../state/DemoStateContext";
 import { useLedger } from "../state/useLedger";
+import { personName } from "../state/useNeedsYou";
 import "./Sirion.css";
 
-const COLUMNS: Column<LedgerRow>[] = [
+type Row = LedgerRow & { handoff: HandoffStatus };
+
+const COLUMNS: Column<Row>[] = [
   { key: "supplier", header: "Supplier", render: (r) => <Link to={`/contract/${r.contractId}`}>{r.supplier}</Link> },
+  { key: "sirion", header: "Sirion", render: (r) => <span className={`handoff-tag handoff-tag--${r.handoff.kind}`}>{handoffLabel(r.handoff)}</span> },
   { key: "owner", header: "Owner", render: (r) => r.owner },
   { key: "end", header: "End date", render: (r) => (r.endDate ? formatDate(r.endDate) : "Not known") },
   { key: "deadline", header: "Notice deadline", render: (r) => (r.noticeDeadline ? formatDate(r.noticeDeadline) : "Not known") },
@@ -34,9 +40,16 @@ function download(fileName: string, text: string) {
 
 export function Sirion() {
   const { contracts, paid, today, vendors } = useLedger();
+  const { state } = useDemoState();
   const [toast, setToast] = useState<string | null>(null);
   const closeToast = useCallback(() => setToast(null), []);
-  const rows = ledgerRows(contracts, vendors, people, paid, today);
+  const rows: Row[] = ledgerRows(contracts, vendors, people, paid, today).map((r) => ({
+    ...r,
+    handoff: handoffStatus(contracts.find((c) => c.id === r.contractId)!, state.sirion[r.contractId]),
+  }));
+  const inSirion = rows.filter((r) => r.handoff.kind === "in-sirion");
+  const ready = rows.filter((r) => r.handoff.kind === "ready");
+  const notReady = rows.filter((r) => r.handoff.kind === "not-ready");
   const confirmed = rows.filter((r) => r.label === "confirmed").length;
 
   const exportCsv = () => {
@@ -50,10 +63,25 @@ export function Sirion() {
       <header className="stack" style={{ gap: "var(--space-1)" }}>
         <h1>Handing over to Sirion</h1>
         <p className="muted">
-          Sonar finds the contracts and keeps the list. When the company is ready for a full platform, this ledger is the clean
-          data Sirion would otherwise spend months building.
+          A contract moves to Sirion once its owner has confirmed every fact and pressed Send to Sirion. The rest stay in Sonar's
+          ledger with their labels until they are checked, so Sirion only gets records someone has stood behind.
         </p>
       </header>
+
+      <section className="stack" aria-labelledby="handoff-title" data-tour="sirion-status">
+        <h2 id="handoff-title">Which contracts go to Sirion</h2>
+        <ol className="handoff-steps" aria-label="How a contract gets to Sirion">
+          <li><strong>Sonar reads it</strong> and quotes each fact from its sentence.</li>
+          <li><strong>The owner confirms</strong> every fact against the contract.</li>
+          <li><strong>The owner sends it</strong> with Send to Sirion. Nothing goes on its own.</li>
+          <li><strong>Sirion holds it</strong> as a managed record, and Sonar keeps watching its dates.</li>
+        </ol>
+        <div className="handoff-groups">
+          <HandoffGroup title="In Sirion" kind="in-sirion" rows={inSirion} empty="Nothing sent yet." detail={(r) => r.handoff.kind === "in-sirion" ? `Sent by ${personName.get(r.handoff.by) ?? r.handoff.by} on ${formatDate(r.handoff.on)}${r.handoff.changedSince ? ". A fact changed since" : ""}.` : ""} />
+          <HandoffGroup title="Ready to send" kind="ready" rows={ready} empty="None waiting. A contract is ready once every fact is confirmed." detail={(r) => `Every fact confirmed. ${r.owner === "No owner" ? "The procurement lead" : r.owner} can send it.`} />
+          <HandoffGroup title="Not ready yet" kind="not-ready" rows={notReady} empty="Every contract is checked." detail={(r) => (r.handoff.kind === "not-ready" ? r.handoff.reason : "")} />
+        </div>
+      </section>
 
       <section className="stack" aria-labelledby="ledger-title" data-tour="sirion-ledger">
         <div className="sirion__ledger-head">
@@ -93,5 +121,28 @@ export function Sirion() {
       </section>
       {toast && <Toast message={toast} onClose={closeToast} />}
     </div>
+  );
+}
+
+/** One group of the handoff: the contracts in it, each with why it is there. */
+function HandoffGroup({ title, kind, rows, empty, detail }: { title: string; kind: HandoffStatus["kind"]; rows: Row[]; empty: string; detail: (r: Row) => string }) {
+  return (
+    <section className={`handoff-group handoff-group--${kind}`} aria-label={title}>
+      <h3>
+        {title} <span className="num handoff-group__count">{rows.length}</span>
+      </h3>
+      {rows.length === 0 ? (
+        <p className="muted">{empty}</p>
+      ) : (
+        <ul>
+          {rows.map((r) => (
+            <li key={r.contractId}>
+              <Link to={`/contract/${r.contractId}`}>{r.contract}</Link>
+              <span className="handoff-group__detail">{detail(r)}</span>
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
   );
 }

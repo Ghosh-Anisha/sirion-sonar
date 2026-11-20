@@ -101,7 +101,8 @@ export const tours: Record<TourScreen, TourStep[]> = {
     { target: "privacy-computed", title: "Numbers stay in code", body: "Dates and amounts are worked out from the facts, never taken from the model." },
   ],
   sirion: [
-    { target: "sirion-ledger", title: "The clean ledger", body: "Every contract with its owner, dates and label, ready to hand over." },
+    { target: "sirion-status", title: "Which contracts go", body: "A contract goes to Sirion once its owner confirms every fact and sends it. Each one says where it stands." },
+    { target: "sirion-ledger", title: "The clean ledger", body: "Every contract with its owner, dates, label and place in the handoff." },
     { target: "export-csv", title: "Take it with you", body: "Export saves the ledger as a CSV in your browser. Nothing is sent." },
     { target: "sirion-map", title: "Where Sirion picks up", body: "Redlining, approvals, signing and obligations come from Sirion's platform, not from this prototype." },
   ],
