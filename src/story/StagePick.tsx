@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { stagePick } from "../data/story";
 import { Icon } from "../components/ui/Icon";
+import { FlipCards } from "./FlipCards";
 import { SectionHead } from "./SectionHead";
 import "./StagePick.css";
 
-/** The three lifecycle stages. Intake is the pick; the other two open to say why not, and pressing them never changes the pick. */
+/** The three lifecycle stages, then the four tests intake passes. The dimmed stages open to say why not, and never change the pick. */
 export function StagePick() {
   const [open, setOpen] = useState<Set<string>>(new Set());
   const toggle = (id: string) =>
@@ -26,14 +27,6 @@ export function StagePick() {
           </span>
           <h3 className="stage__name">{picked.name}</h3>
           <p>{picked.means}</p>
-          <ul className="stage__reasons">
-            {picked.reasons.map((r) => (
-              <li key={r.test}>
-                <span className="stage__test">{r.test}</span>
-                {r.line}
-              </li>
-            ))}
-          </ul>
         </li>
         {others.map((s) => {
           const on = open.has(s.id);
@@ -52,6 +45,7 @@ export function StagePick() {
           );
         })}
       </ul>
+      <FlipCards />
     </section>
   );
 }

@@ -32,10 +32,10 @@ export type TourScreen =
 
 export const tours: Record<TourScreen, TourStep[]> = {
   story: [
-    { target: "story-brief", title: "The case", body: "What the assignment asked for. Each item on the checklist ticks once you have opened it." },
+    { target: "story-comic", title: "Six panels", body: "Scroll to reveal each one. Press a panel to see it larger with one more line." },
+    { target: "story-brief", title: "The case", body: "The assignment this prototype answers, as a case file." },
     { target: "story-stages", title: "The stage we picked", body: "Intake is the pick. Press a dimmed card for why the other two were not." },
     { target: "story-costs", title: "What it costs", body: "Every figure is worked out from the sample data. Each card links to where the demo shows it." },
-    { target: "story-comic", title: "Six panels", body: "Scroll to reveal each one. Press a panel to see it larger with one more line." },
     { target: "story-next", title: "Then the solution", body: "The page ends with one line on why it matters and a button to the solution." },
   ],
   solution: [

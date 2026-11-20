@@ -4,11 +4,9 @@ import { DEMO_START } from "../data/demo";
 import { emails } from "../data/emails";
 import { costs as copy } from "../data/story";
 import { vendors } from "../data/vendors";
-import { Button } from "../components/ui/Button";
 import { formatDate, formatMoney, formatPercent } from "../logic/format";
 import { costLink, exposureWithin, storyCosts, type StoryCost } from "../logic/storyCosts";
 import { SectionHead } from "./SectionHead";
-import { scrollToSection } from "./scrollToSection";
 import "./StoryCosts.css";
 
 /** The first days of the demo the exposure total counts. */
@@ -89,11 +87,6 @@ export function StoryCosts() {
         </li>
       </ul>
       <p className="story-line">{copy.closing}</p>
-      <div>
-        <Button variant="primary" onClick={() => scrollToSection("comic")}>
-          {copy.toComic}
-        </Button>
-      </div>
     </section>
   );
 }

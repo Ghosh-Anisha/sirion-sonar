@@ -3,9 +3,9 @@ import { Button } from "../components/ui/Button";
 import { scrollToSection } from "./scrollToSection";
 import "./Story.css";
 
-/** The opening: one large sentence and a button that scrolls into the brief. */
+/** The opening: one large sentence and a button that scrolls into the comic. */
 export function StoryHook() {
-  const start = () => scrollToSection("brief");
+  const start = () => scrollToSection("comic");
   return (
     <section className="story-hook" aria-labelledby="hook-title" data-tour="story-hook">
       <h1 id="hook-title" className="story-headline story-headline--hook">

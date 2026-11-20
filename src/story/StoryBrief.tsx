@@ -1,75 +1,64 @@
-import { Link } from "react-router-dom";
 import { brief } from "../data/story";
-import { Icon } from "../components/ui/Icon";
-import { useVisits } from "../state/useVisits";
 import { BRIEF_PDF } from "./briefFile";
+import { SectionHead } from "./SectionHead";
 import "./StoryBrief.css";
 
-/** The case assignment this prototype answers: the company, its symptoms, the task and what has to be in it. */
+/** The case assignment as a case file: three numbers, the ask, and what keeps going wrong as sticky notes. */
 export function StoryBrief() {
-  const visited = useVisits();
   return (
     <section id="brief" className="story-section" aria-labelledby="brief-title">
-      <div className="brief" data-tour="story-brief">
-        <header>
-          <p className="story-kicker">{brief.kicker}</p>
-          <h2 id="brief-title" className="story-headline story-headline--section">
-            {brief.title}
-          </h2>
-        </header>
+      <SectionHead id="brief-title" kicker={brief.kicker} headline={brief.headline} />
+      <div className="case-file" data-tour="story-brief">
+        <span className="case-file__tab">{brief.tab}</span>
+        <span className="case-file__stamp" aria-hidden="true">
+          {brief.stamp}
+        </span>
 
-        <div className="brief__grid">
-          <div className="brief__block">
-            <h3 className="label">{brief.companyTitle}</h3>
-            {brief.company.map((line) => (
-              <p key={line}>{line}</p>
-            ))}
-            <h3 className="label">{brief.symptomsTitle}</h3>
-            <ul className="brief__chips">
-              {brief.symptoms.map((s) => (
-                <li key={s}>{s}</li>
-              ))}
-            </ul>
-            <h3 className="label">{brief.taskTitle}</h3>
-            <p className="brief__task">{brief.task}</p>
-          </div>
+        <ul className="case-file__stats">
+          {brief.stats.map((s) => (
+            <li key={s.label}>
+              <span className="case-file__number num">{s.number}</span>
+              <span>{s.label}</span>
+              {s.tags && (
+                <span className="case-file__tags">
+                  {s.tags.map((t) => (
+                    <span key={t}>{t}</span>
+                  ))}
+                </span>
+              )}
+            </li>
+          ))}
+        </ul>
 
-          <div className="brief__block">
-            <h3 className="label" id="brief-checklist">
-              {brief.checklistTitle}
-            </h3>
-            <p className="brief__hint">{brief.checklistHint}</p>
-            <ol className="brief__checklist" aria-labelledby="brief-checklist">
-              {brief.checklist.map((item) => {
-                const done = visited.includes(item.to);
-                return (
-                  <li key={item.to} className={done ? "brief__check brief__check--done" : "brief__check"}>
-                    <span className="brief__tick" aria-hidden="true">
-                      {done && <Icon name="confirmed" size={12} />}
-                    </span>
-                    <Link to={item.to}>{item.label}</Link>
-                    <span className="visually-hidden">{done ? brief.visited : brief.notYet}</span>
-                  </li>
-                );
-              })}
-            </ol>
-
-            <h3 className="label">{brief.sourceTitle}</h3>
-            <p>
-              <a href={brief.source.href} target="_blank" rel="noreferrer">
-                {brief.source.label}
-              </a>
-              . {brief.sourceNote}
-            </p>
-            {BRIEF_PDF && (
-              <p>
-                <a href={BRIEF_PDF} target="_blank" rel="noreferrer">
-                  {brief.original}
-                </a>
-              </p>
-            )}
-          </div>
+        <div className="case-file__ask">
+          <h3 className="label">{brief.askTitle}</h3>
+          <p>{brief.ask}</p>
         </div>
+
+        <div>
+          <h3 className="label">{brief.notesTitle}</h3>
+          <ul className="case-file__notes">
+            {brief.notes.map((n) => (
+              <li key={n}>{n}</li>
+            ))}
+          </ul>
+        </div>
+
+        <p className="case-file__source">
+          {brief.sourceLine}{" "}
+          <a href={brief.source.href} target="_blank" rel="noreferrer">
+            {brief.source.label}
+          </a>
+          {brief.sourceTail}
+          {BRIEF_PDF && (
+            <>
+              {" "}
+              <a href={BRIEF_PDF} target="_blank" rel="noreferrer">
+                {brief.original}
+              </a>
+            </>
+          )}
+        </p>
       </div>
     </section>
   );

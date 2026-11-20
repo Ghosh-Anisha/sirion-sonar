@@ -31,56 +31,30 @@ export const hook = {
   start: "Start the story",
 };
 
-/** The sections of /story in order, for the sticky progress bar. */
-export const storyChapters = [
-  { id: "brief", label: "The brief" },
-  { id: "stage", label: "The stage" },
-  { id: "costs", label: "What it costs" },
-  { id: "comic", label: "The comic" },
-  { id: "why", label: "Why intake" },
-  { id: "who", label: "Who is in this" },
-  { id: "assumed", label: "What we assumed" },
-] as const;
-
 export const brief = {
-  kicker: "This prototype answers a case assignment.",
-  title: "The case",
-  companyTitle: "The company",
-  company: [
-    "3,000 employees and about 2,500 suppliers: software vendors, staffing agencies, logistics, facilities, consultants and marketing agencies.",
-    "Every relationship runs on a contract, but contracts live in email, Word attachments, shared drives and Excel.",
+  kicker: "The case behind the comic",
+  headline: "Halden stands in for the company in the brief.",
+  tab: "Case file",
+  stamp: "Assignment",
+  stats: [
+    { number: "3,000", label: "employees" },
+    { number: "2,500", label: "suppliers, from software to staffing to trucks" },
+    { number: "4", label: "places contracts hide", tags: ["Email", "Word", "Drives", "Excel"] },
   ],
-  symptomsTitle: "What goes wrong",
-  symptoms: [
-    "Requests get lost",
-    "Approvals stall",
-    "Autorenewals go unreviewed",
-    "Service levels are missed",
-    "Invoices do not match agreed prices",
-  ],
-  taskTitle: "The task",
-  task: "Choose one stage of the contract lifecycle, then design and build a working, AI powered prototype that fixes it.",
-  checklistTitle: "What the prototype must contain",
-  checklistHint: "Each one ticks once you have opened it.",
-  checklist: [
-    { label: "Why this stage", to: "/story" },
-    { label: "Stakeholder map", to: "/stakeholders" },
-    { label: "The problem", to: "/problem" },
-    { label: "The working prototype", to: "/welcome" },
-    { label: "Success metrics", to: "/measures" },
-  ] as NextLink[],
-  visited: "Opened",
-  notYet: "Not opened yet",
-  sourceTitle: "Where the contract examples come from",
-  source: { label: "Law Insider sample contracts", href: "https://www.lawinsider.com/contracts/categories" },
-  sourceNote: "Our sample contracts are adapted from this library, with fictional parties.",
+  notesTitle: "What keeps going wrong",
+  notes: ["Requests get lost", "Approvals stall", "Autorenewals go unreviewed", "Service levels are missed", "Invoices miss agreed prices"],
+  askTitle: "The ask",
+  ask: "Pick one stage of the contract lifecycle. Build a working, AI powered prototype that fixes it.",
+  source: { label: "Law Insider", href: "https://www.lawinsider.com/contracts/categories" },
+  sourceLine: "Our sample contracts are adapted from the library at",
+  sourceTail: ", with fictional parties.",
   original: "Open the original brief",
 };
 
 export const stagePick = {
   kicker: "The stage we picked",
-  headline: "Of the three stages, intake is the one we build.",
-  lead: "Press a dimmed card for why we did not pick it. The pick stays the same.",
+  headline: "Three stages to choose from. We picked the front door.",
+  lead: "Press a dimmed card for why not. Then turn the four cards below for why intake passes.",
   pickedBadge: "Picked",
   notPickedBadge: "Not picked",
   showWhy: "Why not",
@@ -89,12 +63,6 @@ export const stagePick = {
     id: "intake",
     name: "Contract intake",
     means: "One front door for everything that needs attention on a supplier contract, including the things the clock and the payments raise.",
-    reasons: [
-      { test: "Unworkable", line: "Requests arrive by email and nothing tracks them." },
-      { test: "Unavoidable", line: "All 2,500 suppliers start, change and renew through a request." },
-      { test: "Urgent", line: "One missed notice date commits the company to a full term." },
-      { test: "Underserved", line: "The tools we know start with a setup, not the inbox." },
-    ],
   },
   others: [
     {
@@ -156,7 +124,6 @@ export const costs = {
   totalNote: (f: { from: string; to: string; count: number }) => `The sum of the ${f.count} cards whose date to act falls from ${f.from} to ${f.to}.`,
   leftOut: (names: string) => `${names} is left out because its date to act is later.`,
   closing: "Nobody is careless here. The dates just sit in files that no one is told about.",
-  toComic: "See it happen in the comic",
 };
 
 export interface ComicPanel {
@@ -231,9 +198,6 @@ export const bubbles = {
 };
 
 export const whyStart = {
-  kicker: "Why we start here",
-  headline: "Every supplier contract passes through one door: the request.",
-  lead: "Four tests say intake is the place to start. Turn a card to see the evidence.",
   evidence: {
     Unworkable: "A supplier request today is an email. Nothing tracks it, so it waits on a reply nobody knows is owed.",
     Unavoidable: "All 2,500 suppliers start, change and renew through a request, so a repository without intake goes stale.",

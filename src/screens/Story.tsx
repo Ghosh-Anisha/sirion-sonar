@@ -1,8 +1,6 @@
-import { assumptionsIntro, comicIntro, storyAssumptions, storyClose, whoIsIn, whyStart } from "../data/story";
+import { assumptionsIntro, comicIntro, storyAssumptions, storyClose, whoIsIn } from "../data/story";
 import { AssumptionMeters } from "../story/AssumptionMeters";
 import { ComicStrip } from "../story/ComicStrip";
-import { FlipCards } from "../story/FlipCards";
-import { ProblemMatrix } from "../story/ProblemMatrix";
 import { SectionHead } from "../story/SectionHead";
 import { StagePick } from "../story/StagePick";
 import { StoryBrief } from "../story/StoryBrief";
@@ -13,27 +11,21 @@ import { StoryNext } from "../story/StoryNext";
 import { StoryProgress } from "../story/StoryProgress";
 import "../story/Story.css";
 
-/** Page 1: the case brief, the stage we picked and what the problem costs, then the comic, the reasoning, and into the solution. */
+/** Page 1: the comic, the case behind it, the stage we picked, what it costs, who is in it, and into the solution. */
 export function Story() {
   return (
     <div className="story-page story">
       <StoryProgress />
       <StoryHook />
-      <StoryBrief />
-      <StagePick />
-      <StoryCosts />
 
       <section id="comic" className="story-section" aria-labelledby="comic-title">
         <SectionHead id="comic-title" kicker={comicIntro.kicker} headline={comicIntro.headline} lead={comicIntro.lead} />
         <ComicStrip />
       </section>
 
-      <section id="why" className="story-section" aria-labelledby="why-title">
-        <SectionHead id="why-title" kicker={whyStart.kicker} headline={whyStart.headline} lead={whyStart.lead} />
-        <FlipCards />
-        <ProblemMatrix />
-        <p className="story-line">{whyStart.matrixLine}</p>
-      </section>
+      <StoryBrief />
+      <StagePick />
+      <StoryCosts />
 
       <section id="who" className="story-section" aria-labelledby="who-title">
         <SectionHead id="who-title" kicker={whoIsIn.kicker} headline={whoIsIn.headline} lead={whoIsIn.lead} />
