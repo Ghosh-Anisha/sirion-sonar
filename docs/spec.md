@@ -64,9 +64,9 @@ One person approves this once, the IT admin or the finance lead. Every file or m
 | --- | --- | --- |
 | 1 Connect | Code | A standard read-only sign-in |
 | 2 Vendor list | Code and name matching | Merging "ACME PVT LTD" and "Acme Private Limited" is string matching. The unsure ones go to a person |
-| 3 Find | Search, a small open model that ranks files, and the Finder agent | Ranking candidate files is search work. The agent runs when search finds nothing clear |
+| 3 Find | Agent: the Finder, with read-only search as its tool | Finding a contract means trying spellings, domains and invoice numbers until one fits, so the path is not known in advance |
 | 4 Sort files | Code first, then a model call for files the code cannot place | File names and first-page words settle most files. Scans, odd names and mixed documents need a model to read the page |
-| 5 Read | OCR, then the Reader and checker, then the Reconciler | Terms come back with the exact sentence quoted and a second pass checks them. Dates and notice deadlines are computed in code |
+| 5 Read | OCR, a model call that reads the terms, then the Reader and checker agent and the Reconciler agent | Terms come back with the exact sentence quoted and the agents check them. Dates and notice deadlines are computed in code |
 | 6 Record | Code | Writes the fact, its source sentence and its label |
 | 7 Watch | Code | Nightly rules for time, arrival, absence and change. With no AI here, the same facts always give the same items |
 | 8 Tell and draft | The Email agent and the Drafter | They explain what changed and write the reply. The owner reads and sends |
