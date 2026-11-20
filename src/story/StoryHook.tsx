@@ -1,13 +1,11 @@
 import { hook } from "../data/story";
 import { Button } from "../components/ui/Button";
+import { scrollToSection } from "./scrollToSection";
 import "./Story.css";
 
-/** The opening: one large sentence and a button that scrolls into the comic. */
+/** The opening: one large sentence and a button that scrolls into the brief. */
 export function StoryHook() {
-  const start = () => {
-    const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
-    document.getElementById("comic")?.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
-  };
+  const start = () => scrollToSection("brief");
   return (
     <section className="story-hook" aria-labelledby="hook-title" data-tour="story-hook">
       <h1 id="hook-title" className="story-headline story-headline--hook">

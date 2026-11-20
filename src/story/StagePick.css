@@ -1,0 +1,115 @@
+/* The three lifecycle stages, with intake picked. */
+.stages {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 1fr);
+  align-items: start;
+  gap: var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.stage {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-6);
+  background: var(--surface);
+  border: var(--border);
+  border-radius: var(--radius-card);
+  font-size: var(--text-16);
+}
+
+.stage--picked {
+  border: 2px solid var(--brand);
+}
+
+.stage--dimmed {
+  padding: 0;
+  background: var(--bg);
+}
+
+.stage__button {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-2);
+  width: 100%;
+  padding: var(--space-6);
+  font: inherit;
+  text-align: left;
+  color: var(--ink-2);
+  background: none;
+  border: 0;
+  border-radius: var(--radius-card);
+  cursor: pointer;
+}
+
+.stage__button:hover .stage__more {
+  text-decoration: underline;
+}
+
+.stage__name {
+  font-size: var(--text-20);
+  font-weight: var(--weight-semibold);
+  color: var(--ink);
+}
+
+.stage--dimmed .stage__name {
+  color: var(--ink-2);
+}
+
+.stage__badge {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 2px var(--space-2);
+  font-size: var(--text-12);
+  font-weight: var(--weight-medium);
+  color: var(--surface);
+  background: var(--brand);
+  border-radius: var(--radius-badge);
+}
+
+.stage__badge--quiet {
+  color: var(--ink-2);
+  background: var(--unknown-soft);
+}
+
+.stage__more {
+  font-size: var(--text-14);
+  color: var(--brand);
+}
+
+.stage__why {
+  margin: 0 var(--space-6) var(--space-6);
+  padding-top: var(--space-3);
+  color: var(--ink);
+  border-top: var(--border);
+}
+
+.stage__reasons {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.stage__reasons li {
+  display: grid;
+  grid-template-columns: 112px 1fr;
+  gap: var(--space-2);
+}
+
+.stage__test {
+  font-weight: var(--weight-semibold);
+}
+
+@media (max-width: 900px) {
+  .stages {
+    grid-template-columns: 1fr;
+  }
+}

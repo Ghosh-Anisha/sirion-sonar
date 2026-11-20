@@ -1,0 +1,104 @@
+/* What it costs: one card per cost, a bar sized by its amount, and a total row. */
+.costs {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cost {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  align-items: center;
+  gap: var(--space-6);
+  padding: var(--space-4) var(--space-6);
+  background: var(--surface);
+  border: var(--border);
+  border-left: 4px solid var(--urgent);
+  border-radius: var(--radius-card);
+  font-size: var(--text-16);
+}
+
+.cost__text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.cost__title {
+  font-size: var(--text-16);
+  font-weight: var(--weight-semibold);
+}
+
+.cost__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-2) var(--space-4);
+  font-size: var(--text-14);
+}
+
+.cost__link {
+  margin-left: auto;
+}
+
+.cost__bar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.cost__amount {
+  font-size: var(--text-14);
+  font-weight: var(--weight-semibold);
+}
+
+.cost__track {
+  display: block;
+  height: 8px;
+  background: var(--line);
+  border-radius: var(--radius-badge);
+}
+
+.cost__fill {
+  display: block;
+  height: 100%;
+  min-width: 4px;
+  background: var(--urgent);
+  border-radius: var(--radius-badge);
+}
+
+.cost--total {
+  background: var(--fix-soft);
+  border-color: var(--fix-soft);
+  border-left-color: var(--urgent);
+}
+
+.cost--total .cost__text p {
+  font-size: var(--text-14);
+}
+
+.cost__total {
+  justify-self: end;
+  font-size: var(--text-28);
+  font-weight: var(--weight-semibold);
+  color: var(--fix);
+}
+
+@media (max-width: 760px) {
+  .cost {
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+    padding: var(--space-4);
+  }
+
+  .cost__link {
+    margin-left: 0;
+  }
+
+  .cost__total {
+    justify-self: start;
+  }
+}

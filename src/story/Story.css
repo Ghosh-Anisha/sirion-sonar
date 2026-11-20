@@ -81,18 +81,57 @@
   position: sticky;
   top: var(--site-header-height, 0px);
   z-index: 20;
+  margin: calc(var(--space-8) * -1) calc(var(--space-4) * -1) 0;
+  padding: 0 var(--space-4) var(--space-1);
+  background: var(--bg);
+}
+
+.story-progress__bar {
   height: 4px;
-  margin: calc(var(--space-8) * -1) 0 0;
   background: var(--line);
   border-radius: var(--radius-badge);
 }
 
-.story-progress span {
+.story-progress__bar span {
   display: block;
   height: 100%;
   background: linear-gradient(90deg, var(--brand), var(--find));
   border-radius: var(--radius-badge);
   transform-origin: left;
+}
+
+/* The chapter row scrolls sideways on its own at phone width, so the page never does. */
+.story-progress__chapters {
+  display: flex;
+  gap: var(--space-1);
+  margin: 0;
+  padding: var(--space-1) 0 0;
+  overflow-x: auto;
+  list-style: none;
+  scrollbar-width: none;
+}
+
+.story-progress__chapter {
+  padding: var(--space-1) var(--space-2);
+  font: inherit;
+  font-size: var(--text-12);
+  white-space: nowrap;
+  color: var(--ink-2);
+  background: none;
+  border: 0;
+  border-radius: var(--radius-badge);
+  cursor: pointer;
+}
+
+.story-progress__chapter:hover {
+  color: var(--ink);
+  text-decoration: underline;
+}
+
+.story-progress__chapter[aria-current="true"] {
+  font-weight: var(--weight-semibold);
+  color: var(--ink);
+  background: var(--brand-soft);
 }
 
 /* Hook */

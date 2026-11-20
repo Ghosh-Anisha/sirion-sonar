@@ -27,8 +27,12 @@ describe("story copy", () => {
     expect(story.assumptionSettled).toHaveLength(10);
   });
 
-  it("follows the copy rules", () => {
-    const text = JSON.stringify(story);
+  it("follows the copy rules, in the cost card templates too", () => {
+    const sample = { amount: "Rs 1", due: "1 Mar 2027", increase: "15%", cap: "5%", monthly: "Rs 1", received: "1 Nov 2026", days: 60, noticeBy: "1 Nov 2026", months: 12, from: "1 Nov 2026", to: "1 Dec 2026", count: 4 };
+    const templates = Object.values(story.costs.cards).flatMap((card) =>
+      Object.values(card).map((v) => (typeof v === "function" ? (v as (f: typeof sample) => string)(sample) : v)),
+    );
+    const text = JSON.stringify(story) + templates.join(" ") + story.costs.totalNote(sample) + story.costs.leftOut("Cloudmetric");
     expect(text).not.toMatch(/[—–!]|\b(leverage|seamless|robust|powerful|unlock|empower)\b/i);
   });
 });

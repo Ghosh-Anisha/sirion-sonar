@@ -31,6 +31,134 @@ export const hook = {
   start: "Start the story",
 };
 
+/** The sections of /story in order, for the sticky progress bar. */
+export const storyChapters = [
+  { id: "brief", label: "The brief" },
+  { id: "stage", label: "The stage" },
+  { id: "costs", label: "What it costs" },
+  { id: "comic", label: "The comic" },
+  { id: "why", label: "Why intake" },
+  { id: "who", label: "Who is in this" },
+  { id: "assumed", label: "What we assumed" },
+] as const;
+
+export const brief = {
+  kicker: "This prototype answers a case assignment.",
+  title: "The case",
+  companyTitle: "The company",
+  company: [
+    "3,000 employees and about 2,500 suppliers: software vendors, staffing agencies, logistics, facilities, consultants and marketing agencies.",
+    "Every relationship runs on a contract, but contracts live in email, Word attachments, shared drives and Excel.",
+  ],
+  symptomsTitle: "What goes wrong",
+  symptoms: [
+    "Requests get lost",
+    "Approvals stall",
+    "Autorenewals go unreviewed",
+    "Service levels are missed",
+    "Invoices do not match agreed prices",
+  ],
+  taskTitle: "The task",
+  task: "Choose one stage of the contract lifecycle, then design and build a working, AI powered prototype that fixes it.",
+  checklistTitle: "What the prototype must contain",
+  checklistHint: "Each one ticks once you have opened it.",
+  checklist: [
+    { label: "Why this stage", to: "/story" },
+    { label: "Stakeholder map", to: "/stakeholders" },
+    { label: "The problem", to: "/problem" },
+    { label: "The working prototype", to: "/welcome" },
+    { label: "Success metrics", to: "/measures" },
+  ] as NextLink[],
+  visited: "Opened",
+  notYet: "Not opened yet",
+  sourceTitle: "Where the contract examples come from",
+  source: { label: "Law Insider sample contracts", href: "https://www.lawinsider.com/contracts/categories" },
+  sourceNote: "Our sample contracts are adapted from this library, with fictional parties.",
+  original: "Open the original brief",
+};
+
+export const stagePick = {
+  kicker: "The stage we picked",
+  headline: "Of the three stages, intake is the one we build.",
+  lead: "Press a dimmed card for why we did not pick it. The pick stays the same.",
+  pickedBadge: "Picked",
+  notPickedBadge: "Not picked",
+  showWhy: "Why not",
+  hideWhy: "Hide",
+  picked: {
+    id: "intake",
+    name: "Contract intake",
+    means: "One front door for everything that needs attention on a supplier contract, including the things the clock and the payments raise.",
+    reasons: [
+      { test: "Unworkable", line: "Requests arrive by email and nothing tracks them." },
+      { test: "Unavoidable", line: "All 2,500 suppliers start, change and renew through a request." },
+      { test: "Urgent", line: "One missed notice date commits the company to a full term." },
+      { test: "Underserved", line: "The tools we know start with a setup, not the inbox." },
+    ],
+  },
+  others: [
+    {
+      id: "negotiation",
+      name: "Negotiation",
+      short: "Improves the deal, but the costs come later.",
+      why: "Negotiation improves how a deal gets made, but the costs in the brief happen after signing.",
+    },
+    {
+      id: "repository",
+      name: "Intelligent repository",
+      short: "Needs contracts loaded first.",
+      why: "A repository needs contracts loaded first, and the company has no loading process.",
+    },
+  ],
+};
+
+/** The cost cards. Figures are passed in already formatted, so every number comes from the data. */
+export const costs = {
+  kicker: "What it costs",
+  headline: "What this costs a company like Halden",
+  lead: "These are from the sample data in this prototype, not from a real company.",
+  cards: {
+    renewal: {
+      title: "An autorenewal nobody reviewed",
+      line: (f: { amount: string; due: string }) => `Cloudmetric commits ${f.amount} for another year if the notice date of ${f.due} passes.`,
+      link: "Open the Cloudmetric contract",
+    },
+    "price-rise": {
+      title: "A price rise above the contract cap",
+      line: (f: { increase: string; cap: string; monthly: string; amount: string }) =>
+        `Ledgerline asks for ${f.increase}, the cap is ${f.cap}, which is ${f.monthly} a month and ${f.amount} a year more than the contract allows.`,
+      late: (f: { received: string; days: number; noticeBy: string }) =>
+        `The notice came on ${f.received}, after the ${f.days} day window closed on ${f.noticeBy}.`,
+      onTime: (f: { received: string; days: number; noticeBy: string }) =>
+        `The notice came on ${f.received}, inside the ${f.days} day window that closes on ${f.noticeBy}.`,
+      link: "See the price rise",
+    },
+    invoice: {
+      title: "An invoice above the agreed rate",
+      line: (f: { amount: string }) => `Brightline billed ${f.amount} more than the rate card.`,
+      link: "See the invoice check",
+    },
+    lapse: {
+      title: "A service that lapses by silence",
+      line: (f: { due: string; amount: string }) => `Greenleaf ends unless someone confirms by ${f.due}, and the grounds service worth ${f.amount} a year stops.`,
+      link: "See the Greenleaf decision",
+    },
+    retainer: {
+      title: "A retainer that renews on a short window",
+      line: (f: { monthly: string; months: number; amount: string; due: string }) =>
+        `Quillstone's ${f.monthly} a month runs for ${f.months} more months, ${f.amount} in all, if nobody acts by ${f.due}.`,
+      link: "See the Quillstone decision",
+    },
+  },
+  dueLabel: "Act by",
+  barLabel: (amount: string) => `${amount} at stake`,
+  totalLabel: "Exposure in the first 30 days of the demo",
+  totalNote: (f: { from: string; to: string; count: number }) => `The sum of the ${f.count} cards whose date to act falls from ${f.from} to ${f.to}.`,
+  leftOut: (names: string) => `${names} is left out because its date to act is later.`,
+  closing: "Nobody is careless here. The dates just sit in files that no one is told about.",
+  toComic: "See it happen in the comic",
+};
+
 export interface ComicPanel {
   id: string;
   when: string;

@@ -32,11 +32,11 @@ export type TourScreen =
 
 export const tours: Record<TourScreen, TourStep[]> = {
   story: [
-    { target: "story-hook", title: "The problem in one line", body: "A contract does nothing on its own. The rest of this page shows what that costs." },
+    { target: "story-brief", title: "The case", body: "What the assignment asked for. Each item on the checklist ticks once you have opened it." },
+    { target: "story-stages", title: "The stage we picked", body: "Intake is the pick. Press a dimmed card for why the other two were not." },
+    { target: "story-costs", title: "What it costs", body: "Every figure is worked out from the sample data. Each card links to where the demo shows it." },
     { target: "story-comic", title: "Six panels", body: "Scroll to reveal each one. Press a panel to see it larger with one more line." },
-    { target: "story-tests", title: "Why start at intake", body: "Turn each card for the line of evidence behind it." },
-    { target: "story-matrix", title: "Where the money is", body: "The costly problems are the ones nobody complains about. Each links to where the prototype shows it." },
-    { target: "story-next", title: "Then the solution", body: "Each story page ends with one line on why it matters and a button to the next." },
+    { target: "story-next", title: "Then the solution", body: "The page ends with one line on why it matters and a button to the solution." },
   ],
   solution: [
     { target: "solution-nav", title: "The whole architecture", body: "Jump between the intake picture, what Sirion adds, the agents, the backend, the controls and the evals." },

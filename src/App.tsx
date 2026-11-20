@@ -28,6 +28,7 @@ import { OnboardingProvider } from "./state/OnboardingContext";
 import { GuideProvider } from "./state/GuideContext";
 import { ThinkingProvider } from "./state/ThinkingContext";
 import { ViewerProvider } from "./state/ViewerContext";
+import { VisitRecorder } from "./state/useVisits";
 
 export function App() {
   return (
@@ -37,6 +38,7 @@ export function App() {
           <ViewerProvider>
             <ThinkingProvider>
               <GuideProvider>
+                <VisitRecorder />
                 <Routes>
                   <Route index element={<Navigate to="/story" replace />} />
                   <Route element={<StoryShell />}>
