@@ -43,7 +43,7 @@ export const tours: Record<TourScreen, TourStep[]> = {
     { target: "solution-play", title: "Follow one invoice", body: "Play runs one invoice through the whole product in about 12 seconds. Step through it by hand if you like." },
     { target: "solution-diagram", title: "The whole product", body: "Left to right, from what happens in the company to the person who acts. Press any part to see under the hood." },
     { target: "solution-audit", title: "Every fact has a trail", body: "Hover a pill for a real example from the sample data." },
-    { target: "solution-ladder", title: "The lightest tool that works", body: "Code first, then a small model, then an LLM, and an agent only when the path is unknown." },
+    { target: "solution-ladder", title: "The lightest tool that works", body: "Code for rules. A model call for judgment over text. An agent only where the path is unknown." },
   ],
   login: [
     { target: "login-sso", title: "Sign in the usual way", body: "The procurement or finance lead signs in with the company's Google or Microsoft account." },

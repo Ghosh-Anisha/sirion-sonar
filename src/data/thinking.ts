@@ -17,7 +17,8 @@ export type TableName =
 
 export type AgentName = "Finder" | "Reader and checker" | "Reconciler" | "Email agent" | "Drafter";
 
-export type Doer = { kind: "code" } | { kind: "rules" } | { kind: "small-model"; what: string } | { kind: "agent"; agent: AgentName };
+/** Who does the work: code, a model call (one fixed question, asked once), or an agent (a model that picks its own next step). */
+export type Doer = { kind: "code" } | { kind: "model-call"; what: string } | { kind: "agent"; agent: AgentName };
 
 export interface ThinkingNote {
   title: string;
@@ -43,7 +44,7 @@ const DEADLINE_LABEL = {
 };
 
 const code: Doer = { kind: "code" };
-const rules: Doer = { kind: "rules" };
+const readTerms: Doer = { kind: "model-call", what: "reads the terms of one contract, with the sentence for each" };
 const agent = (name: AgentName): Doer => ({ kind: "agent", agent: name });
 
 export const thinking = {
@@ -90,8 +91,8 @@ export const thinking = {
     find: {
       title: "A supplier paid with no contract",
       steps: [2, 3],
-      doers: [rules, agent("Finder"), code],
-      why: "Rules decide which payment lines are suppliers. The Finder only runs when a plain search finds nothing clear. Code opens the item.",
+      doers: [code, agent("Finder")],
+      why: "Code decides which payment lines are suppliers. The Finder only runs when a plain search finds nothing clear. Code opens the item.",
       input: "The payments export, the vendor list, and the search results for the supplier's names and email domain.",
       output: "A Find item with how much was paid and when, for the owner to find the contract or decide there should be one.",
       reads: ["payments", "vendors", "documents"],
@@ -131,8 +132,8 @@ export const thinking = {
     evidence: {
       title: "Why this is here",
       steps: [5, 6],
-      doers: [agent("Reader and checker"), code],
-      why: "Each fact was read with the exact sentence it came from and checked against it. Code works out the dates from those facts.",
+      doers: [readTerms, agent("Reader and checker"), code],
+      why: "A model call read each fact with the exact sentence it came from, and the Reader and checker agent checked it against that sentence. Code works out the dates from those facts.",
       input: "The facts behind the item, each with its sentence, clause and page.",
       output: "The sentences that support the item, and links to the clause in the contract.",
       reads: ["facts", "documents", "contracts"],
@@ -172,8 +173,8 @@ export const thinking = {
     facts: {
       title: "Facts read from the contract",
       steps: [5, 6],
-      doers: [agent("Reader and checker"), code],
-      why: "Two passes, not one. The first reads the terms. The second checks each one against its quoted sentence and flags any that do not match.",
+      doers: [readTerms, agent("Reader and checker"), code],
+      why: "A model call reads the terms once, with a fixed question. Then the Reader and checker agent checks each one against its quoted sentence, looks again where one does not match, and flags what it cannot settle.",
       input: "The masked text of one contract.",
       output: "One fact per field: the value, the exact sentence, the clause and page, and a label.",
       reads: ["documents"],
@@ -324,8 +325,8 @@ export const thinking = {
     welcome: {
       title: "What Sonar does",
       steps: [1, 2, 3, 4, 5, 6, 7, 8],
-      doers: [code, rules, agent("Finder"), agent("Reader and checker")],
-      why: "Most of the work is code and rules. A model is used in four of the eight steps, where the work is reading.",
+      doers: [code, readTerms, agent("Finder"), agent("Reader and checker")],
+      why: "Most of the work is code. A model is used in four of the eight steps, where the work is reading.",
       input: "Who the company pays, the drive and the shared inboxes.",
       output: "A ledger of supplier contracts, and a list that tells the right person when one needs them.",
       reads: ["vendors", "payments", "documents"],
@@ -389,8 +390,8 @@ export const thinking = {
     "first-read": {
       title: "The first read",
       steps: [1, 2, 3, 4, 5, 6, 7, 8],
-      doers: [code, rules, { kind: "small-model", what: "a small model that ranks and sorts files" }, agent("Finder"), agent("Reader and checker"), agent("Reconciler")],
-      why: "Steps that follow a fixed sequence stay as code. Agents run where the work is open ended: finding a file, reading terms.",
+      doers: [code, { kind: "model-call", what: "sorts the files code cannot place" }, readTerms, agent("Finder"), agent("Reader and checker"), agent("Reconciler")],
+      why: "Steps that follow a fixed sequence stay as code. A model call answers one fixed question about a file or a contract. Agents run where the path is unknown: finding a file, checking a quote that does not match.",
       input: "Payments, the drive and the shared inboxes, read-only.",
       output: "The vendor list, the facts for each contract, and the first items.",
       reads: ["payments", "documents"],
@@ -402,7 +403,7 @@ export const thinking = {
     found: {
       title: "Suppliers with no contract",
       steps: [3],
-      doers: [rules, agent("Finder")],
+      doers: [code, agent("Finder")],
       why: "These are the suppliers the search and the Finder could not match to any file.",
       input: "The supplier payments and the search results.",
       output: "A Find item for each, with the amount paid.",

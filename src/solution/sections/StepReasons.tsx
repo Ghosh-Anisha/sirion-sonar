@@ -15,7 +15,7 @@ export function StepReasons() {
             <th scope="col">What does it</th>
             <th scope="col">Why not something heavier</th>
             <th scope="col">What goes wrong, and the guardrail</th>
-            <th scope="col">Code or rules</th>
+            <th scope="col">Done by code</th>
           </tr>
         </thead>
         <tbody>
@@ -35,7 +35,7 @@ export function StepReasons() {
                   <span className="reasons__fail">{r.failure}</span> {r.guardrail}
                 </td>
                 <td>
-                  <div className="reasons__bar" role="meter" aria-label={`Share of ${r.name} done by code or rules, an estimate`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={r.deterministic}>
+                  <div className="reasons__bar" role="meter" aria-label={`Share of ${r.name} done by code, an estimate`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={r.deterministic}>
                     <span style={{ width: `${r.deterministic}%` }} />
                   </div>
                   <span className="reasons__pct num">{r.deterministic}%</span>
@@ -45,7 +45,7 @@ export function StepReasons() {
           })}
         </tbody>
       </table>
-      <p className="reasons__note">The code or rules bar is an estimate of how much of each step needs no model.</p>
+      <p className="reasons__note">The code bar is an estimate of how much of each step needs no model.</p>
     </div>
   );
 }

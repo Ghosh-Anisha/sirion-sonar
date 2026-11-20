@@ -1,4 +1,5 @@
-import { pipelineSteps } from "../../data/architecture";
+import { pipelineSteps, stepDoers } from "../../data/architecture";
+import { doerNames } from "../../data/story";
 import "./Architecture.css";
 
 interface PipelineDiagramProps {
@@ -23,7 +24,7 @@ export function PipelineDiagram({ selected, onSelect }: PipelineDiagramProps) {
               >
                 <span className="pipeline-map__num num">{step.number}</span>
                 <span className="pipeline-map__name">{step.name}</span>
-                <span className={`pipeline-map__ai${step.usesAi ? " pipeline-map__ai--yes" : ""}`}>{step.usesAi ? "Uses AI" : "Code only"}</span>
+                <span className={`pipeline-map__ai${step.usesAi ? " pipeline-map__ai--yes" : ""}`}>{stepDoers[step.number].map((k) => doerNames[k]).join(", ")}</span>
               </button>
             </li>
           ))}
@@ -32,7 +33,7 @@ export function PipelineDiagram({ selected, onSelect }: PipelineDiagramProps) {
       <p className="pipeline-map__legend">
         <span>Steps 1 to 6 build the ledger.</span>
         <span>Steps 7 and 8 make it push.</span>
-        <span>4 of the 8 steps use AI.</span>
+        <span>4 of the 8 steps use a model, through a model call or an agent.</span>
       </p>
     </div>
   );

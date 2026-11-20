@@ -25,7 +25,7 @@ describe("the architecture sections on /solution", () => {
   });
 
   it("says who does each step, with two kinds where two run", () => {
-    expect(stepDoers).toEqual({ 1: ["code"], 2: ["rules"], 3: ["model", "agent"], 4: ["rules", "model"], 5: ["model", "agent"], 6: ["code"], 7: ["rules"], 8: ["agent"] });
+    expect(stepDoers).toEqual({ 1: ["code"], 2: ["code"], 3: ["agent"], 4: ["code", "model-call"], 5: ["model-call", "agent"], 6: ["code"], 7: ["code"], 8: ["agent"] });
   });
 
   it("keeps watching free of AI, and every step has a guardrail", () => {

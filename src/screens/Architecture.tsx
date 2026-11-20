@@ -20,7 +20,7 @@ export function Architecture() {
         <h1>How it works</h1>
         <p className="muted">
           Sonar builds a ledger of the company's supplier contracts by finding them itself, then watches it and tells the right
-          person when something needs them. Code and rules do most of the work. An AI model is used in four of the eight steps.
+          person when something needs them. Code does most of the work. A model is used in four of the eight steps, through a model call or an agent.
         </p>
       </header>
 
@@ -33,7 +33,7 @@ export function Architecture() {
 
       <section className="stack" aria-labelledby="agents-title">
         <h2 id="agents-title">The five agents</h2>
-        <p className="muted">An agent is a model that takes several steps with a small set of read-only tools. Each has one job.</p>
+        <p className="muted">An agent is a model that picks its own next step in a loop, with read-only tools, a step limit and a log. Each has one job.</p>
         <AgentMap />
       </section>
 

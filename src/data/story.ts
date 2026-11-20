@@ -243,7 +243,13 @@ export const storyClose = {
 
 /* Page 2: the solution */
 
-export const doerNames: Record<DoerKind, string> = { code: "Code", rules: "Rules", model: "Small model", agent: "Agent" };
+export const doerNames: Record<DoerKind, string> = { code: "Code", "model-call": "Model call", agent: "Agent" };
+
+export const pipelineFrame = {
+  orchestrator: "Orchestrator: code that chains the steps in order, keeps state, retries, logs, and owns every date, amount and send.",
+  gateway: "Model gateway: the only route to any model. Masks names, checks each answer against a schema, logs, caps cost.",
+  legend: "Code: fixed steps, no model. Model call: asked one question, once. Agent: a model that picks its own next step, within set limits.",
+};
 
 /** The eight pipeline steps as chips, each opening its Under the hood note. Who does each one is in architecture.ts. */
 export const solutionSteps: { number: number; name: string; thinking: ThinkingKey }[] = [
@@ -258,8 +264,8 @@ export const solutionSteps: { number: number; name: string; thinking: ThinkingKe
 ];
 
 export const solutionAgents: { id: string; name: string; job: string; thinking: ThinkingKey }[] = [
-  { id: "finder", name: "Finder", job: "Finds a contract a plain search missed.", thinking: "home.find" },
-  { id: "reader", name: "Reader and checker", job: "Reads the terms, then checks each against its sentence.", thinking: "contract.facts" },
+  { id: "finder", name: "Finder", job: "Searches until it finds a supplier's contract, trying other spellings and domains.", thinking: "home.find" },
+  { id: "reader", name: "Reader and checker", job: "Checks each term against its sentence, and looks again where one does not match.", thinking: "contract.facts" },
   { id: "reconciler", name: "Reconciler", job: "Works out the terms across amendments.", thinking: "versions.amendment" },
   { id: "email", name: "Email agent", job: "Reads supplier mail and explains the difference.", thinking: "email.read" },
   { id: "drafter", name: "Drafter", job: "Writes the reply for the owner to send.", thinking: "item.draft" },
@@ -301,7 +307,7 @@ export const solution = {
   realTitle: "What is real in the prototype, and what is simulated",
   real: [
     { part: "Date arithmetic, labels, ordering of the list, confirm and accept actions", how: "Real, computed live, with a clock you can move forward" },
-    { part: "Sorting payments into supplier, not a supplier and not sure", how: "Real, rules run on the sample payments list" },
+    { part: "Sorting payments into supplier, not a supplier and not sure", how: "Real, code runs on the sample payments list" },
     { part: "Masking of names before the model", how: "Real on the sample text, shown as before and after" },
     { part: "Version history and amendment comparison on one contract", how: "Real on the sample: an accepted amendment shows as a tracked change and moves the date" },
     { part: "Searching a drive and mail, and reading the 12 sample contracts", how: "Precomputed, with the source sentence highlighted" },

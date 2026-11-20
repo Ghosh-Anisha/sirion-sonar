@@ -14,10 +14,8 @@ export function doerLabel(doer: Doer): string {
   switch (doer.kind) {
     case "code":
       return "Code";
-    case "rules":
-      return "Rules";
-    case "small-model":
-      return `A small model: ${doer.what}`;
+    case "model-call":
+      return `A model call that ${doer.what}`;
     case "agent":
       return `The ${doer.agent} agent`.replace("The Email agent agent", "The Email agent");
   }

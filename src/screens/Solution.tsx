@@ -63,7 +63,7 @@ export function Solution() {
         <AfterIntake />
       </SolutionSection>
 
-      <SolutionSection id="agents" kicker="Agents and where not" title="Where we use agents, and where we do not." lead="Reach for the lightest tool that works." soWhat={agentsSoWhat} thinking="contract.facts">
+      <SolutionSection id="agents" kicker="Agents and where not" title="Where we use agents, and where we do not." lead="Reach for the lightest kind of work that does the job." soWhat={agentsSoWhat} thinking="contract.facts">
         <AgentLadder />
         <StepReasons />
       </SolutionSection>

@@ -1,71 +1,100 @@
 # Sirion Sonar
 
-Sirion Sonar is a push-based list of things that need a person's attention on supplier contracts. It builds a ledger of the company's supplier contracts by finding the contracts itself, then watches that ledger and tells the right person when something needs them.
+## What it is
 
-This repository is a static prototype with sample data. There is no backend, no real API call and no login. The sample company is Halden Foods, and every supplier, person, contract, payment and email in it is fictional.
+Sirion Sonar is a push-based list of the things that need a person's attention on supplier contracts. Nobody has to go looking: a renewal that is coming up, an invoice above the agreed rate or a supplier with no contract each turns into one item, sent to the one person who has to act.
 
-Live demo: https://sirion-sonar.vercel.app
+It was built for the ISB Sirion case assignment and covers stage 1 of the contract lifecycle, contract intake. The company, Halden Foods, is fictional, and so is every supplier, person, contract, payment and email in it.
 
-## Run it
+## Links
+
+- Live prototype: https://sirion-sonar.vercel.app
+  - Sign in: https://sirion-sonar.vercel.app/#/login
+  - The story: https://sirion-sonar.vercel.app/#/story
+  - The solution: https://sirion-sonar.vercel.app/#/solution
+  - How we know it works: https://sirion-sonar.vercel.app/#/measures
+- Repository: https://github.com/Ghosh-Anisha/sirion-sonar
+
+## How it works
+
+An **orchestrator** chains eight steps in order. It is code, not a model. It keeps state for each supplier, retries a step that fails, logs every step, and owns every date, amount and send.
+
+A **model gateway** is the only route to any model. It masks names first, checks each answer against a schema, logs every call and caps cost.
+
+Every step is one of three kinds of work, split by who decides the next step:
+
+- **Code**: fixed steps, no model. Anything that is a rule or an if-then check.
+- **Model call**: our code asks a model one question, once, and checks the answer.
+- **Agent**: a model that picks its own next step in a loop, using read-only tools, inside limits the orchestrator sets: a step limit, a log of every step, and read-only access.
+
+A model call and an agent both use a model. The difference is who controls the sequence: in a model call our code sets the steps, while an agent chooses its own.
+
+| Step | What it does | Kind of work |
+| --- | --- | --- |
+| 1 Connect | Signs in read-only to payables, the drive and the shared inboxes | Code |
+| 2 Vendor list | Sorts payment lines into suppliers and merges spellings of one name | Code |
+| 3 Find | Looks for each supplier's contract across the drive and mail | Agent |
+| 4 Sort files | Tells contracts, amendments and invoices apart | Code, Model call |
+| 5 Read | Reads the terms with the exact sentence for each, then checks them | Model call, Agent |
+| 6 Record | Writes each fact with its sentence, page and label | Code |
+| 7 Watch | Checks the ledger every night for time, arrival, absence and change | Code |
+| 8 Tell and draft | Tells each owner what needs them and drafts the reply | Agent |
+
+There are five agents: the Finder (step 3), the Reader and checker and the Reconciler (step 5), and the Email agent and the Drafter (step 8).
+
+## Rules we hold to
+
+- Dates, amounts and anything that sends or pays are never left to a model or an agent. Code works them out, and a person clicks to send.
+- Agents are read only, step limited and logged.
+- Names, people, contacts and bank details are masked before any model sees the text.
+
+## Try it in four minutes
+
+1. **Story** (`#/story`): the comic, the case, the stage we picked and what the problem costs.
+2. **Solution** (`#/solution`): the whole product in one diagram. Press Play to follow one invoice through it.
+3. **Sign in** at `#/login`, or press **Skip to demo** to jump straight to the list.
+4. **Onboarding** (`#/welcome`): connect the sources, approve access as IT, and run the first read.
+5. **Home** (`#/home`): the Needs you list, sorted by what is due first.
+6. **Move the clock to 1 Dec 2026** with the date control in the top bar. Cloudmetric's 90 day alert fires, and items escalate.
+
+## Sample data
+
+- The contracts live in `docs/contracts`: 13 files, 12 contracts plus one amendment. They are adapted from Law Insider sample contracts, with the company names changed.
+- The rest of the sample data lives in `src/data`: suppliers, payments, emails and people.
+- The demo starts on 19 Nov 2026. Every screen reads today's date from the demo clock, not from your computer.
+
+## Run it locally
 
 You need Node 22 or later.
 
 ```
 npm install
-npm run dev        # http://localhost:5173
-npm run typecheck  # TypeScript, no emit
-npm test           # Vitest
+npm run dev        # start the dev server at http://localhost:5173
 npm run build      # type check, then a static build in dist/
+npm test           # run the Vitest tests
+npm run typecheck  # type check only
 npm run preview    # serve the build
 ```
 
-The app uses hash routes, so any static host works. On Vercel, import the repo and accept the Vite defaults: build `npm run build`, output `dist`.
+The app uses hash routes, so any static host works. On Vercel, accept the Vite defaults: build `npm run build`, output `dist`.
 
-## How the site is laid out
+## Stack and folder map
 
-The site reads as a story first and a product second. A stepper at the top runs through four steps:
+Vite, React and TypeScript, with React Router in hash mode, plain CSS on design tokens, and Vitest for the logic.
 
-1. **The problem** at `/story`: a six panel comic, then why intake, who is involved and what we assumed.
-2. **The solution** at `/solution`: the whole product as one diagram, with an example invoice you can play through it.
-3. **Try it** at `/welcome`: sign-in, onboarding and the product itself.
-4. **How we know** at `/measures`: the north star and the measures, worked out live.
-
-The Case menu holds the short case pages: Why intake, The problem, Stakeholders and Assumptions. Every story page ends with one line on why it matters and a button to the next.
-
-## Walking through the demo
-
-Opening the site lands on a mock sign-in at `/login`. It asks for no password and checks nothing. Then comes the onboarding wizard at `/welcome`, where each source can connect more than one product, such as Google Drive and SharePoint. Start the clickable demo points at each thing to press, one click at a time, and moves on when you press it. Do it for me presses it for you. Walk through it yourself opens the Demo guide, which takes you through the nine moments of the user journey: setup, first read, confirm, a deadline gets close, decide, an invoice differs, an amendment arrives, nobody acts, and handoff. Do this next moves the clock and switches the viewer where a moment needs it. Skip to demo jumps straight to the list with the first read done.
-
-The demo is seen through four roles, each with its own color: Kavya the procurement lead sees everything and gets what nobody owns, Arjun the finance lead sees invoices and prices, owners such as Neha and Farah see only their own suppliers, and Vikram the IT admin sees access, not contracts. Every item says who sees it and why.
-
-In the demo bar at the bottom, Tour replays the tour for the current screen, Show the thinking adds Under the hood badges to each part of a screen, View as shows the demo as another person, the clock moves the date forward, and Reset demo starts again.
-
-The Case section in the nav holds the reasoning: why intake, the problem, the stakeholders and the assumptions. How it works shows the eight step pipeline, the five agents, and where data lives.
-
-## What is real and what is simulated
-
-| Part | In the prototype |
+| Folder | What is in it |
 | --- | --- |
-| Date arithmetic, labels, ordering of the list, confirm and accept actions | Real, computed live, with a clock you can move forward |
-| Sorting payments into supplier, not a supplier and not sure | Real, rules run on the sample payments list |
-| Masking of names before the model | Real on the sample text, shown as before and after |
-| Version history and amendment comparison on one contract | Real on the sample: an accepted amendment shows as a tracked change and moves the date |
-| Searching a drive and mail, and reading the 12 sample contracts | Precomputed, with the source sentence highlighted |
-| Connecting to a real drive or mailbox | A mock consent screen that lists what would be read |
-| The 5 sample emails | Precomputed matching and classification, each step shown |
+| `src/components` | Shared parts of the product screens, grouped by screen, plus the base UI kit in `ui` |
+| `src/data` | The sample data and every piece of copy and label the site shows |
+| `src/logic` | Pure functions for dates, labels, alerts, ordering and classification, each with tests |
+| `src/screens` | One file per route |
+| `src/solution` | The Solution page diagram and its sections |
+| `src/state` | React context for the clock, onboarding, demo state, viewer and the guide |
+| `src/story` | The story layer: the comic, the case file, the stage cards and the cost cards |
+| `src/styles` | Design tokens and base styles |
 
-The 12 sample contracts were written for this case with fictional parties. Adapting them from public Law Insider samples is planned and not done yet.
+## Known limits
 
-## Not built
-
-Real connections to any drive, mail or payables system. Real model calls. User login. Redlining and contract creation, which stay in the Sirion pitch.
-
-## Where things live
-
-- `docs/spec.md`: the case, the solution architecture and the build plan.
-- `CLAUDE.md` and `docs/design.md`: the rules and the design system the code follows.
-- `src/logic`: every business rule as a pure function with Vitest tests: dates, labels, alerts, escalation, ordering and payment classification.
-- `src/data`: the sample company, plus the words for tours, the Under the hood drawer, the architecture page and the case pages.
-- `src/screens` and `src/components`: the screens, one component per file, styled with plain CSS and the tokens in `src/styles/tokens.css`.
-
-Onboarding progress, the access log, tours already seen and the Show the thinking switch are kept in the browser's local storage. Everything else, such as the clock and the decisions made, lives in memory and starts fresh on reload.
+- Sample data only. No real database and no live connectors. Every model and agent result is precomputed, with each step shown.
+- The connect and consent screens are mock-ups of what would be read.
+- Read-only access to the drive, mail and ledger is the assumption we are least sure of. IT may not approve it as asked.

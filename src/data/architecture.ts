@@ -54,8 +54,8 @@ export const pipelineSteps: PipelineStep[] = [
     number: 3,
     name: "Find",
     job: "Looks for each supplier's files across the drive and mail, highest spend first.",
-    doneBy: "Search, a small open model that ranks files, and the Finder agent",
-    why: "Ranking candidate files is search work. The agent runs when search finds nothing clear.",
+    doneBy: "The Finder agent, with read-only search as its tool",
+    why: "Finding a contract means trying spellings, domains and invoice numbers until one fits, so the path is not known in advance.",
     usesAi: true,
     input: "Each vendor's names, spellings and email domains.",
     output: "Candidate files for each vendor, or a note that nothing was found.",
@@ -68,8 +68,8 @@ export const pipelineSteps: PipelineStep[] = [
     number: 4,
     name: "Sort files",
     job: "Tells contracts, amendments and invoices apart from everything else.",
-    doneBy: "Rules first, then a small model for files the rules cannot place",
-    why: "File names and first-page words settle most files. Scans, odd names and mixed documents need a model to read the page.",
+    doneBy: "Code first, then a model call for files the code cannot place",
+    why: "File names and first-page words settle most files. Scans, odd names and mixed documents need a model to read the page, asked once what kind of file it is.",
     usesAi: true,
     input: "File names and the first page of each candidate file.",
     output: "Each file's type, and which vendor it belongs to.",
@@ -82,8 +82,8 @@ export const pipelineSteps: PipelineStep[] = [
     number: 5,
     name: "Read",
     job: "Reads the terms of each contract, with the exact sentence for each, and checks them in a second pass.",
-    doneBy: "OCR, then the Reader and checker, then the Reconciler",
-    why: "Terms come back with the exact sentence quoted and a second pass checks them. Dates and notice deadlines are computed in code.",
+    doneBy: "OCR, a model call that reads the terms, then the Reader and checker agent and the Reconciler agent",
+    why: "The model call returns each term with its exact sentence. The agents check those sentences and work across amendments. Dates and notice deadlines are computed in code.",
     usesAi: true,
     input: "The masked text of one contract at a time.",
     output: "Terms with their sentences, checked, and the current terms across amendments.",
@@ -155,15 +155,15 @@ export const agents: AgentInfo[] = [
   {
     name: "Reader and checker",
     step: 5,
-    job: "Two passes. The first reads the terms. The second checks each field against its quoted sentence and flags any that do not match.",
-    tools: "The masked text of one contract.",
+    job: "Takes the terms the model call read and checks each against its quoted sentence. Where one does not match it searches the text again, and flags what it cannot settle.",
+    tools: "Read-only search of the masked text of one contract.",
     cannot: "Compute dates. Those come from code.",
   },
   {
     name: "Reconciler",
     step: 5,
     job: "Works out the current terms when a contract has amendments or several versions, and flags clashes.",
-    tools: "The facts for one vendor.",
+    tools: "Read-only look up of the facts and versions for one vendor.",
     cannot: "Decide which version wins when they clash. A person does.",
   },
   {
@@ -177,13 +177,13 @@ export const agents: AgentInfo[] = [
     name: "Drafter",
     step: 8,
     job: "Writes the reply, query or notice from the facts on the item.",
-    tools: "The item and its facts.",
+    tools: "Read-only look up of the item, its facts and the clause behind each.",
     cannot: "Send. The owner reads and sends.",
   },
 ];
 
 export const agentsWhy =
-  "A single pass over a long contract or a full inbox makes mistakes, and nobody can see why. Each agent has one job, a few read-only tools and a log. The checker is the main safeguard: a field with no matching sentence never reaches the ledger as Confirmed.";
+  "Each agent is a model in a loop: it picks its own next step, uses only read-only tools, stops at a step limit set by the orchestrator, and logs every step. Each has one job. The checker is the main safeguard: a field with no matching sentence never reaches the ledger as Confirmed.";
 
 export interface Place {
   name: string;
@@ -203,7 +203,7 @@ export const dataPlaces = {
     { name: "Encryption key", holds: "One per customer. Deleting a customer deletes the database, the storage and the key." },
   ] as Place[],
   vault: { name: "Token vault", holds: "Masked name to real name. A separate store with a separate key, which never leaves our cloud." },
-  servers: { name: "On our servers", holds: "OCR for scans, a small ranking model, and masking with a dictionary and an open-source name recogniser." },
+  servers: { name: "On our servers", holds: "OCR for scans, the search index, and masking with a dictionary and an open-source name recogniser." },
   model: {
     name: "Private model endpoint",
     holds: "Inside our own cloud account, under a no-retention and no-training agreement. It only ever gets masked snippets of contract text.",
@@ -241,19 +241,29 @@ export const solutionSections = [
   { id: "evals", label: "Evals" },
 ] as const;
 
-export type DoerKind = "code" | "rules" | "model" | "agent";
+/**
+ * The three kinds of work, split by who decides the next step.
+ * Code: fixed steps, no model. Model call: our code asks a model one question, once, and checks the answer.
+ * Agent: a model that picks its own next step in a loop, with read-only tools, inside the orchestrator's limits.
+ */
+export type DoerKind = "code" | "model-call" | "agent";
+
+export const DOER_KINDS: DoerKind[] = ["code", "model-call", "agent"];
 
 /** Who does each of the eight steps. Some steps use two kinds, in the order they run. */
 export const stepDoers: Record<number, DoerKind[]> = {
   1: ["code"],
-  2: ["rules"],
-  3: ["model", "agent"],
-  4: ["rules", "model"],
-  5: ["model", "agent"],
+  2: ["code"],
+  3: ["agent"],
+  4: ["code", "model-call"],
+  5: ["model-call", "agent"],
   6: ["code"],
-  7: ["rules"],
+  7: ["code"],
   8: ["agent"],
 };
+
+/** Whether a step reaches a model, through a model call or an agent. */
+export const usesModel = (step: number): boolean => stepDoers[step].some((k) => k !== "code");
 
 /* After intake, Sirion: the pitch, not built */
 
@@ -285,12 +295,15 @@ export const afterIntake = {
 
 /* Agents and where not */
 
-export const decisionLadder = [
-  { tool: "Code", when: "when the answer is a rule." },
-  { tool: "A small model", when: "when it is a judgment over short text." },
-  { tool: "An LLM", when: "when it must read and quote a long document." },
-  { tool: "An agent", when: "only when the path is not known in advance and it has to try things." },
+export const decisionLadder: { kind: DoerKind; tool: string; when: string }[] = [
+  { kind: "code", tool: "Code", when: "when the answer is a rule." },
+  { kind: "model-call", tool: "A model call", when: "when it is a judgment over text, asked once with a fixed question." },
+  { kind: "agent", tool: "An agent", when: "only when the path is not known in advance and it has to try things." },
 ];
+
+/** Said once, on the Solution page. */
+export const modelVsAgent =
+  "A model call and an agent both use a model. The difference is who controls the sequence: in a model call our code sets the steps, an agent chooses its own.";
 
 export const redLine = "Dates, amounts and anything that sends or pays are never left to a model or an agent.";
 
@@ -301,19 +314,19 @@ export interface StepReason {
   whyNotHeavier: string;
   failure: string;
   guardrail: string;
-  /** Rough share of the step's work done by code or rules, 0 to 100. An estimate. */
+  /** Rough share of the step's work done by code, 0 to 100. An estimate. */
   deterministic: number;
 }
 
 export const stepReasons: StepReason[] = [
   { number: 1, name: "Connect", doneBy: "Code", whyNotHeavier: "A standard read-only sign-in. Nothing to decide.", failure: "A token expires.", guardrail: "Refresh it, and alert IT if that fails.", deterministic: 100 },
-  { number: 2, name: "Vendor list", doneBy: "Rules and name matching", whyNotHeavier: "Merging spellings is string matching.", failure: "Two suppliers merged by mistake.", guardrail: "Unsure pairs go to a person.", deterministic: 95 },
-  { number: 3, name: "Find", doneBy: "Search and a small embedding model, then the Finder agent only when search finds nothing clear", whyNotHeavier: "Most files are found by search. The agent is the fallback.", failure: "The wrong contract is linked.", guardrail: "The agent may only search by vendor names and domains, and every link is shown with its reason.", deterministic: 60 },
-  { number: 4, name: "Sort files", doneBy: "Rules first, then a small model for what rules cannot place", whyNotHeavier: "File names and first pages settle most files.", failure: "An invoice is read as a contract.", guardrail: "A type is only accepted above a confidence level. Otherwise the file is skipped and logged.", deterministic: 75 },
-  { number: 5, name: "Read", doneBy: "OCR, then the Reader and checker in two passes, and the Reconciler for amendments", whyNotHeavier: "Reading and quoting a long contract needs a language model.", failure: "A made up term.", guardrail: "Every field must carry a quoted sentence that exists in the text, or it is dropped.", deterministic: 30 },
+  { number: 2, name: "Vendor list", doneBy: "Code: payment rules and name matching", whyNotHeavier: "Merging spellings is string matching.", failure: "Two suppliers merged by mistake.", guardrail: "Unsure pairs go to a person.", deterministic: 95 },
+  { number: 3, name: "Find", doneBy: "The Finder agent, with read-only search as its tool", whyNotHeavier: "The path is not known in advance: it tries spellings, domains and invoice numbers until one fits.", failure: "The wrong contract is linked.", guardrail: "The agent may only search by vendor names and domains, and every link is shown with its reason.", deterministic: 60 },
+  { number: 4, name: "Sort files", doneBy: "Code first, then a model call for what code cannot place", whyNotHeavier: "File names and first pages settle most files. The rest is one fixed question per file.", failure: "An invoice is read as a contract.", guardrail: "A type is only accepted above a confidence level. Otherwise the file is skipped and logged.", deterministic: 75 },
+  { number: 5, name: "Read", doneBy: "OCR, a model call that reads the terms, then the Reader and checker agent and the Reconciler agent", whyNotHeavier: "Reading and quoting a contract needs a model. Checking a quote that does not match needs it to look again.", failure: "A made up term.", guardrail: "Every field must carry a quoted sentence that exists in the text, or it is dropped.", deterministic: 30 },
   { number: 6, name: "Record", doneBy: "Code", whyNotHeavier: "Writes the fact, its source and its label.", failure: "None beyond bad input.", guardrail: "Schema checks.", deterministic: 100 },
-  { number: 7, name: "Watch", doneBy: "Rules, run nightly", whyNotHeavier: "The same facts always give the same items.", failure: "No AI here, on purpose.", guardrail: "Rules have tests, like the rest of the code.", deterministic: 100 },
-  { number: 8, name: "Tell and draft", doneBy: "The Email agent and the Drafter", whyNotHeavier: "Explaining a difference and writing a reply is language work.", failure: "A wrong explanation.", guardrail: "The Drafter only sees the item's facts, and the owner reads and sends.", deterministic: 40 },
+  { number: 7, name: "Watch", doneBy: "Code, run nightly", whyNotHeavier: "The same facts always give the same items.", failure: "No model here, on purpose.", guardrail: "The alert rules have tests, like the rest of the code.", deterministic: 100 },
+  { number: 8, name: "Tell and draft", doneBy: "The Email agent and the Drafter agent", whyNotHeavier: "Explaining a difference and writing a reply is language work.", failure: "A wrong explanation.", guardrail: "The Drafter only sees the item's facts, and the owner reads and sends.", deterministic: 40 },
 ];
 
 export const agentsSoWhat = "AI does the reading and the writing. Everything that decides, counts or sends stays in code and with people.";
@@ -326,7 +339,7 @@ export const backend = {
   flow: [
     { id: "connectors", name: "Connectors", items: ["Payables", "Drive", "Mail"] },
     { id: "queue", name: "Queue", items: ["One job per vendor"] },
-    { id: "orchestrator", name: "Orchestrator", items: ["A workflow engine, code"] },
+    { id: "orchestrator", name: "Orchestrator", items: ["A workflow engine, code", "Chains the steps, keeps state, retries, logs"] },
     { id: "workers", name: "Workers and Model gateway", items: ["Workers run the code steps", "The gateway is the only way to a model"] },
     { id: "models", name: "Models", items: ["OCR", "Embeddings", "Language model, through a private endpoint"] },
     { id: "stores", name: "Stores", items: ["Relational database with a similarity index", "Encrypted object storage", "Token vault with its own key"] },
@@ -340,7 +353,7 @@ export const backend = {
       lines: [
         "The sequence is fixed, so a workflow engine runs one workflow per vendor through these states.",
         "Every step can be retried safely, has a timeout, and goes to a review queue if it fails twice.",
-        "Agents run only inside a step, with a limit on tool calls and tokens.",
+        "Agents run only inside a step: read-only tools, a step limit, and every step logged.",
         "People approve at fixed gates: confirm a fact, accept an amendment, send a message.",
         "A kill switch stops a customer's workflows.",
       ],
@@ -350,13 +363,13 @@ export const backend = {
       lines: [
         "It masks names and runs a leak check before anything is sent.",
         "It uses versioned prompts and requires structured output, checked against a schema.",
-        "It logs masked inputs and outputs, caps cost, and routes to the small model or the large one.",
+        "It logs masked inputs and outputs, caps cost, and picks the model for each call, so no step names one directly.",
       ],
     },
     {
       title: "Scale",
       lines: [
-        "The nightly watch is cheap, because it is rules over a database.",
+        "The nightly watch is cheap, because it is code over a database.",
         "The costly part is reading. It happens once per document, and again only when the document changes.",
       ],
     },
@@ -399,12 +412,12 @@ export const sourceAccess = [
 
 export const stepPermissions = [
   { who: "Finder agent", can: "Search the drive and mail by vendor names and email domains", cannot: "Open files unrelated to those names and domains" },
-  { who: "Sort files model", can: "Read the first page of a candidate file", cannot: "Keep anything from a file that is not a contract, amendment or invoice" },
+  { who: "Sort files model call", can: "Read the first page of a candidate file", cannot: "Keep anything from a file that is not a contract, amendment or invoice" },
   { who: "Reader and checker", can: "Read the masked text of one contract", cannot: "See real names, other contracts or any source" },
   { who: "Reconciler", can: "Read the facts for one vendor", cannot: "Decide which version wins. A person does" },
   { who: "Email agent", can: "Read supplier mail and search the ledger, read-only", cannot: "Reply or send anything" },
   { who: "Drafter", can: "Read the item's facts", cannot: "Reach any source, or send" },
-  { who: "Every step and agent", can: "Do its one job, logged", cannot: "Send, pay, sign or change a file" },
+  { who: "Every step and agent", can: "Do its one job, logged. Agents stop at their step limit", cannot: "Send, pay, sign or change a file" },
 ];
 
 export const accessRules = [

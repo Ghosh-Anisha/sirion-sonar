@@ -15,7 +15,8 @@ describe("doerLabel", () => {
   it("says who does the work", () => {
     expect(doerLabel({ kind: "agent", agent: "Finder" })).toBe("The Finder agent");
     expect(doerLabel({ kind: "agent", agent: "Email agent" })).toBe("The Email agent");
-    expect(doerLabel({ kind: "rules" })).toBe("Rules");
+    expect(doerLabel({ kind: "code" })).toBe("Code");
+    expect(doerLabel({ kind: "model-call", what: "sorts the files code cannot place" })).toBe("A model call that sorts the files code cannot place");
   });
 });
 
@@ -37,7 +38,7 @@ describe("thinking notes", () => {
 
   it("only says a model sees something where a model or agent does the work", () => {
     for (const n of notes) {
-      const usesModel = n.doers.some((d) => d.kind === "agent" || d.kind === "small-model");
+      const usesModel = n.doers.some((d) => d.kind !== "code");
       if (!usesModel) expect(n.modelSees, n.title).toBeNull();
     }
   });

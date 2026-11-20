@@ -1,9 +1,10 @@
-import { pipelineSteps, type PipelineStep } from "../../data/architecture";
+import { pipelineSteps, stepDoers, type PipelineStep } from "../../data/architecture";
+import { doerNames } from "../../data/story";
 import { Table, type Column } from "../ui/Table";
 
 const COLUMNS: Column<PipelineStep>[] = [
   { key: "step", header: "Step", render: (s) => `${s.number} ${s.name}` },
-  { key: "ai", header: "AI", render: (s) => (s.usesAi ? "Yes" : "No") },
+  { key: "kind", header: "Kind of work", render: (s) => stepDoers[s.number].map((k) => doerNames[k]).join(", ") },
   { key: "by", header: "Done by", render: (s) => s.doneBy },
   { key: "why", header: "Why", render: (s) => s.why },
 ];

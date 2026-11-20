@@ -149,13 +149,70 @@
   gap: var(--space-3);
 }
 
+/* The orchestrator above the steps and the model gateway below them. */
+.pipe {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.pipe__bar {
+  padding: var(--space-1) var(--space-2);
+  font-size: var(--text-12);
+  line-height: 1.4;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--ink-2);
+  border-radius: var(--radius-button);
+}
+
+.pipe__bar--gateway {
+  border-color: var(--decide);
+  border-style: solid;
+  background: var(--decide-soft);
+}
+
+/*
+ * The steps sit in two columns with a gutter between them. A dotted line runs down the gutter to the gateway,
+ * and every step that reaches a model has a short dotted stub into the gutter, so each one connects to it.
+ */
 .sonar__steps {
+  position: relative;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--space-1);
+  gap: var(--space-1) var(--space-4);
   margin: 0;
   padding: 0;
   list-style: none;
+}
+
+.sonar__steps::before {
+  content: "";
+  position: absolute;
+  top: 25%;
+  bottom: calc(var(--space-2) * -1);
+  left: 50%;
+  border-left: 2px dotted var(--decide);
+}
+
+.sonar__steps > li {
+  position: relative;
+}
+
+.step-chip--to-gateway::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: var(--space-2);
+  border-top: 2px dotted var(--decide);
+}
+
+.sonar__steps > li.step-chip--to-gateway:nth-child(odd)::after {
+  left: 100%;
+}
+
+.sonar__steps > li.step-chip--to-gateway:nth-child(even)::after {
+  right: 100%;
 }
 
 .step-chip {
@@ -165,19 +222,29 @@
   font-weight: var(--weight-medium);
 }
 
-.step-chip__tag {
+.step-chip__kinds {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+}
+
+/* Grey for Code, blue for Model call, purple for Agent. */
+.kind-chip {
   padding: 0 var(--space-1);
   font-size: var(--text-12);
   font-weight: var(--weight-medium);
-  color: var(--ink);
-  background: rgb(255 255 255 / 0.7);
+  background: var(--surface);
+  border: 1px solid;
   border-radius: var(--radius-button);
 }
 
+.kind-chip--code { color: var(--unknown); }
+.kind-chip--model-call { color: var(--decide); }
+.kind-chip--agent { color: var(--find); }
+
 /* A step that uses two kinds shows both colors, split down the middle. */
 .step-chip--then-code { background-image: linear-gradient(90deg, transparent 50%, var(--unknown-soft) 50%); }
-.step-chip--then-rules { background-image: linear-gradient(90deg, transparent 50%, var(--check-soft) 50%); }
-.step-chip--then-model { background-image: linear-gradient(90deg, transparent 50%, var(--decide-soft) 50%); }
+.step-chip--then-model-call { background-image: linear-gradient(90deg, transparent 50%, var(--decide-soft) 50%); }
 .step-chip--then-agent { background-image: linear-gradient(90deg, transparent 50%, var(--find-soft) 50%); }
 
 /* Dimmed by a legend toggle: plain and dashed, but the text keeps its contrast. */
@@ -188,14 +255,12 @@
   border-color: var(--line);
 }
 
-.step-chip--dim .step-chip__tag {
-  background: none;
+.step-chip--dim .kind-chip {
   color: var(--ink-2);
 }
 
 .step-chip--code { background: var(--unknown-soft); border-color: var(--unknown); }
-.step-chip--rules { background: var(--check-soft); border-color: var(--check); }
-.step-chip--model { background: var(--decide-soft); border-color: var(--decide); }
+.step-chip--model-call { background: var(--decide-soft); border-color: var(--decide); }
 .step-chip--agent { background: var(--find-soft); border-color: var(--find); }
 
 .step-chip.part--lit {
@@ -237,6 +302,11 @@
   height: 12px;
   border: 1px solid;
   border-radius: 3px;
+}
+
+.sonar__legend-line {
+  font-size: var(--text-12);
+  color: var(--ink-2);
 }
 
 .sonar__agents {

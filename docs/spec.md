@@ -33,7 +33,7 @@ The prototype leads with the top-left quadrant, because that is where the money 
 
 ## Solution architecture
 
-Sirion Sonar builds a ledger of the company's supplier contracts by finding the contracts itself, then watches that ledger and tells the right person when something needs them. It runs in our own cloud, uses code and rules for most of the work, and uses an AI model in four of eight steps, with several small agents where the work is open ended.
+Sirion Sonar builds a ledger of the company's supplier contracts by finding the contracts itself, then watches that ledger and tells the right person when something needs them. It runs in our own cloud, uses code for most of the work, and reaches a model in four of eight steps, through a model call or an agent where the path is open ended.
 
 The name comes from sonar, which picks up what sits below the surface. The renewals, missed service levels and overpaid invoices in the problem statement are that kind of problem.
 
@@ -116,7 +116,7 @@ We do not train any models. Every model is off the shelf, and what we build is t
 | Reading scans | An open-source OCR tool | Our servers |
 | Ranking candidate files for a vendor | A small open embedding model, which runs without a GPU | Our servers |
 | Masking names and people | A dictionary built from the vendor list, plus an open-source name recogniser | Our servers |
-| Reading terms and drafting messages | An LLM, on masked text only, reached through a private endpoint inside our own cloud account, under a no-retention and no-training agreement | Our cloud account |
+| Reading terms and drafting messages | A model call or an agent, on masked text only, reached through a private endpoint inside our own cloud account, under a no-retention and no-training agreement | Our cloud account |
 
 If a company wants nothing to leave at all, an open-weight model hosted in our cloud can take over step 5. It costs more to run, so it is an option for later and is not part of the first version.
 

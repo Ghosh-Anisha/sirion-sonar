@@ -256,9 +256,15 @@
   border-radius: var(--radius-button);
 }
 
-.ladder__rung--1 { border-left-color: var(--decide); margin-left: var(--space-6); }
-.ladder__rung--2 { border-left-color: var(--decide); margin-left: var(--space-12); }
-.ladder__rung--3 { border-left-color: var(--find); margin-left: calc(var(--space-12) + var(--space-6)); }
+/* Grey for Code, blue for Model call, purple for Agent, as everywhere else. */
+.ladder__rung--code { border-left-color: var(--unknown); }
+.ladder__rung--model-call { border-left-color: var(--decide); margin-left: var(--space-6); }
+.ladder__rung--agent { border-left-color: var(--find); margin-left: var(--space-12); }
+
+.ladder__note {
+  max-width: 72ch;
+  color: var(--ink-2);
+}
 
 .ladder__step {
   display: inline-flex;
@@ -736,9 +742,8 @@
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .ladder__rung--1,
-  .ladder__rung--2,
-  .ladder__rung--3 {
+  .ladder__rung--model-call,
+  .ladder__rung--agent {
     margin-left: 0;
   }
 
